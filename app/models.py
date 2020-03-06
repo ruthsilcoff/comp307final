@@ -11,7 +11,7 @@ def get_upload_path(instance, filename):
 # Subjects will be a useful search category for the website
 class Subject(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
-
+    description = models.CharField(max_length=100, null=True)
 
 # many VideoService to one User
 class VideoService(models.Model):
