@@ -1,20 +1,21 @@
 const BundleTracker = require("webpack-bundle-tracker");
+const path = require('path');
 
+const prod = process.env.NODE_ENV === 'production'
 
 module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  publicPath: "http://0.0.0.0:8080/",
+  publicPath: prod ? '/static/' : "http://0.0.0.0:8080/",
   outputDir: './dist/',
-
   chainWebpack: config => {
     config.optimization
       .splitChunks(false)
 
     config
       .plugin('BundleTracker')
-      .use(BundleTracker, [{filename: '../frontend/webpack-stats.json'}])
+      .use(BundleTracker, [{filename: `./webpack-stats${prod ? '-prod' : ''}.json`}])
 
     config.resolve.alias
       .set('__STATIC__', 'static')

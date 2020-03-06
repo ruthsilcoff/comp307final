@@ -57,6 +57,7 @@
     </v-list>
   </v-card>
 
+      <Video/>
     </v-content>
 
   </v-app>
@@ -64,6 +65,7 @@
 
 <script>
 import axios from "axios"
+import Video from "./components/Video"
 
 export default {
   name: 'App',
@@ -73,6 +75,7 @@ export default {
   },
 
   components: {
+    Video,
   },
 
   data: () => ({
@@ -84,8 +87,6 @@ export default {
     getVarieties: function() {
       axios.get('/api/variety/')
         .then((response) => {
-          console.log(response);
-          console.log(response.data);
           this.varieties=response.data;
         })
       .catch((err) => {
@@ -96,8 +97,6 @@ export default {
     addVariety: function() {
       axios.post('/api/variety/', {name:this.varietyInput})
         .then((response) => {
-          console.log(response);
-          console.log(response.data);
           this.varieties.push(response.data)
         })
       .catch((err) => {
