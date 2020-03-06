@@ -17,10 +17,6 @@ import Header from "./Header"
 export default {
   name: 'App',
 
-  mounted() {
-    this.getSubjects()
-  },
-
   components: {
     Header,
   },

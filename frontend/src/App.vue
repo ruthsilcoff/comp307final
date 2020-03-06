@@ -1,10 +1,10 @@
 <template>
-  <v-app>
+  <v-app id="notLoggedIn">
 
-    <v-content>
+    <v-content justify="center">
       <Header/>
 
-      <v-row align="left">
+      <v-row align="left" justify="center">
         <v-img
           src="./assets/peopleLearning.png"
           lazy-src="./assets/peopleLearning.png"
@@ -19,14 +19,13 @@
             </v-row>
           </template>
         </v-img>
-        <v-col align="right">
-          <p>Welcome to debate academy. Whether you're a student or a teacher... this is the place for you!</p>
-          <SignUp/>
+        <v-col class="text-center" style="margin-top:150px">
+          <h1>Welcome to debate academy.</h1>
+          <h2> Whether you're a student or a teacher... this is the place for you!</h2>
+            <v-btn x-large color="cyan" dark style="font-weight: bold">Teachers</v-btn>
+            <v-btn x-large color="cyan" dark style="font-weight: bold">Learners</v-btn>
         </v-col>
       </v-row>
-
-      <Video/>
-      <NewSubject/>
 
     </v-content>
 
@@ -35,52 +34,33 @@
 
 <script>
 import axios from "axios"
-import Video from "./components/Video"
 import Header from "./components/Header"
-import NewSubject from "./components/NewSubject"
 import SignUp from "./components/SignUp"
 
 export default {
   name: 'App',
 
-  mounted() {
-    this.getSubjects()
-  },
-
   components: {
-    Video,
     Header,
-    NewSubject,
-    SignUp,
   },
 
   data: () => ({
-    subjects: [],
-    subjectInput:''
   }),
 
   methods: {
-    getSubjects: function() {
-      axios.get('/api/subject/')
-        .then((response) => {
-          this.subjects=response.data;
-        })
-      .catch((err) => {
-        console.error(err);
-      })
-    },
-
-    addSubjects: function() {
-      axios.post('/api/subject/', {name:this.subjectInput})
-        .then((response) => {
-          this.subjects.push(response.data)
-        })
-      .catch((err) => {
-        console.error(err);
-      })
-    }
   }
 
 };
 
 </script>
+
+
+<style>
+    .v-content {
+      font-family: Futura, sans-serif !important;
+    }
+
+    .v-btn {
+      text-transform:none !important;
+    }
+</style>
