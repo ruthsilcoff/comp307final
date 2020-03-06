@@ -1,21 +1,42 @@
 from rest_framework import serializers
-from .models import Coleus
-from .models import Variety
-from .models import Picture
+from .models import Subject
+from .models import VideoService
+from .models import VideoServiceSubjects
+from .models import NoteSet
+from .models import NoteSetSubjects
+from .models import NoteSetContent
 
-class ColeusSerializer(serializers.ModelSerializer):
+
+class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Coleus
+        model = Subject
         fields = '__all__'
 
 
-class VarietySerializer(serializers.ModelSerializer):
+class VideoServiceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Variety
+        model = VideoService
+        fields = '__all__'
+
+class VideoServiceSubjectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VideoServiceSubjects
         fields = '__all__'
 
 
-class PictureSerializer(serializers.ModelSerializer):
+class NoteSetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Picture
+        model = NoteSet
+        fields = '__all__'
+
+
+class NoteSetSubjectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NoteSetSubjects
+        fields = '__all__'
+
+
+class NoteSetContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NoteSetContent
         fields = '__all__'

@@ -1,8 +1,7 @@
 from rest_framework import routers
 
-from app.views import ColeusViewSet, VarietyViewSet
+from app.views import SubjectViewSet
 
 router = routers.DefaultRouter()
-router.register(r'coleus', ColeusViewSet)
-router.register(r'variety', VarietyViewSet)
+router.register(r'subject', SubjectViewSet)
 

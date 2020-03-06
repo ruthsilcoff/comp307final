@@ -3,32 +3,54 @@ from django.contrib.auth.models import User
 
 
 def get_upload_path(instance, filename):
-    return 'user-' + str(instance.coleusID.id) + '/' + filename
+    return 'user-' + str(instance.userID.id) + '/' + str(instance.id) + '/' + filename
 
 
 # Create your models here.
-class Variety(models.Model):
+
+# Subjects will be a useful search category for the website
+class Subject(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
 
 
-class Coleus(models.Model):
+# many VideoService to one User
+class VideoService(models.Model):
     id = models.AutoField(primary_key=True)
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
-    location = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000)
     dateAdded = models.DateTimeField(auto_now_add=True)
-    potSize = models.IntegerField()
-    lastPotted = models.DateTimeField()
-    nextPot = models.DateTimeField()
-    lastFert = models.DateTimeField()
-    variety = models.ForeignKey(Variety, on_delete=models.CASCADE)
-    parentID = models.IntegerField()
-    otherParentID = models.IntegerField()
+    content = models.FileField(upload_to=get_upload_path)
 
 
-class Picture(models.Model):
-    pictureID = models.AutoField(primary_key=True)
-    coleusID = models.ForeignKey(Coleus, on_delete=models.CASCADE)
-    image = models.FileField(upload_to=get_upload_path)
-    dateTaken = models.DateTimeField(auto_now_add=True)
+# many VideoService to many Subjects
+class VideoServiceSubjects(models.Model):
+    videoServiceID = models.ForeignKey(VideoService, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+
+
+# many NoteSet to one User
+class NoteSet(models.Model):
+    id = models.AutoField(primary_key=True)
+    userID = models.ForeignKey(User, on_delete=models.CASCADE)
     dateAdded = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000)
+    videoServiceID = models.ForeignKey(VideoService, on_delete=models.CASCADE)
+
+
+# many NoteSet to many Subjects
+class NoteSetSubjects(models.Model):
+    noteSetID = models.ForeignKey(NoteSet, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+
+
+# many NoteSetContent to one NoteSet (in the form of files)
+class NoteSetContent(models.Model):
+    id = models.AutoField(primary_key=True)
+    noteSetID = models.ForeignKey(NoteSet, on_delete=models.CASCADE)
+    content = models.FileField(upload_to=get_upload_path)
+
+
+
 

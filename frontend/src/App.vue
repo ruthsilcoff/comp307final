@@ -1,53 +1,28 @@
 <template>
   <v-app>
 
+
     <v-content>
-      <v-btn text icon color="pink">
-              <v-icon>mdi-heart</v-icon>
-      </v-btn>
+      <Header/>
 
-      <v-text-field label="Regular" v-model="varietyInput"></v-text-field>
-      <v-btn class="mx-2" fab dark color="indigo" v-on:click="addVariety()">
-        <v-icon dark>mdi-plus</v-icon>
-      </v-btn>
 
-      <v-btn class="mx-2" fab dark color="teal">
-        <v-icon dark>mdi-format-list-bulleted-square</v-icon>
-      </v-btn>
+      <div class="addSubjectSection">
+        <h1>Type here to add a subject</h1>
 
-      <v-btn class="mx-2" fab dark large color="cyan">
-        <v-icon dark>mdi-pencil</v-icon>
-      </v-btn>
+        <v-text-field label="Subject" v-model="subjectInput"></v-text-field>
+        <v-btn class="mx-2" fab dark color="indigo" v-on:click="addSubjects()">
+          <v-icon dark>mdi-plus</v-icon>
+        </v-btn>
+      </div>
 
-      <v-btn class="mx-2" fab dark large color="purple">
-        <v-icon dark>mdi-android</v-icon>
-      </v-btn>
-
-      <v-card
-    max-width="500"
-    class="mx-auto"
-  >
-    <v-toolbar
-      color="indigo"
-      dark
-    >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Inbox</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-    </v-toolbar>
+      <v-card max-width="500" class="mx-auto">
+        <v-toolbar color="indigo" dark>
+          <v-toolbar-title>Subjects</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
     <v-list>
       <v-list-item
-        v-for="item in varieties"
+        v-for="item in subjects"
         :key="item.name"
       >
         <v-list-item-content>
@@ -60,44 +35,47 @@
       <Video/>
     </v-content>
 
+
   </v-app>
 </template>
 
 <script>
 import axios from "axios"
 import Video from "./components/Video"
+import Header from "./components/Header"
 
 export default {
   name: 'App',
 
   mounted() {
-    this.getVarieties()
+    this.getSubjects()
   },
 
   components: {
     Video,
+    Header,
   },
 
   data: () => ({
-    varieties: [],
-    varietyInput:''
+    subjects: [],
+    subjectInput:''
   }),
 
   methods: {
-    getVarieties: function() {
-      axios.get('/api/variety/')
+    getSubjects: function() {
+      axios.get('/api/subject/')
         .then((response) => {
-          this.varieties=response.data;
+          this.subjects=response.data;
         })
       .catch((err) => {
         console.error(err);
       })
     },
 
-    addVariety: function() {
-      axios.post('/api/variety/', {name:this.varietyInput})
+    addSubjects: function() {
+      axios.post('/api/subject/', {name:this.subjectInput})
         .then((response) => {
-          this.varieties.push(response.data)
+          this.subjects.push(response.data)
         })
       .catch((err) => {
         console.error(err);
