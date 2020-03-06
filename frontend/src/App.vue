@@ -1,40 +1,34 @@
 <template>
   <v-app>
 
-
     <v-content>
       <Header/>
 
-
-      <div class="addSubjectSection">
-        <h1>Type here to add a subject</h1>
-
-        <v-text-field label="Subject" v-model="subjectInput"></v-text-field>
-        <v-btn class="mx-2" fab dark color="indigo" v-on:click="addSubjects()">
-          <v-icon dark>mdi-plus</v-icon>
-        </v-btn>
-      </div>
-
-      <v-card max-width="500" class="mx-auto">
-        <v-toolbar color="indigo" dark>
-          <v-toolbar-title>Subjects</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
-    <v-list>
-      <v-list-item
-        v-for="item in subjects"
-        :key="item.name"
-      >
-        <v-list-item-content>
-          <v-list-item-title v-text="item.name"></v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-  </v-card>
+      <v-row align="left">
+        <v-img
+          src="./assets/peopleLearning.png"
+          lazy-src="./assets/peopleLearning.png"
+          aspect-ratio="1"
+          class="grey lighten-2"
+          max-width="500"
+          max-height="500"
+        >
+          <template v-slot:placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+            </v-row>
+          </template>
+        </v-img>
+        <v-col align="right">
+          <p>Welcome to debate academy. Whether you're a student or a teacher... this is the place for you!</p>
+          <SignUp/>
+        </v-col>
+      </v-row>
 
       <Video/>
-    </v-content>
+      <NewSubject/>
 
+    </v-content>
 
   </v-app>
 </template>
@@ -43,6 +37,8 @@
 import axios from "axios"
 import Video from "./components/Video"
 import Header from "./components/Header"
+import NewSubject from "./components/NewSubject"
+import SignUp from "./components/SignUp"
 
 export default {
   name: 'App',
@@ -54,6 +50,8 @@ export default {
   components: {
     Video,
     Header,
+    NewSubject,
+    SignUp,
   },
 
   data: () => ({
