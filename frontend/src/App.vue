@@ -1,12 +1,12 @@
 <template>
   <v-app>
-    <Header :onSignUp="goToSignUp" :onLogIn="goToLogIn" />
+    <Header :onHomePage="onHomePage" :onSignUp="goToSignUp" :onLogIn="goToLogIn" />
 
     <v-content v-if="page === 'signUpPage'" id="signUpPage">
       <SignUp/>
     </v-content>
     <v-content v-if="page === 'logInPage'" id="logInPage">
-      <LogIn/>
+      <LogIn :onLoginSuccess="onLoginSuccess"/>
     </v-content>
 
     <v-content v-if="page === 'notLoggedIn'" id="notLoggedIn" justify="center">
@@ -27,7 +27,7 @@
           </template>
         </v-img>
         <v-col class="text-center" style="margin-top:150px">
-          <h1>Welcome to debate academy.</h1>
+          <h1>Welcome to Debate Academy.</h1>
           <h2> Whether you're a student or a teacher... this is the place for you!</h2>
             <v-btn x-large color="cyan" dark style="font-weight: bold">Teachers</v-btn>
             <v-btn x-large color="cyan" dark style="font-weight: bold">Learners</v-btn>
@@ -59,12 +59,23 @@ export default {
   }),
 
   methods: {
+      onHomePage: function () {
+        // if the user is logged in
+        this.page = 'homePage';
+        // if not
+        this.page = 'notLoggedIn'
+      },
+
       goToSignUp: function () {
         this.page = 'signUpPage'
       },
 
       goToLogIn: function () {
         this.page = 'logInPage'
+      },
+
+      onLoginSuccess: function () {
+
       }
   }
 
@@ -80,5 +91,6 @@ export default {
 
     .v-btn {
       text-transform:none !important;
+      margin: 20px;
     }
 </style>
