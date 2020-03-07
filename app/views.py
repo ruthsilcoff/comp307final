@@ -1,16 +1,23 @@
 from rest_framework import viewsets
+from .models import User
 from .models import Subject
 from .models import VideoService
 from .models import VideoServiceSubjects
 from .models import NoteSet
 from .models import NoteSetSubjects
 from .models import NoteSetContent
+from .serializers import UserSerializer
 from .serializers import SubjectSerializer
 from .serializers import VideoServiceSerializer
 from .serializers import VideoServiceSubjectsSerializer
 from .serializers import NoteSetSerializer
 from .serializers import NoteSetSubjectsSerializer
 from .serializers import NoteSetContentSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class SubjectViewSet(viewsets.ModelViewSet):

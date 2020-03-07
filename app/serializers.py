@@ -1,10 +1,17 @@
 from rest_framework import serializers
+from .models import User
 from .models import Subject
 from .models import VideoService
 from .models import VideoServiceSubjects
 from .models import NoteSet
 from .models import NoteSetSubjects
 from .models import NoteSetContent
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 
 
 class SubjectSerializer(serializers.ModelSerializer):

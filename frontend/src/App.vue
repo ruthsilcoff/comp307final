@@ -1,10 +1,17 @@
 <template>
-  <v-app id="notLoggedIn">
+  <v-app>
+    <Header :onSignUp="goToSignUp" :onLogIn="goToLogIn" />
 
-    <v-content justify="center">
-      <Header/>
+    <v-content v-if="page === 'signUpPage'" id="signUpPage">
+      <SignUp/>
+    </v-content>
+    <v-content v-if="page === 'logInPage'" id="logInPage">
+      <LogIn/>
+    </v-content>
 
-      <v-row align="left" justify="center">
+    <v-content v-if="page === 'notLoggedIn'" id="notLoggedIn" justify="center">
+
+      <v-row>
         <v-img
           src="./assets/peopleLearning.png"
           lazy-src="./assets/peopleLearning.png"
@@ -36,18 +43,29 @@
 import axios from "axios"
 import Header from "./components/Header"
 import SignUp from "./components/SignUp"
+import LogIn from "./components/LogIn"
 
 export default {
   name: 'App',
 
   components: {
     Header,
+    SignUp,
+    LogIn,
   },
 
   data: () => ({
+    page: 'notLoggedIn'
   }),
 
   methods: {
+      goToSignUp: function () {
+        this.page = 'signUpPage'
+      },
+
+      goToLogIn: function () {
+        this.page = 'logInPage'
+      }
   }
 
 };

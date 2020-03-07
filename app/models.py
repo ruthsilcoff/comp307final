@@ -13,6 +13,7 @@ class Subject(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
     description = models.CharField(max_length=100, null=True)
 
+
 # many VideoService to one User
 class VideoService(models.Model):
     id = models.AutoField(primary_key=True)
@@ -36,7 +37,7 @@ class NoteSet(models.Model):
     dateAdded = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
-    videoServiceID = models.ForeignKey(VideoService, on_delete=models.CASCADE)
+    videoServiceID = models.ForeignKey(VideoService, on_delete=models.CASCADE, null=True)
 
 
 # many NoteSet to many Subjects
