@@ -9,4 +9,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", TemplateView.as_view(template_name="app.html"), name="app"),
     url(r'api/', include(router.urls)),
+    path('api/auth/', include('djoser.urls.authtoken')),
 ]

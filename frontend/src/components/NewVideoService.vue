@@ -3,10 +3,10 @@
 
         <v-content>
             <Header/>
-            <h1>Add a Note Set</h1>
+            <h1>Add a Video Service</h1>
             <v-text-field label="Title" v-model="titleInput"></v-text-field>
             <v-text-field label="Description" v-model="descriptionInput"></v-text-field>
-            <v-file-input counter multiple label="Input files" v-model="filesInput"></v-file-input>
+            <v-text-field label="Duration (optional)" v-model="durationInput"></v-text-field>
 
         </v-content>
 

@@ -2,12 +2,17 @@
 <v-app>
 
 	<v-content>
-		<v-text-field label="Email" v-model="emailInput"></v-text-field>
-		<v-text-field label="Password" v-model="passwordInput"></v-text-field>
-		<v-btn class="mx-2" fab dark color="indigo" v-on:click="logIn()">
-			<v-icon dark>mdi-plus</v-icon>
-		</v-btn>
-
+		<v-card
+    class="mx-auto"
+    max-width="344"
+		>
+			<v-card-text>
+				<h1>Log In</h1>
+				<v-text-field label="Email" v-model="emailInput"></v-text-field>
+				<v-text-field label="Password" v-model="passwordInput"></v-text-field>
+				<v-btn text v-on:click="logIn()">Submit</v-btn>
+			</v-card-text>
+		</v-card>
 	</v-content>
 
 </v-app>
@@ -30,19 +35,17 @@ export default {
 
 	methods: {
 		logIn: function () {
-			axios.get('/api/user/', {
-				password: this.passwordInput,
-				email: this.emailInput
-			})
-				.then((response) => {
-
-				})
-				.catch((err) => {
-					console.error(err);
-				})
 		}
 	}
 
 };
 
 </script>
+
+<style>
+
+.v-text-field {
+	width: 300px;
+}
+
+</style>
