@@ -3,7 +3,6 @@
 
 
     <v-content>
-      <Header/>
       <div class="addSubjectSection">
         <h1>Type here to add a subject</h1>
 
@@ -48,7 +47,6 @@ export default {
   },
 
   components: {
-    Header,
   },
 
   data: () => ({

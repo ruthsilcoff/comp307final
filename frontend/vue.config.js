@@ -7,7 +7,7 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  publicPath: prod ? '/static/' : "http://0.0.0.0:8080/",
+  publicPath: prod ? '/static/' : "http://0.0.0.0:8060/",
   outputDir: './dist/',
   chainWebpack: config => {
     config.optimization
@@ -21,9 +21,9 @@ module.exports = {
       .set('__STATIC__', 'static')
 
     config.devServer
-      .public('http://0.0.0.0:8080')
+      .public('http://0.0.0.0:8060')
       .host('0.0.0.0')
-      .port(8080)
+      .port(8060)
       .hotOnly(true)
       .watchOptions({poll: 1000})
       .https(false)
