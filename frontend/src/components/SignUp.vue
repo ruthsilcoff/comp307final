@@ -90,6 +90,7 @@ import axios from "axios"
 
 export default {
 	name: 'App',
+	props: ['onSuccessfulSignUp'],
 
 	components: {},
 
@@ -116,10 +117,10 @@ export default {
 				is_superuser: this.is_superuser
 			})
 				.then((response) => {
-
+					this.onSuccessfulSignUp()
 				})
 				.catch((err) => {
-					console.error(err);
+					console.error(err.response.data);
 				})
 		},
 

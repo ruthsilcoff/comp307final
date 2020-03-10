@@ -20,7 +20,40 @@
 				<h2> Whether you're a student or a teacher... this is the place for you!</h2>
 					<v-btn x-large color="cyan" dark style="font-weight: bold">Teachers</v-btn>
 					<v-btn x-large color="cyan" dark style="font-weight: bold">Learners</v-btn>
+					<v-btn x-large :color="testStatus === 0 ? 'yellow' : testStatus === 1 ? 'green' : 'red'"
+								dark style="font-weight: bold" @click="test()">
+						TEST PERMISSIONS
+					</v-btn>
 			</v-col>
 		</v-row>
 	</v-app>
 </template>
+
+<script>
+import axios from "axios"
+
+export default {
+	name: 'App',
+
+	components: {},
+
+	data: () => ({
+		testStatus: 0,
+	}),
+
+	methods: {
+			test: function () {
+				axios.get('api/subject')
+						.then((response) => {
+							this.testStatus = 1
+						})
+						.catch((err) => {
+							console.error(err.response.data)
+							this.testStatus = 2
+						})
+			},
+	}
+}
+
+</script>
+

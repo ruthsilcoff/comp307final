@@ -16,7 +16,7 @@ import axios from "axios"
 
 export default {
   name: 'App',
-  props: ["myLessons", "onHomePage", "debateGames", "profile", "calendar", "community", ],
+  props: ["myLessons", "onHomePage", "debateGames", "profile", "calendar", "community",],
 
 
   components: {

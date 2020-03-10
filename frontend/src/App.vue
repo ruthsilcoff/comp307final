@@ -1,14 +1,23 @@
 <template>
   <v-app>
-    <Header v-if="page === 'notLoggedIn' || page === 'signUpPage' || page === 'logInPage'" :onHomePage="onHomePage" :onSignUp="goToSignUp" :onLogIn="goToLogIn" />
-    <profileHeader v-if="page === 'loggedIn' || page === 'calendarPage'" :onHomePage="onHomePage" :calendar="calendar" />
+    <Header v-if="page === 'notLoggedIn' || page === 'signUpPage' || page === 'logInPage'" :onHomePage="onHomePage"
+          :onSignUp="goToSignUp" :onLogIn="goToLogIn" :profile="profile"/>
+    <profileHeader v-if="page === 'loggedIn' || page ==='Calendar'" :onHomePage="onHomePage" :calendar="calendar"/>
 
     <v-content v-if="page === 'signUpPage'">
-      <SignUp/>
+      <SignUp :onSuccessfulSignUp="onSuccessfulSignUp"/>
     </v-content>
 
     <v-content v-if="page === 'logInPage'">
       <LogIn :onLoginSuccess="onLoginSuccess"/>
+    </v-content>
+
+    <v-content v-if="page === 'ProfilePage'">
+      <ProfilePage/>
+    </v-content>
+
+    <v-content v-if="page === 'Calendar'">
+      <Calendar/>
     </v-content>
 
     <v-content v-if="page === 'notLoggedIn'" justify="center">
@@ -37,6 +46,7 @@ import whyItWorks from "./components/whyItWorks"
 import profileHeader from "./components/profileHeader"
 import userHomePage from "./components/userHomePage"
 import Calendar from "./components/Calendar"
+import ProfilePage from "./components/ProfilePage"
 
 export default {
   name: 'App',
@@ -50,38 +60,59 @@ export default {
     profileHeader,
     userHomePage,
     Calendar,
+    ProfilePage,
+  },
+
+  mounted() {
+    axios.interceptors.request.use(
+        config => {
+          const token = localStorage.getItem('token')
+          if (token) {
+            config.headers['Authorization'] = 'Token ' + token
+          }
+          return config
+        },
+        error => Promise.reject(error)
+    )
   },
 
   data: () => ({
-    page: 'calendarPage'
+    page: 'notLoggedIn',
   }),
 
   methods: {
-      onHomePage: function () {
-        // if the user is logged in
-        if (this.page === 'notLoggedIn') {
-          this.page = 'loggedIn';
-        }
-        else {
-          this.page = 'notLoggedIn'
-        }
-      },
-
-      goToSignUp: function () {
-        this.page = 'signUpPage'
-      },
-
-      goToLogIn: function () {
-        this.page = 'logInPage'
-      },
-
-      onLoginSuccess: function () {
-
-      },
-
-      calendar: function () {
-        this.page = 'calendarPage'
+    onHomePage: function () {
+      // if the user is logged in
+      if (this.page === 'notLoggedIn') {
+        this.page = 'loggedIn';
+      } else {
+        this.page = 'notLoggedIn'
       }
+    },
+
+    profile: function () {
+      this.page = 'ProfilePage'
+    },
+
+    goToSignUp: function () {
+      this.page = 'signUpPage'
+    },
+
+    goToLogIn: function () {
+      this.page = 'logInPage'
+    },
+
+    onLoginSuccess: function () {
+      this.page = 'loggedIn'
+    },
+
+    onSuccessfulSignUp: function () {
+      this.page = 'logInPage'
+    },
+
+    calendar: function () {
+      this.page = 'calendarPage'
+    },
   }
 
 };
@@ -90,20 +121,20 @@ export default {
 
 
 <style>
-  .Header {
-    position: absolute;
-  }
+.Header {
+  position: absolute;
+}
 
-  .v-content {
-    font-family: Futura, sans-serif !important;
-  }
+.v-content {
+  font-family: Futura, sans-serif !important;
+}
 
-  .v-btn {
-    text-transform:none !important;
-    margin: 20px;
-  }
+.v-btn {
+  text-transform:none !important;
+  margin: 20px;
+}
 
-  .headerButton {
-    margin:0;
-  }
+.headerButton {
+  margin: 0;
+}
 </style>

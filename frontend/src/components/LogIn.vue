@@ -8,7 +8,7 @@
 		>
 			<v-card-text>
 				<h1>Log In</h1>
-				<v-text-field label="Email" v-model="emailInput"></v-text-field>
+				<v-text-field label="Username" v-model="usernameInput"></v-text-field>
 				<v-text-field label="Password" v-model="passwordInput"></v-text-field>
 				<v-btn text v-on:click="logIn()">Submit</v-btn>
 			</v-card-text>
@@ -30,11 +30,23 @@ export default {
 
 	data: () => ({
 		passwordInput: '',
-		emailInput: ''
+		usernameInput: ''
 	}),
 
 	methods: {
 		logIn: function () {
+				axios.post('/api-token-auth/', {
+					username: this.usernameInput,
+					password: this.passwordInput,
+				})
+				.then((response) => {
+						console.log('logged in')
+						localStorage.setItem('token', response.data.token)
+						this.onLoginSuccess()
+					})
+				.catch((err) => {
+						console.error(err.response.data)
+				})
 		}
 	}
 
