@@ -23,7 +23,6 @@ export default {
   name: 'App',
 
   mounted() {
-    this.getSubjects()
   },
 
   components: {

@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <Header v-if="page === 'notLoggedIn' || page === 'signUpPage' || page === 'logInPage'" :onHomePage="onHomePage"
-          :onSignUp="goToSignUp" :onLogIn="goToLogIn" :profile="profile"/>
-    <profileHeader v-if="page === 'loggedIn' || page ==='Calendar'" :onHomePage="onHomePage" :calendar="calendar"/>
+          :onSignUp="goToSignUp" :onLogIn="goToLogIn"/>
+    <profileHeader v-if="page === 'loggedIn' || page ==='Calendar'" :onHomePage="onHomePage" :calendar="calendar" :profile="profile" />
 
     <v-content v-if="page === 'signUpPage'">
       <SignUp :onSuccessfulSignUp="onSuccessfulSignUp"/>
@@ -13,7 +13,7 @@
     </v-content>
 
     <v-content v-if="page === 'ProfilePage'">
-      <ProfilePage/>
+      <ProfilePage :userData="userData"/>
     </v-content>
 
     <v-content v-if="page === 'Calendar'">
@@ -29,7 +29,7 @@
       <userHomePage/>
     </v-content>
 
-    <v-content v-if="page === 'loggedIn'" justify="center">
+    <v-content v-if="page === 'CalendarPage'" justify="center">
       <Calendar/>
     </v-content>
 
@@ -47,6 +47,7 @@ import profileHeader from "./components/profileHeader"
 import userHomePage from "./components/userHomePage"
 import Calendar from "./components/Calendar"
 import ProfilePage from "./components/ProfilePage"
+
 
 export default {
   name: 'App',
@@ -78,6 +79,7 @@ export default {
 
   data: () => ({
     page: 'notLoggedIn',
+    userData: {},
   }),
 
   methods: {
@@ -102,8 +104,21 @@ export default {
       this.page = 'logInPage'
     },
 
-    onLoginSuccess: function () {
-      this.page = 'loggedIn'
+    onLoginSuccess: function (usernameInput) {
+      axios.get('/api/user/', {
+        'params': {
+          'username': usernameInput
+        }
+      })
+        .then((response) => {
+					console.log(response.data)
+          this.userData = response.data
+          this.page = 'loggedIn'
+				})
+				.catch((err) => {
+					console.error(err.response.data)
+				})
+
     },
 
     onSuccessfulSignUp: function () {
@@ -111,7 +126,7 @@ export default {
     },
 
     calendar: function () {
-      this.page = 'calendarPage'
+      this.page = 'CalendarPage'
     },
   }
 

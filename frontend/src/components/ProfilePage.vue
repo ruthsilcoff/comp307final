@@ -5,13 +5,17 @@
 				<v-card>
 					<v-card-text>
 						<v-row justify="center">
-							<v-avatar>
+							<v-avatar size="30px">
 								<img
 									src="../assets/cyan.jpg"
 									alt="Marie"
 								>
 							</v-avatar>
-							<h1>{{userData.username}} Marie Cornellier</h1>
+							<h1>{{ userData.get_full_name }}</h1>
+							<ul>
+								<li>Username: {{ userData.username }}</li>
+								<li>Email: {{ userData.email }}</li>
+							</ul>
 						</v-row>
 					</v-card-text>
 				</v-card>
@@ -26,6 +30,10 @@ export default {
   name: 'App',
 	props: ['userData'],
 
+	mounted() {
+    this.run()
+  },
+
   components: {
 	},
 
@@ -34,7 +42,9 @@ export default {
 	}),
 
 	methods: {
-
+			run: function () {
+				console.log(this.userData)
+			}
   }
 };
 </script>

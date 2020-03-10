@@ -1,37 +1,34 @@
 <template>
   <v-app>
-
-
     <v-content>
-      <div class="addSubjectSection">
-        <h1>Type here to add a subject</h1>
+      <v-container height="400px" align="center">
+        <div class="addSubjectSection">
+          <h1>Type here to add a subject</h1>
 
-        <v-text-field label="Subject" v-model="subjectInput"></v-text-field>
-        <v-btn class="mx-2" fab dark color="indigo" v-on:click="addSubjects()">
-          <v-icon dark>mdi-plus</v-icon>
-        </v-btn>
-      </div>
+          <v-text-field label="Subject" v-model="subjectInput"></v-text-field>
+          <v-btn class="mx-2" fab dark color="indigo" v-on:click="addSubjects()">
+            <v-icon dark>mdi-plus</v-icon>
+          </v-btn>
+        </div>
 
-      <v-card max-width="500" class="mx-auto">
-        <v-toolbar color="indigo" dark>
-          <v-toolbar-title>Subjects</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
-        <v-list>
-          <v-list-item
-            v-for="item in subjects"
-            :key="item.name"
-          >
-            <v-list-item-content>
-              <v-list-item-title v-text="item.name"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-card>
-
+        <v-card max-width="500" class="mx-auto">
+          <v-toolbar color="indigo" dark>
+            <v-toolbar-title>Subjects</v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+          <v-list>
+            <v-list-item
+              v-for="item in subjects"
+              :key="item.name"
+            >
+              <v-list-item-content>
+                <v-list-item-title v-text="item.name"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-container>
     </v-content>
-
-
   </v-app>
 </template>
 

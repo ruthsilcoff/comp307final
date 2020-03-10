@@ -42,7 +42,7 @@ export default {
 				.then((response) => {
 						console.log('logged in')
 						localStorage.setItem('token', response.data.token)
-						this.onLoginSuccess()
+						this.onLoginSuccess(this.usernameInput)
 					})
 				.catch((err) => {
 						console.error(err.response.data)
