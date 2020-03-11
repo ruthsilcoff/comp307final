@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container max-width="200px">
     <v-data-iterator
       :items="availabilities"
       :items-per-page.sync="itemsPerPage"
@@ -12,8 +12,9 @@
       <template v-slot:header>
         <v-toolbar
           dark
-          color="blue darken-3"
+          color="primary"
           class="mb-1"
+          style="width:600px; margin: 0"
         >
           <v-text-field
             v-model="search"
@@ -21,8 +22,9 @@
             flat
             solo-inverted
             hide-details
-            prepend-inner-icon="search"
+            prepend-inner-icon="mdi-search"
             label="Search"
+            style="width:100px; margin: 0"
           ></v-text-field>
           <template v-if="$vuetify.breakpoint.mdAndUp">
             <v-spacer></v-spacer>
@@ -32,31 +34,36 @@
               solo-inverted
               hide-details
               :items="keys"
-              prepend-inner-icon="search"
+              prepend-inner-icon="mdi-search"
               label="Sort by"
+              style="width:100px; margin: 0"
             ></v-select>
             <v-spacer></v-spacer>
             <v-btn-toggle
+              style="height:40px;"
               v-model="sortDesc"
               mandatory
             >
               <v-btn
                 large
                 depressed
-                color="blue"
+                color="primary"
                 :value="false"
+                style="height:40px; margin: 0"
               >
                 <v-icon>mdi-arrow-up</v-icon>
               </v-btn>
               <v-btn
                 large
                 depressed
-                color="blue"
+                color="primary"
                 :value="true"
+                style="height:40px; margin: 0"
               >
                 <v-icon>mdi-arrow-down</v-icon>
               </v-btn>
             </v-btn-toggle>
+
           </template>
         </v-toolbar>
       </template>
@@ -151,7 +158,7 @@
 
 <script>
   export default {
-  	props: ['availabilities'],
+    props: ['availabilities'],
 		data: () => ({
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
@@ -170,7 +177,7 @@
 
 		computed: {
       numberOfPages () {
-        return Math.ceil(this.items.length / this.itemsPerPage)
+        return Math.ceil(this.availabilities.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)

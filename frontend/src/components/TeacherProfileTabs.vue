@@ -16,10 +16,15 @@
 
   <v-tabs-items v-model="tab">
     <v-tab-item>
-      <ViewAvails/>
+      <v-container max-width="200px">
+        <ViewAvails :availabilities="availabilities"/>
+      </v-container>
     </v-tab-item>
     <v-tab-item>
       <ViewNoteSets/>
+    </v-tab-item>
+    <v-tab-item>
+      <ViewEvents/>
     </v-tab-item>
   </v-tabs-items>
 </v-content>
@@ -27,17 +32,28 @@
 
 <script>
   import axios from "axios"
+  import ViewAvails from "./ViewAvails"
+  import ViewNoteSets from "./ViewNoteSets"
+  import ViewEvents from "./ViewEvents"
 
 	export default {
     data: () => ({
       tab: null,
 			items: [
-				'Lessons', 'Note Sets', 'Attending Events'
+				'Lessons',
+        'Note Sets',
+        'Attending Events'
 			],
 			availabilities: [],
 			noteSets: [],
     }),
 		props: ['userData'],
+
+    components: {
+      ViewAvails,
+      ViewNoteSets,
+      ViewEvents
+    },
 
 		methods: {
 			getAvailabilities: function () {

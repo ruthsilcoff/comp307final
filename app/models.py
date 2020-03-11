@@ -18,7 +18,7 @@ def get_upload_path(instance, filename):
 
 
 def get_avatar_path(instance, filename):
-    return '/Avatars/user-' + str(instance.userID.id) + '/' + filename
+    return '/Avatars/user-' + str(instance.user) + '/' + filename
 
 
 # one to one relationship with user
@@ -41,13 +41,11 @@ class Subject(models.Model):
 # Availability to User
 class Availability(models.Model):
     id = models.AutoField(primary_key=True)
-    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    userID = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100)
     dateAdded = models.DateTimeField(auto_now_add=True)
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
-    repeatFrequency = models.CharField(max_length=100, null=True)
-    repeatDays = models.CharField(max_length=100, null=True)
     duration = models.DurationField(null=True)
     booked = models.BooleanField(default=False)
     background = models.BooleanField(default=False)
@@ -63,7 +61,7 @@ class TeachesSubjects(models.Model):
 # many NoteSet to one User
 class NoteSet(models.Model):
     id = models.AutoField(primary_key=True)
-    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    userID = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     dateAdded = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
@@ -103,7 +101,7 @@ class Event(models.Model):
 # many to many
 # useful for checking who's attending the event, or for getting all the events a user is attending
 class UserAttendEvent(models.Model):
-    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    userID = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     eventID = models.ForeignKey(Event, on_delete=models.CASCADE)
 
 

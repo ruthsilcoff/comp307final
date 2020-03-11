@@ -2,7 +2,7 @@
   <v-app>
     <Header v-if="loggedIn === false && (page === 'homePage' || page === 'signUpPage' || page === 'logInPage' || age ==='ViewingProfilePage')" :onHomePage="onHomePage"
           :onSignUp="goToSignUp" :onLogIn="goToLogIn"/>
-    <profileHeader v-if="loggedIn === true && (page === 'homePage' || page ==='Calendar' || page ==='ProfilePage' || page === 'AddAvailability' || page ==='ViewingProfilePage')" :onHomePage="onHomePage" :logOut="logOut" :profile="profile"/>
+    <profileHeader v-if="loggedIn === true && (page === 'homePage' || page ==='CalendarPage' || page ==='ProfilePage' || page === 'AddAvailability' || page ==='ViewingProfilePage')" :onCalendar="onCalendar" :onHomePage="onHomePage" :logOut="logOut" :profile="profile"/>
 
     <v-content v-if="page === 'signUpPage'">
       <SignUp :tabNumber="tabNumber" :onLoginSuccess="onLoginSuccess"/>
@@ -18,10 +18,6 @@
 
     <v-content v-if="page === 'ViewingProfilePage'">
       <ProfilePage :isViewing="isViewing" :userData="viewingUser"/>
-    </v-content>
-
-    <v-content v-if="page === 'Calendar'">
-      <Calendar/>
     </v-content>
 
     <v-content v-if="loggedIn === false && page === 'homePage'" justify="center">
@@ -40,7 +36,7 @@
     </v-content>
 
     <v-content v-if="page === 'CalendarPage'" justify="center">
-      <Calendar/>
+      <LargeCalendar/>
     </v-content>
 
     <v-footer>
@@ -64,7 +60,7 @@ import welcomePage from "./components/welcomePage"
 import whyItWorks from "./components/whyItWorks"
 import profileHeader from "./components/profileHeader"
 import userHomePage from "./components/userHomePage"
-import Calendar from "./components/Calendar"
+import LargeCalendar from "./components/LargeCalendar"
 import ProfilePage from "./components/ProfilePage"
 import NewAvailability from "./components/NewAvailability"
 
@@ -79,7 +75,7 @@ export default {
     welcomePage,
     whyItWorks,
     profileHeader,
-    Calendar,
+    LargeCalendar,
     ProfilePage,
     NewAvailability,
   },
@@ -158,7 +154,7 @@ export default {
       }
     },
 
-    calendar: function () {
+    onCalendar: function () {
       this.page = 'CalendarPage'
     },
 

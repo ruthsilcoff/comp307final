@@ -12,11 +12,14 @@
 					<v-card width="400px" style="margin: 0; padding: 0;">
 						<v-card-title>
 							<v-row>
-								<v-avatar size="100px">
+								<v-avatar size="100px" v-if="avatarInput !== ''">
 									<img
 										src = avatarInput
-										alt = userData.first_name
+										alt = "C"
 									>
+								</v-avatar>
+								<v-avatar color=red size="100px" v-if="avatarInput === ''">
+									<span class="white--text headline">C</span>
 								</v-avatar>
 								<v-content v-if="editingProfile === true">
 									<v-file-input

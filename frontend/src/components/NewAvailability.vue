@@ -156,18 +156,30 @@
           <v-card max-width="1000" class="mx-auto">
             <v-toolbar color="primary" dark>
               <v-toolbar-title>Availabilities</v-toolbar-title>
-              <v-spacer></v-spacer>
             </v-toolbar>
+            <v-list>
+            <v-list-item>
+              <v-list-item-content
+                v-for="item in headers"
+                :key="item"
+              >
+                <p class="sheetHeader">{{item}}</p>
+              </v-list-item-content>
+            </v-list-item>
+            </v-list>
             <v-list>
               <v-list-item
                 v-for="item in availabilities"
                 :key="item.id"
               >
                 <v-list-item-content>
-                  <v-btn text v-text="item.id" v-on:click="removeAvailability(item)"></v-btn>
+                  <v-btn class="sheetButton" text v-text="item.id" v-on:click="removeAvailability(item)"></v-btn>
                 </v-list-item-content>
                 <v-list-item-content>
                   <v-list-item-title v-text="item.title"></v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.userID"></v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-content>
                   <v-list-item-title v-text="item.start"></v-list-item-title>
@@ -212,6 +224,13 @@ export default {
     menu3: false,
     inputStart: null,
     inputEnd: null,
+    headers: [
+        'ID',
+        'Title',
+        'Posted By',
+        'Start',
+        'End'
+    ],
     repeatInput: 'None',
     repeatOptions: [
         'None',
@@ -272,3 +291,18 @@ export default {
 };
 
 </script>
+
+<style>
+
+.sheetHeader {
+  color: #bdbdbd !important;
+  font-size: 12px !important;
+  font-weight: bold;
+}
+
+.sheetButton {
+  margin: 0;
+  padding: 0;
+}
+
+</style>
