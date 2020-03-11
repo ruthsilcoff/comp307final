@@ -2,13 +2,13 @@
 	<v-app>
 		<v-content style="margin: 0; padding: 0;">
 			<v-content align="center" v-if="isTeacher === true" style="margin: 0; padding: 0;">
-				<h1>Teacher Profile</h1>
+				<h1>Teacher: {{ userData.first_name }} {{ userData.last_name }}</h1>
 			</v-content>
-			<v-content align="center" v-if="isTeacher === false">
-				<h1>Student Profile</h1>
+			<v-content align="center" v-if="isTeacher === false" style="margin: 0; padding: 0;">
+				<h1>Student: {{ userData.first_name }} {{ userData.last_name }}</h1>
 			</v-content>
 			<v-row>
-				<v-col>
+				<v-col style="margin-right:0; padding: 0">
 					<v-card width="400px" style="margin: 0; padding: 0;">
 						<v-card-title>
 							<v-row>
@@ -30,9 +30,10 @@
 									></v-file-input>
 								</v-content>
 							</v-row>
-							<h1>{{ userData.first_name }} {{ userData.last_name }}</h1>
-							<h3>{{ userData.username }}</h3>
 						</v-card-title>
+						<v-card-text>
+							<h3>{{ userData.username }}</h3>
+						</v-card-text>
 					</v-card>
 					<v-card width="400px">
 						<v-card-text>
@@ -62,9 +63,12 @@
 						</v-card-text>
 					</v-card>
 				</v-col>
-				<v-col style="margin-right: 20%">
-					<v-content v-if="this.isTeacher === true">
+				<v-col style="margin-top: 0; padding:0">
+					<v-content style="margin: 0; padding:0" v-if="this.isTeacher === true">
 						<TeacherProfileTabs/>
+					</v-content>
+					<v-content style="margin: 0; padding:0" v-if="this.isTeacher === false">
+						<RegularProfileTabs/>
 					</v-content>
 				</v-col>
 			</v-row>
@@ -77,6 +81,7 @@
 import axios from "axios"
 import EditProfile from "./EditProfile"
 import TeacherProfileTabs from "./TeacherProfileTabs"
+import RegularProfileTabs from "./RegularProfileTabs"
 
 export default {
 	props: ['userData', 'isViewing'],
@@ -89,6 +94,7 @@ export default {
   components: {
 		TeacherProfileTabs,
 		EditProfile,
+		RegularProfileTabs,
 	},
 
   data: () => ({

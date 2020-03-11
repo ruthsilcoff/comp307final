@@ -17,7 +17,7 @@
   <v-tabs-items v-model="tab">
     <v-tab-item>
       <v-container max-width="200px">
-        <ViewAvails :availabilities="availabilities"/>
+        <ViewAvails :userData="userData" :availabilities="availabilities"/>
       </v-container>
     </v-tab-item>
     <v-tab-item>
@@ -47,6 +47,7 @@
 			availabilities: [],
 			noteSets: [],
     }),
+
 		props: ['userData'],
 
     components: {
@@ -55,8 +56,12 @@
       ViewEvents
     },
 
+    mounted() {
+      this.getAvailabilities()
+    },
+
 		methods: {
-			getAvailabilities: function () {
+			getAvailabiliti: function () {
 				axios.get('/api/availability/?userID=' + this.userData.id + "/")
 						.then((response) => {
 							console.log(response.data)
@@ -65,7 +70,19 @@
 						.catch((err) => {
 							console.error(err.response)
 						})
-			}
-		}
+			},
+
+      getAvailabilities: function() {
+          axios.get('/api/availability/')
+            .then((response) => {
+              console.log(response.data)
+              this.availabilities=response.data;
+            })
+          .catch((err) => {
+            console.error(err.response.data);
+          })
+    },
+
+		},
   }
 </script>

@@ -9,89 +9,29 @@
       :sort-desc="sortDesc"
       hide-default-footer
     >
-      <template v-slot:header>
-        <v-toolbar
-          dark
-          color="primary"
-          class="mb-1"
-          style="width:600px; margin: 0"
-        >
-          <v-text-field
-            v-model="search"
-            clearable
-            flat
-            solo-inverted
-            hide-details
-            prepend-inner-icon="mdi-search"
-            label="Search"
-            style="width:100px; margin: 0"
-          ></v-text-field>
-          <template v-if="$vuetify.breakpoint.mdAndUp">
-            <v-spacer></v-spacer>
-            <v-select
-              v-model="sortBy"
-              flat
-              solo-inverted
-              hide-details
-              :items="keys"
-              prepend-inner-icon="mdi-search"
-              label="Sort by"
-              style="width:100px; margin: 0"
-            ></v-select>
-            <v-spacer></v-spacer>
-            <v-btn-toggle
-              style="height:40px;"
-              v-model="sortDesc"
-              mandatory
-            >
-              <v-btn
-                large
-                depressed
-                color="primary"
-                :value="false"
-                style="height:40px; margin: 0"
-              >
-                <v-icon>mdi-arrow-up</v-icon>
-              </v-btn>
-              <v-btn
-                large
-                depressed
-                color="primary"
-                :value="true"
-                style="height:40px; margin: 0"
-              >
-                <v-icon>mdi-arrow-down</v-icon>
-              </v-btn>
-            </v-btn-toggle>
-
-          </template>
-        </v-toolbar>
-      </template>
-
       <template v-slot:default="props">
         <v-row>
           <v-col
             v-for="item in props.items"
-            :key="item.name"
+            :key="item.id"
             cols="12"
             sm="6"
-            md="4"
-            lg="3"
+            md="16"
+            lg="4"
           >
-            <v-card>
-              <v-card-title class="subheading font-weight-bold">{{ item.name }}</v-card-title>
+            <v-card v-if="item.booked === false">
+              <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>
 
-              <v-list dense>
-                <v-list-item
-                  v-for="(key, index) in filteredKeys"
-                  :key="index"
-                >
-                  <v-list-item-content :class="{ 'blue--text': sortBy === key }">{{ key }}:</v-list-item-content>
-                  <v-list-item-content class="align-end" :class="{ 'blue--text': sortBy === key }">{{ item[key.toLowerCase()] }}</v-list-item-content>
-                </v-list-item>
-              </v-list>
+              <v-card-text>
+                <h3>Date:</h3>
+                <h4>{{item.start}}</h4>
+              </v-card-text>
+
+              <v-btn color="success" text large v-on:click="bookLesson(item)">
+                    Request This Lesson!
+              </v-btn>
             </v-card>
           </v-col>
         </v-row>
@@ -157,9 +97,10 @@
 </template>
 
 <script>
+  import axios from "axios"
+
   export default {
-    props: ['availabilities'],
-		data: () => ({
+    data: () => ({
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -174,6 +115,8 @@
 				'Duration',
 			],
 		}),
+
+    props: ['availabilities', 'userData'],
 
 		computed: {
       numberOfPages () {
@@ -194,6 +137,17 @@
       updateItemsPerPage (number) {
         this.itemsPerPage = number
       },
+
+      bookLesson (item) {
+        let index = this.availabilities.indexOf(item)
+        axios.post('/api/tutoringSession/', {tutorID:this.userData.id, availabilityID:item.id})
+        .then((response) => {
+          this.availabilities[index].booked = true
+        })
+        .catch((err) => {
+          console.error(err.response.data);
+        })
+      }
     },
 
 	}

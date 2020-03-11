@@ -74,6 +74,10 @@ class TutoringSessionViewSet(viewsets.ModelViewSet):
     queryset = TutoringSession.objects.all()
     serializer_class = TutoringSessionSerializer
 
+    def create(self, request, *args, **kwargs):
+        request.data['learnerID'] = request.user.id
+        return super().create(request, *args, **kwargs)
+
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
