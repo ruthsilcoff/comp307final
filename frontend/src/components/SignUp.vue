@@ -2,8 +2,8 @@
 <v-app>
 
 	<v-content id="signUpPage">
-		<v-container id="signUpForm" style="padding:0">
-			<v-row justify="space-between">
+		<v-container id="signUpForm" style="padding:0; background-color:white">
+			<v-row>
 				<v-col cols="10" md="5" style="color:white; background-color:#006e99; margin:0;">
 					<v-card-text style="padding: 40px" >
 						<p style="font-size: 30px; font-weight: bold; line-height: 40px;">A world class education for anyone, anywhere.</p>
@@ -16,11 +16,12 @@
 							ref="form"
 							lazy-validation
 						>
-							<h1 style="line-height: 1.5">Join Debate Academy as a</h1>
+							<h1 style="line-height: 1.5; color: black">Join Debate Academy as a</h1>
 							<v-tabs
 								grow
 								background-color="other"
 								dark
+								v-model=tabNumber
 							>
 								<v-tab>
 									Learner
@@ -30,7 +31,7 @@
 								</v-tab>
 
 								<v-tab-item>
-									<v-card flat>
+									<v-card flat background-color="extra" >
 										<v-card-text>
 											<v-text-field label="Email" v-model="emailInput" :rules="[v => !!v || 'Email is required']" required></v-text-field>
 											<v-text-field label="Username" v-model="usernameInput" :rules="[v => !!v || 'Username is required']" required></v-text-field>
@@ -40,10 +41,11 @@
 									</v-card>
 								</v-tab-item>
 								<v-tab-item>
-									<v-card flat>
+									<v-card flat background-color="extra">
 										<v-card-text>
 											<v-text-field label="First Name" v-model="fNameInput" :rules="[v => !!v || 'Name is required']" required></v-text-field>
 											<v-text-field label="Last Name" v-model="lNameInput" :rules="[v => !!v || 'Last name is required']" required></v-text-field>
+											<v-text-field label="Username" v-model="usernameInput" :rules="[v => !!v || 'Username is required']" required></v-text-field>
 											<v-text-field label="Email" v-model="emailInput" :rules="[v => !!v || 'Email is required']" required></v-text-field>
 											<v-text-field label="Password" v-model="passwordInput" type="password" :rules="[v => !!v || 'Password is required']" required></v-text-field>
 											<v-btn style="font-size:20px" v-on:click="signUpTeacher()">Submit</v-btn>
@@ -67,7 +69,7 @@ import axios from "axios"
 
 export default {
 	name: 'App',
-	props: ['onLoginSuccess'],
+	props: ['onLoginSuccess', 'tabNumber'],
 
 	components: {},
 
@@ -100,6 +102,7 @@ export default {
 			axios.post('/api/user/', {
 				first_name: this.fNameInput,
 				last_name: this.lNameInput,
+				username: this.usernameInput,
 				password: this.passwordInput,
 				email: this.emailInput
 			})
@@ -161,7 +164,6 @@ export default {
 <style>
 
 #signUpForm {
-	background-color: white;
 	border-radius: 5px;
 	box-shadow: 2px 2px 7px black;
 	width: 1000px;

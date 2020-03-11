@@ -7,7 +7,9 @@
             <v-text-field label="Title" v-model="titleInput"></v-text-field>
             <v-text-field label="Description" v-model="descriptionInput"></v-text-field>
             <v-file-input counter multiple label="Input files" v-model="filesInput"></v-file-input>
-
+            <v-btn class="mx-2" fab dark color="indigo" v-on:click="addNoteSets()">
+                <v-icon dark>mdi-plus</v-icon>
+            </v-btn>
         </v-content>
 
     </v-app>
@@ -46,10 +48,10 @@ export default {
       })
     },
 
-    addSubjects: function() {
-      axios.post('/api/subject/', {name:this.subjectInput})
+    addNoteSets: function() {
+      axios.post('/api/noteSet/', {title:this.titleInput})
         .then((response) => {
-          this.subjects.push(response.data)
+          this.noteSets.push(response.data)
         })
       .catch((err) => {
         console.error(err);

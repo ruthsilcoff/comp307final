@@ -77,8 +77,27 @@
 			</v-row>
 		<v-col class="text-center">
 			<h1>Sign Up Today</h1>
-			<v-btn x-large color="cyan" dark style="font-weight: bold">Teachers</v-btn>
-			<v-btn x-large color="cyan" dark style="font-weight: bold">Learners</v-btn>
+			<v-btn x-large color="primary" v-on:click="onLearnerSignUp()">Learners</v-btn>
+			<v-btn x-large color="primary" v-on:click="onTeacherSignUp()">Teachers</v-btn>
 		</v-col>
 	</v-app>
 </template>
+
+
+<script>
+import axios from "axios"
+
+export default {
+	name: 'App',
+	props: ['onTeacherSignUp', 'onLearnerSignUp'],
+
+	components: {},
+
+	data: () => ({
+	}),
+
+	methods: {
+	}
+}
+
+</script>

@@ -1,11 +1,15 @@
 <template>
-  <v-app>
-
-		<v-container style="height: 500px;">
-			<vue-cal/>
-		</v-container>
-
-	</v-app>
+  <v-content style="margin: 0; padding: 0;">
+		<vue-cal
+				:events="events"
+				:time-from="9 * 60"
+				:time-to="23 * 60"
+				events-count-on-year-view
+				events-on-month-view="short"
+				editable-events
+				class="vuecal--full-height-delete"
+		/>
+	</v-content>
 </template>
 
 

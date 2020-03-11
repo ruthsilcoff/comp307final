@@ -44,7 +44,10 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.all()
     serializer_class = AvailabilitySerializer
-    permission_classes = [IsOwner, IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        request.data['userID'] = request.user.id
+        return super().create(request, *args, **kwargs)
 
 
 class TeachesSubjectsViewSet(viewsets.ModelViewSet):
@@ -55,7 +58,6 @@ class TeachesSubjectsViewSet(viewsets.ModelViewSet):
 class NoteSetViewSet(viewsets.ModelViewSet):
     queryset = NoteSet.objects.all()
     serializer_class = NoteSetSerializer
-    permission_classes = [IsOwner, IsAuthenticated]
 
 
 class NoteSetSubjectsViewSet(viewsets.ModelViewSet):

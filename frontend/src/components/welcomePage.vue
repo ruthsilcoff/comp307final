@@ -18,8 +18,8 @@
 			<v-col class="text-center" style="margin-top:150px; margin-bottom:0; padding:0; height:300px;">
 				<h1>Welcome to Debate Academy.</h1>
 				<h2> Whether you're a student or a teacher... this is the place for you!</h2>
-					<v-btn x-large color="cyan" dark style="font-weight: bold">Teachers</v-btn>
-					<v-btn x-large color="cyan" dark style="font-weight: bold">Learners</v-btn>
+					<v-btn x-large color="primary" v-on:click="onLearnerSignUp()">Learners</v-btn>
+					<v-btn x-large color="primary" v-on:click="onTeacherSignUp()">Teachers</v-btn>
 					<v-btn x-large :color="testStatus === 0 ? 'yellow' : testStatus === 1 ? 'green' : 'red'"
 								dark style="font-weight: bold" @click="test()">
 						TEST PERMISSIONS
@@ -34,6 +34,7 @@ import axios from "axios"
 
 export default {
 	name: 'App',
+	props: ['onTeacherSignUp', 'onLearnerSignUp'],
 
 	components: {},
 

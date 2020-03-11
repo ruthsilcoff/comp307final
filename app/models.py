@@ -17,22 +17,17 @@ def get_upload_path(instance, filename):
     return 'user-' + str(instance.userID.id) + '/' + str(instance.id) + '/' + filename
 
 
-# Create your models here.
-
-class OwnedModel(models.Model):
-    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    class Meta:
-        abstract = True
+def get_avatar_path(instance, filename):
+    return '/Avatars/user-' + str(instance.userID.id) + '/' + filename
 
 
 # one to one relationship with user
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     bio = models.TextField(max_length=500, null=True, blank=True)
     country = models.CharField(max_length=30, null=True, blank=True)
     birthDate = models.DateField(null=True, blank=True)
-    avatar = models.FileField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.FileField(upload_to=get_avatar_path, default='cyan.jpg', null=True, blank=True)
     isTeacher = models.BooleanField(default=False)
 
 
@@ -44,17 +39,19 @@ class Subject(models.Model):
 
 # many to 1
 # Availability to User
-class Availability(OwnedModel):
+class Availability(models.Model):
     id = models.AutoField(primary_key=True)
+    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000)
     dateAdded = models.DateTimeField(auto_now_add=True)
-    start = models.DateTimeField(null="true")
-    end = models.DateTimeField(null="true")
-    repeatFrequency = models.CharField(max_length=100, null="true")
-    repeatDays = models.CharField(max_length=100, null="true")
-    duration = models.DurationField(null="true")
-    booked = models.BooleanField(default="false")
+    start = models.DateTimeField(null=True)
+    end = models.DateTimeField(null=True)
+    repeatFrequency = models.CharField(max_length=100, null=True)
+    repeatDays = models.CharField(max_length=100, null=True)
+    duration = models.DurationField(null=True)
+    booked = models.BooleanField(default=False)
+    background = models.BooleanField(default=False)
+    allDay = models.BooleanField(default=False)
 
 
 # many Teacher to many Subjects
@@ -64,8 +61,9 @@ class TeachesSubjects(models.Model):
 
 
 # many NoteSet to one User
-class NoteSet(OwnedModel):
+class NoteSet(models.Model):
     id = models.AutoField(primary_key=True)
+    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     dateAdded = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
@@ -101,9 +99,11 @@ class Event(models.Model):
     end = models.DateTimeField(null="true")
     content: models.CharField(max_length=1000)
 
-    # many to many
+
+# many to many
 # useful for checking who's attending the event, or for getting all the events a user is attending
-class UserAttendEvent(OwnedModel):
+class UserAttendEvent(models.Model):
+    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     eventID = models.ForeignKey(Event, on_delete=models.CASCADE)
 
 

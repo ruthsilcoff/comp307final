@@ -1,11 +1,11 @@
 <template>
   <v-app>
-    <Header v-if="page === 'notLoggedIn' || page === 'signUpPage' || page === 'logInPage'" :onHomePage="onHomePage"
+    <Header v-if="loggedIn === false && (page === 'homePage' || page === 'signUpPage' || page === 'logInPage' || age ==='ViewingProfilePage')" :onHomePage="onHomePage"
           :onSignUp="goToSignUp" :onLogIn="goToLogIn"/>
-    <profileHeader v-if="page === 'loggedIn' || page === 'AddAvailability' || page ==='Calendar' || page === 'ProfilePage'" :onHomePage="onHomePage" :calendar="calendar" :profile="profile" :logOut="logOut" />
+    <profileHeader v-if="loggedIn === true && (page === 'homePage' || page ==='Calendar' || page ==='ProfilePage' || page === 'AddAvailability' || page ==='ViewingProfilePage')" :onHomePage="onHomePage" :logOut="logOut" :profile="profile"/>
 
     <v-content v-if="page === 'signUpPage'">
-      <SignUp :onLoginSuccess="onLoginSuccess"/>
+      <SignUp :tabNumber="tabNumber" :onLoginSuccess="onLoginSuccess"/>
     </v-content>
 
     <v-content v-if="page === 'logInPage'">
@@ -13,19 +13,23 @@
     </v-content>
 
     <v-content v-if="page === 'ProfilePage'">
-      <ProfilePage :userData="userData"/>
+      <ProfilePage :isViewing="isViewing" :userData="userData"/>
+    </v-content>
+
+    <v-content v-if="page === 'ViewingProfilePage'">
+      <ProfilePage :isViewing="isViewing" :userData="viewingUser"/>
     </v-content>
 
     <v-content v-if="page === 'Calendar'">
       <Calendar/>
     </v-content>
 
-    <v-content v-if="page === 'notLoggedIn'" justify="center">
-      <welcomePage/>
-      <whyItWorks/>
+    <v-content v-if="loggedIn === false && page === 'homePage'" justify="center">
+      <welcomePage :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
+      <whyItWorks :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
     </v-content>
 
-    <v-content v-if="page === 'loggedIn'" justify="center">
+    <v-content v-if="loggedIn === true && page === 'homePage'">
       <v-btn text large v-on:click="AddAvailability">
             AddAvailability
       </v-btn>
@@ -95,8 +99,14 @@ export default {
   },
 
   data: () => ({
-    page: 'notLoggedIn',
+    loggedIn: false,
+    page: 'homePage',
+    testStatus: 0,
     userData: {},
+    viewingProfileOf: null,
+    viewingUser: {},
+    isViewing: false,
+    tabNumber: 0,
   }),
 
   methods: {
@@ -105,6 +115,7 @@ export default {
     },
 
     profile: function () {
+      this.isViewing = false
       this.page = 'ProfilePage'
     },
 
@@ -117,12 +128,12 @@ export default {
     },
 
     onLoginSuccess: function (usernameInput) {
-      this.page = 'loggedIn'
       axios.get('/api/user/current/')
         .then((response) => {
 					console.log(response.data)
           this.userData = response.data
-          this.page = 'loggedIn'
+          this.loggedIn = true
+          this.page = 'homePage'
           this.testStatus = 2
 				})
 				.catch((err) => {
@@ -133,7 +144,8 @@ export default {
 
     logOut: function () {
       localStorage.removeItem('token')
-      this.page = 'notLoggedIn'
+      this.loggedIn = false
+      this.page = 'homePage'
     },
 
     checkLogIn: function () {
@@ -141,7 +153,8 @@ export default {
         this.onLoginSuccess()
       }
       else {
-        this.page = 'notLoggedIn'
+        this.loggedIn = false
+        this.page = 'homePage'
       }
     },
 
@@ -151,6 +164,30 @@ export default {
 
     AddAvailability: function () {
       this.page = 'AddAvailability'
+    },
+
+    goToProfileOf: function (userID) {
+      this.isViewing = true
+      this.viewingProfileOf = userID;
+      axios.get('/api/user/' + userID + '/')
+        .then((response) => {
+					console.log(response.data)
+          this.viewingUser = response.data
+          this.page = 'ViewingProfilePage'
+				})
+				.catch((err) => {
+					console.error(err.response.data)
+				})
+    },
+
+    onTeacherSignUp: function() {
+      this.tabNumber = 1
+      this.page = 'signUpPage'
+    },
+
+    onLearnerSignUp: function() {
+      this.tabNumber = 0
+      this.page = 'signUpPage'
     },
 
   }
