@@ -33,6 +33,7 @@
       <v-btn text large v-on:click="AddAvailability">
             AddAvailability
       </v-btn>
+      <ViewTeachers :goToProfileOf="goToProfileOf"/>
     </v-content>
 
     <v-content v-if="page === 'AddAvailability'">
@@ -67,6 +68,7 @@ import LargeCalendar from "./components/LargeCalendar"
 import ProfilePage from "./components/ProfilePage"
 import NewAvailability from "./components/NewAvailability"
 import BookLesson from "./components/BookLesson"
+import ViewTeachers from "./components/ViewTeachers"
 
 
 export default {
@@ -83,6 +85,7 @@ export default {
     ProfilePage,
     NewAvailability,
     BookLesson,
+    ViewTeachers,
   },
 
   mounted() {
@@ -199,7 +202,7 @@ export default {
 
   }
 
-};
+}
 
 </script>
 

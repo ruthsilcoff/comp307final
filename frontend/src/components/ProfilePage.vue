@@ -8,7 +8,7 @@
 				<h1>Student: {{ userData.first_name }} {{ userData.last_name }}</h1>
 			</v-content>
 			<v-row >
-				<v-col style="margin-right:0; padding: 0">
+				<v-col align="center" style="margin-right:0; padding: 0">
 					<v-card width="200px" style="margin: 0; padding: 0;">
 						<v-card-title >
 							<v-avatar size="100px" v-if="avatarInput === ''">
