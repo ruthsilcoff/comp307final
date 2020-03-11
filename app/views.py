@@ -1,32 +1,24 @@
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .permissions import IsOwner
-from .models import User
-from .models import Subject
-from .models import VideoService
-from .models import VideoServiceSubjects
-from .models import NoteSet
-from .models import NoteSetSubjects
-from .models import NoteSetContent
-from .models import TutoringSession
-from .models import Event
-from .models import UserAttendEvent
-from .serializers import UserSerializer
-from .serializers import SubjectSerializer
-from .serializers import VideoServiceSerializer
-from .serializers import VideoServiceSubjectsSerializer
-from .serializers import NoteSetSerializer
-from .serializers import NoteSetSubjectsSerializer
-from .serializers import NoteSetContentSerializer
-from .serializers import TutoringSessionSerializer
-from .serializers import EventSerializer
-from .serializers import UserAttendEventSerializer
+from .models import User, Subject, Availability, TeachesSubjects, NoteSet, NoteSetSubjects, \
+    NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile
+from .serializers import UserSerializer, SubjectSerializer, AvailabilitySerializer, \
+    TeachesSubjectsSerializer, NoteSetSerializer, NoteSetSubjectsSerializer, \
+    NoteSetContentSerializer, TutoringSessionSerializer, EventSerializer, \
+    UserAttendEventSerializer, ProfileSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    @action(detail=False)
+    def current(self, request):
+        return Response(UserSerializer(request.user).data)
 
     def get_permissions(self):
         if self.action == 'create':
@@ -39,20 +31,25 @@ class UserViewSet(viewsets.ModelViewSet):
         instance.save()
 
 
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
 class SubjectViewSet(viewsets.ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
 
-class VideoServiceViewSet(viewsets.ModelViewSet):
-    queryset = VideoService.objects.all()
-    serializer_class = VideoServiceSerializer
+class AvailabilityViewSet(viewsets.ModelViewSet):
+    queryset = Availability.objects.all()
+    serializer_class = AvailabilitySerializer
     permission_classes = [IsOwner, IsAuthenticated]
 
 
-class VideoServiceSubjectsViewSet(viewsets.ModelViewSet):
-    queryset = VideoServiceSubjects.objects.all()
-    serializer_class = VideoServiceSubjectsSerializer
+class TeachesSubjectsViewSet(viewsets.ModelViewSet):
+    queryset = TeachesSubjects.objects.all()
+    serializer_class = TeachesSubjectsSerializer
 
 
 class NoteSetViewSet(viewsets.ModelViewSet):
@@ -84,6 +81,3 @@ class EventViewSet(viewsets.ModelViewSet):
 class UserAttendEventViewSet(viewsets.ModelViewSet):
     queryset = UserAttendEvent.objects.all()
     serializer_class = UserAttendEventSerializer
-
-class MyViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.DjangoModelPermissions]

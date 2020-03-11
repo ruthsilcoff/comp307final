@@ -4,6 +4,14 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from django.db import models
+from django.core.mail import send_mail
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.utils.translation import ugettext_lazy as _
+
+# from .managers import UserManager
+
 
 def get_upload_path(instance, filename):
     return 'user-' + str(instance.userID.id) + '/' + str(instance.id) + '/' + filename
@@ -21,20 +29,11 @@ class OwnedModel(models.Model):
 # one to one relationship with user
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(max_length=500, blank=True)
-    country = models.CharField(max_length=30, blank=True)
+    bio = models.TextField(max_length=500, null=True, blank=True)
+    country = models.CharField(max_length=30, null=True, blank=True)
     birthDate = models.DateField(null=True, blank=True)
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    avatar = models.FileField(upload_to='avatars/', null=True, blank=True)
+    isTeacher = models.BooleanField(default=False)
 
 
 # Subjects will be a useful search category for the website
@@ -43,23 +42,25 @@ class Subject(models.Model):
     description = models.CharField(max_length=100, null=True, blank=True)
 
 
-
-# many VideoService to one User
-class VideoService(OwnedModel):
+# many to 1
+# Availability to User
+class Availability(OwnedModel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
     dateAdded = models.DateTimeField(auto_now_add=True)
-    dateScheduled = models.DateTimeField(null="true")
+    start = models.DateTimeField(null="true")
+    end = models.DateTimeField(null="true")
     repeatFrequency = models.CharField(max_length=100, null="true")
     repeatDays = models.CharField(max_length=100, null="true")
     duration = models.DurationField(null="true")
+    booked = models.BooleanField(default="false")
 
 
-# many VideoService to many Subjects
-class VideoServiceSubjects(models.Model):
-    videoServiceID = models.ForeignKey(VideoService, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+# many Teacher to many Subjects
+class TeachesSubjects(models.Model):
+    teacherID = models.ForeignKey(User, on_delete=models.CASCADE, null="true")
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null="true")
 
 
 # many NoteSet to one User
@@ -68,7 +69,7 @@ class NoteSet(OwnedModel):
     dateAdded = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
-    videoServiceID = models.ForeignKey(VideoService, on_delete=models.CASCADE, null=True)
+    availabilityID = models.ForeignKey(Availability, on_delete=models.CASCADE, null=True)
 
 
 # many NoteSet to many Subjects
@@ -84,13 +85,12 @@ class NoteSetContent(models.Model):
     content = models.FileField(upload_to=get_upload_path)
 
 
+# a user books a tutoring session with a teacher
 class TutoringSession(models.Model):
     id = models.AutoField(primary_key=True)
-    tutorID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tutor_session_set')
-    learnerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learner_session_set')
-    videoServiceID = models.ForeignKey(VideoService, on_delete=models.CASCADE, null=True)
-    dateScheduled = models.DateTimeField(null="true")
-    duration = models.DurationField(null="true")
+    tutorID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tutorID')
+    learnerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learnerID')
+    availabilityID = models.ForeignKey(Availability, on_delete=models.CASCADE, null=True)
 
 
 class Event(models.Model):

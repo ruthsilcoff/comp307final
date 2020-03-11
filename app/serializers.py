@@ -1,21 +1,19 @@
 from rest_framework import serializers
 
 from . import models
-from .models import User
-from .models import Subject
-from .models import VideoService
-from .models import VideoServiceSubjects
-from .models import NoteSet
-from .models import NoteSetSubjects
-from .models import NoteSetContent
-from .models import TutoringSession
-from .models import Event
-from .models import UserAttendEvent
+from .models import User, Subject, Availability, TeachesSubjects, NoteSet, \
+    NoteSetSubjects, NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
+        fields = '__all__'
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
         fields = '__all__'
 
 
@@ -25,19 +23,19 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class VideoServiceSerializer(serializers.ModelSerializer):
+class AvailabilitySerializer(serializers.ModelSerializer):
     userID = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
 
     class Meta:
-        model = VideoService
+        model = Availability
         fields = '__all__'
 
 
-class VideoServiceSubjectsSerializer(serializers.ModelSerializer):
+class TeachesSubjectsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VideoServiceSubjects
+        model = TeachesSubjects
         fields = '__all__'
 
 

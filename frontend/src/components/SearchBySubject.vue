@@ -33,7 +33,7 @@
               <v-btn
                 large
                 depressed
-                color="cyan"
+                color="primary"
                 :value="false"
               >
                 <v-icon>mdi-arrow-up</v-icon>
@@ -41,7 +41,7 @@
               <v-btn
                 large
                 depressed
-                color="cyan"
+                color="primary"
                 :value="true"
               >
                 <v-icon>mdi-arrow-down</v-icon>

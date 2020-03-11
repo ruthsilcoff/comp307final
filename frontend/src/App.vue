@@ -2,10 +2,10 @@
   <v-app>
     <Header v-if="page === 'notLoggedIn' || page === 'signUpPage' || page === 'logInPage'" :onHomePage="onHomePage"
           :onSignUp="goToSignUp" :onLogIn="goToLogIn"/>
-    <profileHeader v-if="page === 'loggedIn' || page ==='Calendar'" :onHomePage="onHomePage" :calendar="calendar" :profile="profile" />
+    <profileHeader v-if="page === 'loggedIn' || page === 'AddAvailability' || page ==='Calendar' || page === 'ProfilePage'" :onHomePage="onHomePage" :calendar="calendar" :profile="profile" :logOut="logOut" />
 
     <v-content v-if="page === 'signUpPage'">
-      <SignUp :onSuccessfulSignUp="onSuccessfulSignUp"/>
+      <SignUp :onLoginSuccess="onLoginSuccess"/>
     </v-content>
 
     <v-content v-if="page === 'logInPage'">
@@ -26,12 +26,27 @@
     </v-content>
 
     <v-content v-if="page === 'loggedIn'" justify="center">
-      <userHomePage/>
+      <v-btn text large v-on:click="AddAvailability">
+            AddAvailability
+      </v-btn>
+    </v-content>
+
+    <v-content v-if="page === 'AddAvailability'">
+      <NewAvailability/>
     </v-content>
 
     <v-content v-if="page === 'CalendarPage'" justify="center">
       <Calendar/>
     </v-content>
+
+    <v-footer>
+      <v-switch
+        v-model="$vuetify.theme.dark"
+        hide-details
+        inset
+        label="Dark theme"
+      ></v-switch>
+    </v-footer>
 
   </v-app>
 </template>
@@ -47,6 +62,7 @@ import profileHeader from "./components/profileHeader"
 import userHomePage from "./components/userHomePage"
 import Calendar from "./components/Calendar"
 import ProfilePage from "./components/ProfilePage"
+import NewAvailability from "./components/NewAvailability"
 
 
 export default {
@@ -59,9 +75,9 @@ export default {
     welcomePage,
     whyItWorks,
     profileHeader,
-    userHomePage,
     Calendar,
     ProfilePage,
+    NewAvailability,
   },
 
   mounted() {
@@ -75,6 +91,7 @@ export default {
         },
         error => Promise.reject(error)
     )
+    this.checkLogIn()
   },
 
   data: () => ({
@@ -84,12 +101,7 @@ export default {
 
   methods: {
     onHomePage: function () {
-      // if the user is logged in
-      if (this.page === 'notLoggedIn') {
-        this.page = 'loggedIn';
-      } else {
-        this.page = 'notLoggedIn'
-      }
+      this.checkLogIn()
     },
 
     profile: function () {
@@ -105,29 +117,42 @@ export default {
     },
 
     onLoginSuccess: function (usernameInput) {
-      axios.get('/api/user/', {
-        'params': {
-          'username': usernameInput
-        }
-      })
+      this.page = 'loggedIn'
+      axios.get('/api/user/current/')
         .then((response) => {
 					console.log(response.data)
           this.userData = response.data
           this.page = 'loggedIn'
+          this.testStatus = 2
 				})
 				.catch((err) => {
-					console.error(err.response.data)
+					console.error(err.response)
 				})
 
     },
 
-    onSuccessfulSignUp: function () {
-      this.page = 'logInPage'
+    logOut: function () {
+      localStorage.removeItem('token')
+      this.page = 'notLoggedIn'
+    },
+
+    checkLogIn: function () {
+      if (localStorage.getItem('token')) {
+        this.onLoginSuccess()
+      }
+      else {
+        this.page = 'notLoggedIn'
+      }
     },
 
     calendar: function () {
       this.page = 'CalendarPage'
     },
+
+    AddAvailability: function () {
+      this.page = 'AddAvailability'
+    },
+
   }
 
 };

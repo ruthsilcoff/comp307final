@@ -13,14 +13,18 @@
 
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
+import axios from "axios"
 
 export default {
   name: 'App',
+	props: ['events'],
 
   components: { VueCal },
 
+	mounted() {
+	},
+
   data: () => ({
-		events: [],
 	}),
 
 	methods: {

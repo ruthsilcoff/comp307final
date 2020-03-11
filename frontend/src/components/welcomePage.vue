@@ -2,8 +2,8 @@
   <v-app style="margin-top:100px; height:600px;">
 		<v-row>
 			<v-img
-				src="../assets/peopleLearning.png"
-				lazy-src="../assets/peopleLearning.png"
+				src="../assets/peopleStudying.png"
+				lazy-src="../assets/peopleStudying.png"
 				aspect-ratio="1"
 				class="grey lighten-2"
 				max-width="500"
@@ -48,7 +48,7 @@ export default {
 							this.testStatus = 1
 						})
 						.catch((err) => {
-							console.error(err.response.data)
+							console.error(err.response)
 							this.testStatus = 2
 						})
 			},

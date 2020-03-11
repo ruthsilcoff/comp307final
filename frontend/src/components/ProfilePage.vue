@@ -4,6 +4,9 @@
 			<v-container>
 				<v-card>
 					<v-card-text>
+						<h1>{{ userData.first_name }}</h1>
+						<h1> </h1>
+						<h1>{{ userData.last_name }}</h1>
 						<v-row justify="center">
 							<v-avatar size="30px">
 								<img
@@ -11,7 +14,6 @@
 									alt="Marie"
 								>
 							</v-avatar>
-							<h1>{{ userData.get_full_name }}</h1>
 							<ul>
 								<li>Username: {{ userData.username }}</li>
 								<li>Email: {{ userData.email }}</li>
@@ -26,12 +28,14 @@
 
 <script>
 
+import axios from "axios"
+
 export default {
   name: 'App',
 	props: ['userData'],
 
 	mounted() {
-    this.run()
+		this.getProfileData()
   },
 
   components: {
@@ -39,12 +43,22 @@ export default {
 
   data: () => ({
 		events: [],
+		profileData: {},
 	}),
 
 	methods: {
-			run: function () {
-				console.log(this.userData)
-			}
+		getProfileData: function () {
+			console.log("user ID is")
+			console.log(this.userData.id)
+			axios.get('/api/profile/' + this.userData.id)
+        .then((response) => {
+					console.log(response.data)
+          this.profileData = response.data
+				})
+				.catch((err) => {
+					console.error(err.response.data)
+				})
+		}
   }
 };
 </script>

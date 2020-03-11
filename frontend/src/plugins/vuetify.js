@@ -3,17 +3,37 @@ import Vuetify from 'vuetify/lib';
 import GSignInButton from 'vue-google-signin-button'
 Vue.use(GSignInButton);
 
-Vue.use(Vuetify);
+Vue.use(Vuetify, {
+	options: {
+    customProperties: true
+  }
+});
 
 export default new Vuetify({
 	theme: {
 		themes: {
 			light: {
-				primary: '#00ffff',
-				secondary: '#003f3f',
-				accent: '#008989',
-				error: '#b71c1c',
+				primary: '#00CCFF',
+				other: '#006e99',
+				secondary: '#424242',
+				accent: '#82B1FF',
+				error: '#FF5252',
+				info: '#2196F3',
+				success: '#4CAF50',
+				warning: '#FFC107',
+				extra: '#004780',
 			},
+			dark: {
+				primary: '#00a3cc',
+				other: '#006e99',
+				secondary: '#424242',
+				accent: '#82B1FF',
+				error: '#FF5252',
+				info: '#2196F3',
+				success: '#4CAF50',
+				warning: '#FFC107',
+				extra: '#004780',
+			}
 		},
 	}
 });
