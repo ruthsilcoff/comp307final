@@ -13,11 +13,15 @@
     </v-content>
 
     <v-content v-if="page === 'ProfilePage'">
-      <ProfilePage :isViewing="isViewing" :userData="userData"/>
+      <ProfilePage :onRequestLesson="onRequestLesson" :isViewing="isViewing" :userData="userData"/>
     </v-content>
 
     <v-content v-if="page === 'ViewingProfilePage'">
-      <ProfilePage :isViewing="isViewing" :userData="viewingUser"/>
+      <ProfilePage :onRequestLesson="onRequestLesson" :isViewing="isViewing" :userData="userData"/>
+    </v-content>
+
+    <v-content v-if="page === 'RequestLesson'">
+      <BookLesson :lessonIDinput="requestLessonID"/>
     </v-content>
 
     <v-content v-if="loggedIn === false && page === 'homePage'" justify="center">
@@ -59,10 +63,10 @@ import LogIn from "./components/LogIn"
 import welcomePage from "./components/welcomePage"
 import whyItWorks from "./components/whyItWorks"
 import profileHeader from "./components/profileHeader"
-import userHomePage from "./components/userHomePage"
 import LargeCalendar from "./components/LargeCalendar"
 import ProfilePage from "./components/ProfilePage"
 import NewAvailability from "./components/NewAvailability"
+import BookLesson from "./components/BookLesson"
 
 
 export default {
@@ -78,6 +82,7 @@ export default {
     LargeCalendar,
     ProfilePage,
     NewAvailability,
+    BookLesson,
   },
 
   mounted() {
@@ -103,6 +108,7 @@ export default {
     viewingUser: {},
     isViewing: false,
     tabNumber: 0,
+    requestLessonID: null,
   }),
 
   methods: {
@@ -184,6 +190,11 @@ export default {
     onLearnerSignUp: function() {
       this.tabNumber = 0
       this.page = 'signUpPage'
+    },
+
+    onRequestLesson: function(item) {
+      this.requestLessonID = item.id
+      this.page = 'RequestLesson'
     },
 
   }

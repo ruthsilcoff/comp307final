@@ -1,5 +1,5 @@
 <template>
-<v-content>
+<v-container fluid>
   <v-tabs
     v-model="tab"
     background-color="transparent"
@@ -27,7 +27,7 @@
       <ViewEvents/>
     </v-tab-item>
   </v-tabs-items>
-</v-content>
+</v-container>
 </template>
 
 <script>
@@ -48,7 +48,7 @@
 			noteSets: [],
     }),
 
-		props: ['userData'],
+		props: ['userData', 'onRequestLesson'],
 
     components: {
       ViewAvails,

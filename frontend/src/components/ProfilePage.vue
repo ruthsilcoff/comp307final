@@ -1,41 +1,39 @@
 <template>
 	<v-app>
-		<v-content style="margin: 0; padding: 0;">
+		<v-container style="margin: 0; padding: 0;">
 			<v-content align="center" v-if="isTeacher === true" style="margin: 0; padding: 0;">
 				<h1>Teacher: {{ userData.first_name }} {{ userData.last_name }}</h1>
 			</v-content>
 			<v-content align="center" v-if="isTeacher === false" style="margin: 0; padding: 0;">
 				<h1>Student: {{ userData.first_name }} {{ userData.last_name }}</h1>
 			</v-content>
-			<v-row>
+			<v-row >
 				<v-col style="margin-right:0; padding: 0">
-					<v-card width="400px" style="margin: 0; padding: 0;">
-						<v-card-title>
-							<v-row>
-								<v-avatar size="100px" v-if="avatarInput !== ''">
-									<img
-										src = avatarInput
-										alt = "C"
-									>
-								</v-avatar>
-								<v-avatar color=red size="100px" v-if="avatarInput === ''">
-									<span class="white--text headline">C</span>
-								</v-avatar>
-								<v-content v-if="editingProfile === true">
-									<v-file-input
-										label="Change avatar"
-										filled
-										prepend-icon="mdi-camera"
-										v-model="avatarInput"
-									></v-file-input>
-								</v-content>
-							</v-row>
+					<v-card width="200px" style="margin: 0; padding: 0;">
+						<v-card-title >
+							<v-avatar size="100px" v-if="avatarInput === ''">
+								<img
+									src = avatarInput
+									alt = "C"
+								>
+							</v-avatar>
+							<v-avatar color=primary size="100px" v-if="avatarInput !== ''">
+								<span class="white--text headline">C</span>
+							</v-avatar>
+							<v-content v-if="editingProfile === true">
+								<v-file-input
+									label="Change avatar"
+									filled
+									prepend-icon="mdi-camera"
+									v-model="avatarInput"
+								></v-file-input>
+							</v-content>
 						</v-card-title>
 						<v-card-text>
 							<h3>{{ userData.username }}</h3>
 						</v-card-text>
 					</v-card>
-					<v-card width="400px">
+					<v-card width="200px">
 						<v-card-text>
 							<v-content v-if="editingProfile === true" style="margin: 0; padding: 0;">
 									<EditProfile :avatarInput="avatarInput" :cancelEdit="cancelEdit" :onSuccessfulEdit="onSuccessfulEdit" :userData="userData" :profileData="profileData" :editingProfile="editingProfile"/>
@@ -46,7 +44,7 @@
 							</v-content>
 						</v-card-text>
 					</v-card>
-					<v-card width="400px">
+					<v-card width="200px">
 						<v-card-text>
 							<v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">
 								<h3 style="margin: 0; padding: 0;" v-if="profileData.country !== '' && profileData.country !== null">
@@ -63,16 +61,16 @@
 						</v-card-text>
 					</v-card>
 				</v-col>
-				<v-col style="margin-top: 0; padding:0">
-					<v-content style="margin: 0; padding:0" v-if="this.isTeacher === true">
+				<v-col align="center" style="margin-top: 0; padding:0">
+					<v-container style="margin: 0; padding:0" v-if="this.isTeacher === true">
 						<TeacherProfileTabs/>
-					</v-content>
+					</v-container>
 					<v-content style="margin: 0; padding:0" v-if="this.isTeacher === false">
 						<RegularProfileTabs/>
 					</v-content>
 				</v-col>
 			</v-row>
-		</v-content>
+		</v-container>
 	</v-app>
 </template>
 
@@ -84,7 +82,7 @@ import TeacherProfileTabs from "./TeacherProfileTabs"
 import RegularProfileTabs from "./RegularProfileTabs"
 
 export default {
-	props: ['userData', 'isViewing'],
+	props: ['userData', 'isViewing', 'onRequestLesson'],
 
 	mounted() {
 		this.getProfileData()

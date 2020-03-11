@@ -29,8 +29,8 @@
                 <h4>{{item.start}}</h4>
               </v-card-text>
 
-              <v-btn color="success" text large v-on:click="bookLesson(item)">
-                    Request This Lesson!
+              <v-btn color="success" text v-on:click="bookLesson(item)">
+                    Request
               </v-btn>
             </v-card>
           </v-col>
@@ -116,7 +116,7 @@
 			],
 		}),
 
-    props: ['availabilities', 'userData'],
+    props: ['availabilities', 'userData', 'onRequestLesson'],
 
 		computed: {
       numberOfPages () {
@@ -139,14 +139,7 @@
       },
 
       bookLesson (item) {
-        let index = this.availabilities.indexOf(item)
-        axios.post('/api/tutoringSession/', {tutorID:this.userData.id, availabilityID:item.id})
-        .then((response) => {
-          this.availabilities[index].booked = true
-        })
-        .catch((err) => {
-          console.error(err.response.data);
-        })
+        this.onRequestLesson(item)
       }
     },
 

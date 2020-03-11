@@ -143,19 +143,14 @@
               </v-menu>
             </v-content>
 
-            <v-btn class="mx-2" fab dark color="primary" v-on:click="addAll()">
+            <v-btn class="mx-2" fab dark color="info" v-on:click="addAll()">
               <v-icon dark>mdi-plus</v-icon>
             </v-btn>
 
           </div>
-        </v-col>
-        <v-col>
-          <v-content style="margin:0">
-            <Calendar :events="availabilities"/>
-          </v-content>
-          <v-card max-width="1000" class="mx-auto">
-            <v-toolbar color="primary" dark>
-              <v-toolbar-title>Availabilities</v-toolbar-title>
+          <v-card style="margin-top:40px" max-width="1000" class="mx-auto">
+            <v-toolbar color="info" dark>
+              <v-toolbar-title>My Availabilities</v-toolbar-title>
             </v-toolbar>
             <v-list>
             <v-list-item>
@@ -190,6 +185,14 @@
               </v-list-item>
             </v-list>
           </v-card>
+        </v-col>
+        <v-col>
+          <v-content style="margin:0">
+              <v-toolbar color="info" dark>
+                <v-toolbar-title>My Calendar</v-toolbar-title>
+              </v-toolbar>
+            <Calendar :events="availabilities"/>
+          </v-content>
         </v-col>
       </v-row>
     </v-container>
