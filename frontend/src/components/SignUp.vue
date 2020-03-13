@@ -69,9 +69,13 @@ import axios from "axios"
 
 export default {
 	name: 'App',
-	props: ['onLoginSuccess', 'tabNumber'],
+	props: ['onLoginSuccess', 'initialTabNumber'],
 
 	components: {},
+
+	mounted() {
+		this.initializeTabNumber()
+	},
 
 	data: () => ({
 		fNameInput: '',
@@ -81,6 +85,7 @@ export default {
 		is_superuser: false,
 		emailInput: '',
 		userData: {},
+		tabNumber: null,
 	}),
 
 	methods: {
@@ -152,6 +157,10 @@ export default {
         console.error(err.response.data);
       })
     },
+
+		initializeTabNumber: function () {
+			this.tabNumber = this.initialTabNumber
+		},
 
 	},
 

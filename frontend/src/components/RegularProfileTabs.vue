@@ -17,7 +17,7 @@
   <v-tabs-items v-model="tab">
     <v-tab-item>
       <v-container max-width="200px">
-        <ViewUpcomingLessons :userData="userData" :availabilities="availabilities"/>
+        <ViewUpcomingLessons :userData="userData"/>
       </v-container>
     </v-tab-item>
     <v-tab-item>

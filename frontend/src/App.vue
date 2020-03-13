@@ -1,41 +1,57 @@
 <template>
   <v-app>
-    <Header v-if="loggedIn === false && (page === 'homePage' || page === 'signUpPage' || page === 'logInPage' || age ==='ViewingProfilePage')" :onHomePage="onHomePage"
+    <Header v-if="loggedIn === false && (page === 'homePage' || page === 'ViewAllUsersPage' || page === 'ViewAllTeachersPage' || page === 'signUpPage' || page === 'logInPage' || age ==='ViewingProfilePage')" :onHomePage="onHomePage"
           :onSignUp="goToSignUp" :onLogIn="goToLogIn"/>
-    <profileHeader v-if="loggedIn === true && (page === 'homePage' || page ==='CalendarPage' || page ==='ProfilePage' || page === 'AddAvailability' || page ==='ViewingProfilePage')" :onCalendar="onCalendar" :onHomePage="onHomePage" :logOut="logOut" :profile="profile"/>
+    <profileHeader v-if="loggedIn === true && (page === 'homePage' || page === 'ViewAllUsersPage' || page === 'ViewAllTeachersPage' || page ==='CalendarPage' || page ==='ProfilePage' || page === 'AddAvailability' || page ==='ViewingProfilePage')" :onCalendar="onCalendar" :onHomePage="onHomePage" :logOut="logOut" :profile="profile"/>
+
+    <!-- This is the user home page that shows when you're logged in -->
+    <v-content v-if="loggedIn === true && page === 'homePage'">
+      <v-btn large v-on:click="viewAllTeachers">
+          View All Teachers
+      </v-btn>
+      <v-btn large v-on:click="viewAllUsers">
+          View All Users
+      </v-btn>
+      <v-content v-if="tab === 1">
+        <ViewTeachers  :goToProfileOf="goToProfileOf"/>
+      </v-content>
+      <v-content v-if="tab === 2">
+        <ViewAllUsers :goToProfileOf="goToProfileOf"/>
+      </v-content>
+
+
+    </v-content>
+
+    <!-- Home page when you're not logged in -->
+    <v-content v-if="loggedIn === false && page === 'homePage'" justify="center">
+      <welcomePage :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
+      <whyItWorks :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
+    </v-content>
 
     <v-content v-if="page === 'signUpPage'">
-      <SignUp :tabNumber="tabNumber" :onLoginSuccess="onLoginSuccess"/>
+      <SignUp :initialTabNumber="tabNumber" :onLoginSuccess="onLoginSuccess"/>
     </v-content>
 
     <v-content v-if="page === 'logInPage'">
       <LogIn :onLoginSuccess="onLoginSuccess"/>
     </v-content>
 
+    <!-- Your own profile -->
     <v-content v-if="page === 'ProfilePage'">
-      <ProfilePage :onRequestLesson="onRequestLesson" :isViewing="isViewing" :userData="userData"/>
+      <ProfilePage :AddAvailability="AddAvailability" :onRequestLesson="onRequestLesson" :isViewing="false" :userData="userData"/>
     </v-content>
 
+    <!-- Someone else's profile -->
     <v-content v-if="page === 'ViewingProfilePage'">
-      <ProfilePage :onRequestLesson="onRequestLesson" :isViewing="isViewing" :userData="userData"/>
+      <ProfilePage :AddAvailability="AddAvailability" :onRequestLesson="onRequestLesson" :isViewing="true" :userData="viewingUser"/>
     </v-content>
 
+    <!-- Book a lesson with a teacher -->
     <v-content v-if="page === 'RequestLesson'">
       <BookLesson :lessonIDinput="requestLessonID"/>
     </v-content>
 
-    <v-content v-if="loggedIn === false && page === 'homePage'" justify="center">
-      <welcomePage :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
-      <whyItWorks :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
-    </v-content>
-
-    <v-content v-if="loggedIn === true && page === 'homePage'">
-      <v-btn text large v-on:click="AddAvailability">
-            AddAvailability
-      </v-btn>
-      <ViewTeachers :goToProfileOf="goToProfileOf"/>
-    </v-content>
-
+    <!-- This is for teachers to add new times that they are available to teach -->
     <v-content v-if="page === 'AddAvailability'">
       <NewAvailability/>
     </v-content>
@@ -69,6 +85,7 @@ import ProfilePage from "./components/ProfilePage"
 import NewAvailability from "./components/NewAvailability"
 import BookLesson from "./components/BookLesson"
 import ViewTeachers from "./components/ViewTeachers"
+import ViewAllUsers from "./components/ViewAllUsers"
 
 
 export default {
@@ -86,6 +103,7 @@ export default {
     NewAvailability,
     BookLesson,
     ViewTeachers,
+    ViewAllUsers,
   },
 
   mounted() {
@@ -112,6 +130,7 @@ export default {
     isViewing: false,
     tabNumber: 0,
     requestLessonID: null,
+    tab: 1,
   }),
 
   methods: {
@@ -135,7 +154,6 @@ export default {
     onLoginSuccess: function (usernameInput) {
       axios.get('/api/user/current/')
         .then((response) => {
-					console.log(response.data)
           this.userData = response.data
           this.loggedIn = true
           this.page = 'homePage'
@@ -176,7 +194,6 @@ export default {
       this.viewingProfileOf = userID;
       axios.get('/api/user/' + userID + '/')
         .then((response) => {
-					console.log(response.data)
           this.viewingUser = response.data
           this.page = 'ViewingProfilePage'
 				})
@@ -198,6 +215,16 @@ export default {
     onRequestLesson: function(item) {
       this.requestLessonID = item.id
       this.page = 'RequestLesson'
+    },
+
+    viewAllTeachers: function () {
+      //this.page = 'ViewAllTeachersPage'
+      this.tab = 1
+    },
+
+    viewAllUsers: function () {
+      //this.page = 'ViewAllUsersPage'
+      this.tab = 2
     },
 
   }

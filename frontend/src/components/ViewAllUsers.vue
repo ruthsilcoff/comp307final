@@ -1,8 +1,8 @@
 <template>
   <v-container max-width="200px">
-    <h1>View All Teachers:</h1>
+    <h1>View All Users:</h1>
     <v-data-iterator
-      :items="teachers"
+      :items="userProfileList"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -20,11 +20,15 @@
             lg="4"
           >
             <v-card>
-              <v-card-title class="subheading font-weight-bold">{{ item.first_name }} {{ item.last_name }}</v-card-title>
+              <v-card-subtitle>{{ item.first_name }} {{ item.last_name }}</v-card-subtitle>
 
-              <v-divider></v-divider>
 
               <v-card-text>
+                <h1 v-if="item.isTeacher === true">Teacher</h1>
+                <h1 v-if="item.isTeacher === false">Student</h1>
+                <h3>{{ item.bio}}</h3>
+                <h3>{{ item.country}}</h3>
+
                 <h3>Subjects:</h3>
                 <h4>(subject list)</h4>
 								<h3>Rating:</h3>
@@ -119,24 +123,14 @@
 
 		mounted() {
 			this.getUsers()
-      this.getProfileData()
 		},
 
 		computed: {
       numberOfPages () {
-        return Math.ceil(this.teachers.length / this.itemsPerPage)
+        return Math.ceil(this.userProfileList.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
-      },
-      teachers () {
-        let teacherList = [];
-        for (let i=0; i<this.userProfileList.length; i++) {
-          if (this.userProfileList[i].isTeacher) {
-            teacherList.push(this.userProfileList[i])
-          }
-        }
-        return teacherList
       },
     },
 
@@ -155,17 +149,22 @@
 				axios.get('/api/user/')
         .then((response) => {
           this.users=response.data;
+          this.userProfileList=response.data;
+          this.getProfileData(response.data)
         })
         .catch((err) => {
           console.error(err.response.data);
         })
 			},
 
-      getProfileData: function () {
-        for (let i=0; i<this.users.length; i++) {
-          axios.get('/api/profile/' + this.users[i].id + "/")
+      getProfileData: function (users) {
+        for (let i=0; i<users.length; i++) {
+          axios.get('/api/profile/' + users[i].id + "/")
             .then((response) => {
-              this.userProfileList[i] = response.data
+              this.userProfileList[i].isTeacher = response.data.isTeacher
+              this.userProfileList[i].bio = response.data.bio
+              this.userProfileList[i].country = response.data.country
+              this.userProfileList[i].avatar = response.data.avatar
             })
             .catch((err) => {
               console.error(err.response.data)

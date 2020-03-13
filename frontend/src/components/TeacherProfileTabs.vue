@@ -17,6 +17,9 @@
   <v-tabs-items v-model="tab">
     <v-tab-item>
       <v-container max-width="200px">
+        <v-btn large v-on:click="AddAvailability">
+              AddAvailability
+        </v-btn>
         <ViewAvails :userData="userData" :availabilities="availabilities"/>
       </v-container>
     </v-tab-item>
@@ -48,7 +51,7 @@
 			noteSets: [],
     }),
 
-		props: ['userData', 'onRequestLesson'],
+		props: ['userData', 'onRequestLesson', 'AddAvailability'],
 
     components: {
       ViewAvails,
