@@ -18,9 +18,9 @@
 
 <script>
 import axios from "axios"
-import NewNoteSet from "../components/NewNoteSet"
-import SearchBySubject from "../components/SearchBySubject"
-import file from "../components/file"
+import NewNoteSet from "../NewNoteSet"
+import SearchBySubject from "../SearchBySubject"
+import file from "../file"
 
 export default {
   name: 'App',

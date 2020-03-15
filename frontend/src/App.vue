@@ -13,7 +13,7 @@
           View All Users
       </v-btn>
       <v-content v-if="tab === 1">
-        <ViewTeachers  :goToProfileOf="goToProfileOf"/>
+        <ViewTeachers :goToProfileOf="goToProfileOf"/>
       </v-content>
       <v-content v-if="tab === 2">
         <ViewAllUsers :goToProfileOf="goToProfileOf"/>
@@ -74,18 +74,18 @@
 
 <script>
 import axios from "axios"
-import Header from "./components/Header"
-import SignUp from "./components/SignUp"
-import LogIn from "./components/LogIn"
-import welcomePage from "./components/welcomePage"
-import whyItWorks from "./components/whyItWorks"
-import profileHeader from "./components/profileHeader"
-import LargeCalendar from "./components/LargeCalendar"
-import ProfilePage from "./components/ProfilePage"
-import NewAvailability from "./components/NewAvailability"
+import Header from "./components/Basic-Site-Stuff/Header"
+import SignUp from "./components/Basic-Site-Stuff/SignUp"
+import LogIn from "./components/Basic-Site-Stuff/LogIn"
+import welcomePage from "./components/Basic-Site-Stuff/welcomePage"
+import whyItWorks from "./components/Basic-Site-Stuff/whyItWorks"
+import profileHeader from "./components/Basic-Site-Stuff/profileHeader"
+import LargeCalendar from "./components/Calendars/LargeCalendar"
+import ProfilePage from "./components/Profile-Stuff/ProfilePage"
+import NewAvailability from "./components/Data-Iterators/NewAvailability"
 import BookLesson from "./components/BookLesson"
-import ViewTeachers from "./components/ViewTeachers"
-import ViewAllUsers from "./components/ViewAllUsers"
+import ViewTeachers from "./components/Data-Iterators/ViewTeachers"
+import ViewAllUsers from "./components/Data-Iterators/ViewAllUsers"
 
 
 export default {

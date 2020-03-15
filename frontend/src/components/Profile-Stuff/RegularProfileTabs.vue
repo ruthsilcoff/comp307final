@@ -33,8 +33,8 @@
 <script>
   import axios from "axios"
   import ViewUpcomingLessons from "./ViewUpcomingLessons"
-  import ViewTeachers from "./ViewTeachers"
-  import ViewEvents from "./ViewEvents"
+  import ViewTeachers from "../Data-Iterators/ViewTeachers"
+  import ViewEvents from "../Data-Iterators/ViewEvents"
 
 	export default {
     data: () => ({

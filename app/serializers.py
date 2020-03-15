@@ -24,10 +24,6 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 
 class AvailabilitySerializer(serializers.ModelSerializer):
-    userID = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
-
     class Meta:
         model = Availability
         fields = '__all__'
@@ -46,10 +42,6 @@ class NoteSetSerializer(serializers.ModelSerializer):
 
 
 class NoteSetSubjectsSerializer(serializers.ModelSerializer):
-    userID = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
-
     class Meta:
         model = NoteSetSubjects
         fields = '__all__'

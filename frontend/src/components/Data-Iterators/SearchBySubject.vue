@@ -141,7 +141,7 @@
 
 <script>
 import axios from "axios"
-import Header from "./Header"
+import Header from "../Basic-Site-Stuff/Header"
 
 export default {
   name: 'App',

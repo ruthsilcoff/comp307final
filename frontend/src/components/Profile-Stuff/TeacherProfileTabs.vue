@@ -36,8 +36,8 @@
 <script>
   import axios from "axios"
   import ViewAvails from "./ViewAvails"
-  import ViewNoteSets from "./ViewNoteSets"
-  import ViewEvents from "./ViewEvents"
+  import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
+  import ViewEvents from "../Data-Iterators/ViewEvents"
 
 	export default {
     data: () => ({
