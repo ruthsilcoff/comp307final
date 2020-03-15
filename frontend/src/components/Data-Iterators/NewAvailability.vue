@@ -201,10 +201,9 @@
 
 <script>
 import axios from "axios"
-import Calendar from "./Calendar"
+import Calendar from "../Calendars/Calendar"
 
 export default {
-  name: 'App',
 
   mounted() {
     this.getAvailabilities()
@@ -249,6 +248,7 @@ export default {
     getAvailabilities: function() {
       axios.get('/api/availability/')
         .then((response) => {
+          console.log(response.data)
           this.availabilities=response.data;
         })
       .catch((err) => {

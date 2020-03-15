@@ -69,9 +69,13 @@ import axios from "axios"
 
 export default {
 	name: 'App',
-	props: ['onLoginSuccess', 'tabNumber'],
+	props: ['onLoginSuccess', 'initialTabNumber'],
 
 	components: {},
+
+	mounted() {
+		this.initializeTabNumber()
+	},
 
 	data: () => ({
 		fNameInput: '',
@@ -81,6 +85,7 @@ export default {
 		is_superuser: false,
 		emailInput: '',
 		userData: {},
+		tabNumber: null,
 	}),
 
 	methods: {
@@ -91,6 +96,7 @@ export default {
 				email: this.emailInput
 			})
 				.then((response) => {
+					console.log("Welcome to Debate Academy, a great place to learn")
 					this.logIn(false)
 				})
 				.catch((err) => {
@@ -107,6 +113,7 @@ export default {
 				email: this.emailInput
 			})
 				.then((response) => {
+					console.log("Welcome to Debate Academy, good luck with your new tutoring career!")
 					this.logIn(true)
 				})
 				.catch((err) => {
@@ -153,6 +160,10 @@ export default {
       })
     },
 
+		initializeTabNumber: function () {
+			this.tabNumber = this.initialTabNumber
+		},
+
 	},
 
 };
@@ -170,7 +181,7 @@ export default {
 }
 
 #signUpPage {
-	background: url('../assets/cyan.jpg');
+	background: url('../../assets/cyan.jpg');
 	background-size: cover;
 }
 

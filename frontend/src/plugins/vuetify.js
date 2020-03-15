@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 import GSignInButton from 'vue-google-signin-button'
 Vue.use(GSignInButton);
+import '@mdi/font/css/materialdesignicons.css'
 
 Vue.use(Vuetify, {
 	options: {
@@ -10,6 +11,9 @@ Vue.use(Vuetify, {
 });
 
 export default new Vuetify({
+	icons: {
+    iconfont: 'mdi', // default - only for display purposes
+  },
 	theme: {
 		themes: {
 			light: {

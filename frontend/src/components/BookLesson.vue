@@ -68,7 +68,7 @@
 
 <script>
 import axios from "axios"
-import Calendar from "./Calendar"
+import Calendar from "./Calendars/Calendar"
 
 export default {
   name: 'App',

@@ -27,7 +27,7 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, null=True, blank=True)
     country = models.CharField(max_length=30, null=True, blank=True)
     birthDate = models.DateField(null=True, blank=True)
-    avatar = models.FileField(upload_to=get_avatar_path, default='cyan.jpg', null=True, blank=True)
+    avatar = models.FileField(upload_to=get_avatar_path, null=True, blank=True)
     isTeacher = models.BooleanField(default=False)
 
 

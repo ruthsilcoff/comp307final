@@ -63,10 +63,10 @@
 				</v-col>
 				<v-col align="center" style="margin-top: 0; padding:0">
 					<v-container style="margin: 0; padding:0" v-if="this.isTeacher === true">
-						<TeacherProfileTabs/>
+						<TeacherProfileTabs :AddAvailability="AddAvailability" />
 					</v-container>
 					<v-content style="margin: 0; padding:0" v-if="this.isTeacher === false">
-						<RegularProfileTabs/>
+						<RegularProfileTabs />
 					</v-content>
 				</v-col>
 			</v-row>
@@ -82,7 +82,7 @@ import TeacherProfileTabs from "./TeacherProfileTabs"
 import RegularProfileTabs from "./RegularProfileTabs"
 
 export default {
-	props: ['userData', 'isViewing', 'onRequestLesson'],
+	props: ['userData', 'isViewing', 'onRequestLesson', 'AddAvailability'],
 
 	mounted() {
 		this.getProfileData()

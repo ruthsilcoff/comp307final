@@ -17,6 +17,9 @@
   <v-tabs-items v-model="tab">
     <v-tab-item>
       <v-container max-width="200px">
+        <v-btn large v-on:click="AddAvailability">
+              AddAvailability
+        </v-btn>
         <ViewAvails :userData="userData" :availabilities="availabilities"/>
       </v-container>
     </v-tab-item>
@@ -33,8 +36,8 @@
 <script>
   import axios from "axios"
   import ViewAvails from "./ViewAvails"
-  import ViewNoteSets from "./ViewNoteSets"
-  import ViewEvents from "./ViewEvents"
+  import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
+  import ViewEvents from "../Data-Iterators/ViewEvents"
 
 	export default {
     data: () => ({
@@ -48,7 +51,7 @@
 			noteSets: [],
     }),
 
-		props: ['userData', 'onRequestLesson'],
+		props: ['userData', 'onRequestLesson', 'AddAvailability'],
 
     components: {
       ViewAvails,

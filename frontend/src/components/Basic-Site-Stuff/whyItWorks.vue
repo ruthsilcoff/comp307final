@@ -8,8 +8,8 @@
 					<v-card-text align="center" >
 						<v-col  cols="10" md="10" >
 							<v-img
-							src="../assets/interactiveLearning.png"
-							lazy-src="../assets/interactiveLearning.png"
+							src="../../assets/interactiveLearning.png"
+							lazy-src="../../assets/interactiveLearning.png"
 							aspect-ratio="1"
 							class="grey lighten-2"
 							max-width="100"
@@ -32,8 +32,8 @@
 					<v-card-text align="center" >
 						<v-col  cols="10" md="10" >
 							<v-img
-							src="../assets/trustedContent.jpg"
-							lazy-src="../assets/trustedContent.jpg"
+							src="../../assets/trustedContent.jpg"
+							lazy-src="../../assets/trustedContent.jpg"
 							aspect-ratio="1"
 							class="grey lighten-2"
 							max-width="100"
@@ -55,8 +55,8 @@
 					<v-card-text align="center" >
 						<v-col  cols="10" md="10" >
 							<v-img
-							src="../assets/inclusive.jpg"
-							lazy-src="../assets/inclusive.jpg"
+							src="../../assets/inclusive.jpg"
+							lazy-src="../../assets/inclusive.jpg"
 							aspect-ratio="1"
 							class="grey lighten-2"
 							max-width="100"

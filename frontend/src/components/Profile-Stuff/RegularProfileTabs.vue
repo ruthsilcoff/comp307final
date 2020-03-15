@@ -17,7 +17,7 @@
   <v-tabs-items v-model="tab">
     <v-tab-item>
       <v-container max-width="200px">
-        <ViewUpcomingLessons :userData="userData" :availabilities="availabilities"/>
+        <ViewUpcomingLessons :userData="userData"/>
       </v-container>
     </v-tab-item>
     <v-tab-item>
@@ -33,8 +33,8 @@
 <script>
   import axios from "axios"
   import ViewUpcomingLessons from "./ViewUpcomingLessons"
-  import ViewTeachers from "./ViewTeachers"
-  import ViewEvents from "./ViewEvents"
+  import ViewTeachers from "../Data-Iterators/ViewTeachers"
+  import ViewEvents from "../Data-Iterators/ViewEvents"
 
 	export default {
     data: () => ({
