@@ -148,8 +148,8 @@
 			getUsers() {
 				axios.get('/api/user/')
         .then((response) => {
-          this.users=response.data;
-          this.userProfileList=response.data;
+          this.users=response.data
+          this.userProfileList=response.data
           this.getProfileData(response.data)
         })
         .catch((err) => {
@@ -159,7 +159,7 @@
 
       getProfileData: function (users) {
         for (let i=0; i<users.length; i++) {
-          axios.get('/api/profile/' + users[i].id + "/")
+          axios.get('/api/profile/?user=' + users[i].id + "/")
             .then((response) => {
               this.userProfileList[i].isTeacher = response.data.isTeacher
               this.userProfileList[i].bio = response.data.bio
