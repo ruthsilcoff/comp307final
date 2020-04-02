@@ -18,12 +18,12 @@
 			<v-col class="text-center" style="margin-top:150px; margin-bottom:0; padding:0; height:300px;">
 				<h1>Welcome to Debate Academy.</h1>
 				<h2> Whether you're a student or a teacher... this is the place for you!</h2>
-					<v-btn x-large color="primary" v-on:click="onLearnerSignUp()">Learners</v-btn>
-					<v-btn x-large color="primary" v-on:click="onTeacherSignUp()">Teachers</v-btn>
-					<v-btn x-large :color="testStatus === 0 ? 'yellow' : testStatus === 1 ? 'green' : 'red'"
-								dark style="font-weight: bold" @click="test()">
-						TEST PERMISSIONS
-					</v-btn>
+				<router-link to="/signup">
+					<v-btn class="header-button" v-on:click="onLearnerSignUp()">Learners</v-btn>
+				</router-link>
+				<router-link to="/signup">
+					<v-btn class="header-button" v-on:click="onTeacherSignUp()">Teachers</v-btn>
+				</router-link>
 			</v-col>
 		</v-row>
 	</v-app>
@@ -31,10 +31,10 @@
 
 <script>
 import axios from "axios"
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
-	name: 'App',
-	props: ['onTeacherSignUp', 'onLearnerSignUp'],
+	props: [],
 
 	components: {},
 
@@ -43,16 +43,14 @@ export default {
 	}),
 
 	methods: {
-			test: function () {
-				axios.get('api/subject')
-						.then((response) => {
-							this.testStatus = 1
-						})
-						.catch((err) => {
-							console.error(err.response)
-							this.testStatus = 2
-						})
-			},
+		...mapActions(['setTabNumber']),
+		onTeacherSignUp: function() {
+      this.setTabNumber(1)
+    },
+
+    onLearnerSignUp: function() {
+      this.setTabNumber(0)
+    },
 	}
 }
 

@@ -14,11 +14,15 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def get_upload_path(instance, filename):
-    return 'user-' + str(instance.userID.id) + '/' + str(instance.id) + '/' + filename
+    return 'photos/user-' + str(instance.user) + '/' + filename
+
+
+def get_chat_upload_path(instance, filename):
+    return 'chatPhotos/user-' + str(instance.user) + '/' + filename
 
 
 def get_avatar_path(instance, filename):
-    return '/Avatars/user-' + str(instance.user) + '/' + filename
+    return 'avatars/user-' + str(instance.user) + '/' + filename
 
 
 # one to one relationship with user
@@ -105,5 +109,20 @@ class UserAttendEvent(models.Model):
     eventID = models.ForeignKey(Event, on_delete=models.CASCADE)
 
 
+class Chat(models.Model):
+    id = models.AutoField(primary_key=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='personWhoOwnsIt')
+    otherUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otherPerson')
+    dateCreated = models.DateTimeField(auto_now_add=True, null=True)
+
+
+class DirectMessage(models.Model):
+    id = models.AutoField(primary_key=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='me')
+    sentTo = models.ForeignKey(User, on_delete=models.CASCADE, related_name='them')
+    content = models.CharField(max_length=5000, null=True)
+    seen = models.BooleanField(default=False)
+    dateSent = models.DateTimeField(auto_now_add=True, null=True)
+    picture = models.FileField(upload_to=get_chat_upload_path)
 
 

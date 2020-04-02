@@ -77,8 +77,12 @@
 			</v-row>
 		<v-col class="text-center">
 			<h1>Sign Up Today</h1>
-			<v-btn x-large color="primary" v-on:click="onLearnerSignUp()">Learners</v-btn>
-			<v-btn x-large color="primary" v-on:click="onTeacherSignUp()">Teachers</v-btn>
+			<router-link to="/signup">
+				<v-btn class="header-button" v-on:click="onLearnerSignUp()">Learners</v-btn>
+			</router-link>
+			<router-link to="/signup">
+				<v-btn class="header-button" v-on:click="onTeacherSignUp()">Teachers</v-btn>
+			</router-link>
 		</v-col>
 	</v-app>
 </template>
@@ -86,10 +90,11 @@
 
 <script>
 import axios from "axios"
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
 	name: 'App',
-	props: ['onTeacherSignUp', 'onLearnerSignUp'],
+	props: [],
 
 	components: {},
 
@@ -97,6 +102,14 @@ export default {
 	}),
 
 	methods: {
+		...mapActions(['setTabNumber']),
+		onTeacherSignUp: function() {
+      this.setTabNumber(1)
+    },
+
+    onLearnerSignUp: function() {
+      this.setTabNumber(0)
+    },
 	}
 }
 

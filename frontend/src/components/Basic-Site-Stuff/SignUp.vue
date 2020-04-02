@@ -36,7 +36,7 @@
 											<v-text-field label="Email" v-model="emailInput" :rules="[v => !!v || 'Email is required']" required></v-text-field>
 											<v-text-field label="Username" v-model="usernameInput" :rules="[v => !!v || 'Username is required']" required></v-text-field>
 											<v-text-field label="Password" v-model="passwordInput" type="password" :rules="[v => !!v || 'Password is required']" required></v-text-field>
-											<v-btn style="font-size:20px" v-on:click="signUpLearner()">Submit</v-btn>
+											<v-btn style="font-size:20px" v-on:click="signUp(false)">Submit</v-btn>
 										</v-card-text>
 									</v-card>
 								</v-tab-item>
@@ -48,7 +48,7 @@
 											<v-text-field label="Username" v-model="usernameInput" :rules="[v => !!v || 'Username is required']" required></v-text-field>
 											<v-text-field label="Email" v-model="emailInput" :rules="[v => !!v || 'Email is required']" required></v-text-field>
 											<v-text-field label="Password" v-model="passwordInput" type="password" :rules="[v => !!v || 'Password is required']" required></v-text-field>
-											<v-btn style="font-size:20px" v-on:click="signUpTeacher()">Submit</v-btn>
+											<v-btn style="font-size:20px" v-on:click="signUp(true)">Submit</v-btn>
 										</v-card-text>
 									</v-card>
 								</v-tab-item>
@@ -64,20 +64,25 @@
 </template>
 
 <script>
-
+import {mapActions, mapGetters} from 'vuex'
 import axios from "axios"
 
 export default {
 	name: 'App',
-	props: ['onLoginSuccess', 'initialTabNumber'],
+	props: [],
 
 	components: {},
+
+	computed: {
+		...mapGetters(['initialTabNumber']),
+	},
 
 	mounted() {
 		this.initializeTabNumber()
 	},
 
 	data: () => ({
+		tabNumber: 0,
 		fNameInput: '',
 		lNameInput: '',
 		usernameInput: '',
@@ -85,84 +90,26 @@ export default {
 		is_superuser: false,
 		emailInput: '',
 		userData: {},
-		tabNumber: null,
 	}),
 
 	methods: {
-		signUpLearner: function () {
-			axios.post('/api/user/', {
-				username: this.usernameInput,
-				password: this.passwordInput,
-				email: this.emailInput
-			})
-				.then((response) => {
-					console.log("Welcome to Debate Academy, a great place to learn")
-					this.logIn(false)
-				})
-				.catch((err) => {
-					console.error(err.response);
-				})
-		},
+		...mapActions(['addUser',]),
 
-		signUpTeacher: function () {
-			axios.post('/api/user/', {
+		signUp: async function (isTeacher) {
+			let newUser = {
 				first_name: this.fNameInput,
 				last_name: this.lNameInput,
 				username: this.usernameInput,
 				password: this.passwordInput,
-				email: this.emailInput
-			})
-				.then((response) => {
-					console.log("Welcome to Debate Academy, good luck with your new tutoring career!")
-					this.logIn(true)
-				})
-				.catch((err) => {
-					console.error(err.response);
-				})
+				email: this.emailInput,
+				isTeacher: isTeacher,}
+      const response = await this.addUser(newUser)
+      await this.$router.push('/LogIn')
 		},
 
-		logIn: function (isTeacher) {
-				axios.post('/api-token-auth/', {
-					username: this.usernameInput,
-					password: this.passwordInput,
-				})
-				.then((response) => {
-						console.log('logged in')
-						localStorage.setItem('token', response.data.token)
-						this.getUserInfo(isTeacher)
-					})
-				.catch((err) => {
-						console.error(err.response)
-				})
-		},
-
-		getUserInfo: function (isTeacher) {
-			axios.get('/api/user/current/')
-        .then((response) => {
-					console.log(response.data)
-          this.userData = response.data
-					this.createUserProfile(isTeacher)
-				})
-				.catch((err) => {
-					console.error(err.response)
-				})
-		},
-
-		createUserProfile: function (isTeacher) {
-      axios.post('/api/profile/', {user: this.userData.id, isTeacher:isTeacher})
-        .then((response) => {
-					console.log('created profile!')
-					console.log(response.data)
-          this.onLoginSuccess()
-        })
-      .catch((err) => {
-        console.error(err.response.data);
-      })
-    },
-
-		initializeTabNumber: function () {
-			this.tabNumber = this.initialTabNumber
-		},
+		initializeTabNumber() {
+			this.tab = this.initializeTabNumber()
+		}
 
 	},
 

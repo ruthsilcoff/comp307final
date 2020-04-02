@@ -1,40 +1,30 @@
 <template>
   <v-app>
-    <Header v-if="loggedIn === false && (page === 'homePage' || page === 'ViewAllUsersPage' || page === 'ViewAllTeachersPage' || page === 'signUpPage' || page === 'logInPage' || age ==='ViewingProfilePage')" :onHomePage="onHomePage"
-          :onSignUp="goToSignUp" :onLogIn="goToLogIn"/>
-    <profileHeader v-if="loggedIn === true && (page === 'homePage' || page === 'ViewAllUsersPage' || page === 'ViewAllTeachersPage' || page ==='CalendarPage' || page ==='ProfilePage' || page === 'AddAvailability' || page ==='ViewingProfilePage')" :onCalendar="onCalendar" :onHomePage="onHomePage" :logOut="logOut" :profile="profile"/>
+    <Header v-if="loggedIn === false"/>
+    <profileHeader v-if="loggedIn === true"/>
 
-    <!-- This is the user home page that shows when you're logged in -->
-    <v-content v-if="loggedIn === true && page === 'homePage'">
-      <v-btn large v-on:click="viewAllTeachers">
-          View All Teachers
-      </v-btn>
-      <v-btn large v-on:click="viewAllUsers">
-          View All Users
-      </v-btn>
-      <v-content v-if="tab === 1">
-        <ViewTeachers :goToProfileOf="goToProfileOf"/>
-      </v-content>
-      <v-content v-if="tab === 2">
-        <ViewAllUsers :goToProfileOf="goToProfileOf"/>
-      </v-content>
-
-
-    </v-content>
+    <NewMessage v-if="newMessageDialog"/>
 
     <!-- Home page when you're not logged in -->
-    <v-content v-if="loggedIn === false && page === 'homePage'" justify="center">
-      <welcomePage :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
-      <whyItWorks :onLearnerSignUp="onLearnerSignUp" :onTeacherSignUp="onTeacherSignUp"/>
-    </v-content>
+   <router-view v-if="!loading" :key="$route.fullPath"></router-view>
 
-    <v-content v-if="page === 'signUpPage'">
-      <SignUp :initialTabNumber="tabNumber" :onLoginSuccess="onLoginSuccess"/>
-    </v-content>
-
-    <v-content v-if="page === 'logInPage'">
-      <LogIn :onLoginSuccess="onLoginSuccess"/>
-    </v-content>
+    <v-snackbar
+      v-model="getSnackbar"
+      bottom
+      :color="getSnackbarColor"
+      :multi-line="getSnackbarMode === 'multi-line'"
+      :timeout="timeout"
+      :vertical="getSnackbarMode === 'vertical'"
+    >
+      {{getSnackbarMessage}}
+      <v-btn
+        dark
+        text
+        @click="removeSnackbar()"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
 
     <!-- Your own profile -->
     <v-content v-if="page === 'ProfilePage'">
@@ -60,13 +50,14 @@
       <LargeCalendar/>
     </v-content>
 
-    <v-footer>
-      <v-switch
-        v-model="$vuetify.theme.dark"
-        hide-details
-        inset
-        label="Dark theme"
-      ></v-switch>
+    <v-footer app dense style="margin:0; padding:0">
+      <v-bottom-navigation color="secondary">
+        <v-card-text>
+          <v-icon >mdi-account-cowboy-hat</v-icon>
+        </v-card-text>
+        <v-spacer></v-spacer>
+        <v-switch style="margin: 0" v-model="$vuetify.theme.dark" v-on:change="changeTheme()" color="secondary" inset label="Dark theme"/>
+      </v-bottom-navigation>
     </v-footer>
 
   </v-app>
@@ -75,53 +66,59 @@
 <script>
 import axios from "axios"
 import Header from "./components/Basic-Site-Stuff/Header"
-import SignUp from "./components/Basic-Site-Stuff/SignUp"
-import LogIn from "./components/Basic-Site-Stuff/LogIn"
-import welcomePage from "./components/Basic-Site-Stuff/welcomePage"
-import whyItWorks from "./components/Basic-Site-Stuff/whyItWorks"
+import {mapGetters, mapActions} from 'vuex'
 import profileHeader from "./components/Basic-Site-Stuff/profileHeader"
 import LargeCalendar from "./components/Calendars/LargeCalendar"
 import ProfilePage from "./components/Profile-Stuff/ProfilePage"
 import NewAvailability from "./components/Data-Iterators/NewAvailability"
 import BookLesson from "./components/BookLesson"
-import ViewTeachers from "./components/Data-Iterators/ViewTeachers"
-import ViewAllUsers from "./components/Data-Iterators/ViewAllUsers"
+import NewMessage from "./components/Basic-Site-Stuff/chatStuff/NewMessage"
 
 
 export default {
-  name: 'App',
-
   components: {
     Header,
-    SignUp,
-    LogIn,
-    welcomePage,
-    whyItWorks,
     profileHeader,
     LargeCalendar,
     ProfilePage,
     NewAvailability,
     BookLesson,
-    ViewTeachers,
-    ViewAllUsers,
+    NewMessage,
   },
 
+  computed: {
+    ...mapGetters([
+      'newMessageDialog',
+      'loggedIn',
+      'getSnackbar',
+      'getSnackbarColor',
+      'getSnackbarMessage',
+      'getSnackbarMode',
+      'newMessageDialog',
+    ]),
+  },
   mounted() {
+    this.getTheme()
+  },
+
+
+  created() {
     axios.interceptors.request.use(
-        config => {
-          const token = localStorage.getItem('token')
-          if (token) {
-            config.headers['Authorization'] = 'Token ' + token
-          }
-          return config
-        },
-        error => Promise.reject(error)
+      config => {
+        const token = localStorage.getItem('token')
+        if (token) {
+          config.headers['Authorization'] = 'Token ' + token
+        }
+        return config
+      },
+      error => Promise.reject(error)
     )
     this.checkLogIn()
   },
 
   data: () => ({
-    loggedIn: false,
+    timeout: 5000,
+    loading: false,
     page: 'homePage',
     testStatus: 0,
     userData: {},
@@ -134,6 +131,40 @@ export default {
   }),
 
   methods: {
+    ...mapActions([
+      'removeSnackbar',
+      'setMessageDialog',
+      'login',
+      'logOut',
+      'setMyUser',
+      'viewingProfile',
+      'yesLoggedIn',
+      'notLoggedIn',
+    ]),
+
+    getTheme: function () {
+      let result = localStorage.getItem('theme')
+      if (result === "true") {
+        this.$vuetify.theme.dark = true
+      }
+      else if (result === "false") {
+        this.$vuetify.theme.dark = false
+      }
+      else {
+        this.$vuetify.theme.dark = false
+      }
+    },
+
+    changeTheme: function() {
+      if (this.$vuetify.theme.dark) {
+        localStorage.setItem('theme', "true")
+      }
+      else if (!this.$vuetify.theme.dark) {
+        localStorage.setItem('theme', "false")
+      }
+    },
+
+
     onHomePage: function () {
       this.checkLogIn()
     },
@@ -143,42 +174,20 @@ export default {
       this.page = 'ProfilePage'
     },
 
-    goToSignUp: function () {
-      this.page = 'signUpPage'
-    },
-
-    goToLogIn: function () {
-      this.page = 'logInPage'
-    },
-
-    onLoginSuccess: function (usernameInput) {
-      axios.get('/api/user/current/')
-        .then((response) => {
-          this.userData = response.data
-          this.loggedIn = true
-          this.page = 'homePage'
-          this.testStatus = 2
-				})
-				.catch((err) => {
-					console.error(err.response)
-				})
-
-    },
-
-    logOut: function () {
-      localStorage.removeItem('token')
-      this.loggedIn = false
-      this.page = 'homePage'
-    },
-
-    checkLogIn: function () {
+    async checkLogIn() {
       if (localStorage.getItem('token')) {
-        this.onLoginSuccess()
+        await this.yesLoggedIn()
+        const response = await axios.get('api/user/current')
+        this.setMyUser(response.data.id)
+        this.loading = false
+      } else {
+        this.notLoggedIn()
+        this.loading = false
       }
-      else {
-        this.loggedIn = false
-        this.page = 'homePage'
-      }
+    },
+
+    closeLogInSnackBar: function () {
+      this.setLoggedInSnackBar(false)
     },
 
     onCalendar: function () {
@@ -187,29 +196,6 @@ export default {
 
     AddAvailability: function () {
       this.page = 'AddAvailability'
-    },
-
-    goToProfileOf: function (userID) {
-      this.isViewing = true
-      this.viewingProfileOf = userID;
-      axios.get('/api/user/' + userID + '/')
-        .then((response) => {
-          this.viewingUser = response.data
-          this.page = 'ViewingProfilePage'
-				})
-				.catch((err) => {
-					console.error(err.response.data)
-				})
-    },
-
-    onTeacherSignUp: function() {
-      this.tabNumber = 1
-      this.page = 'signUpPage'
-    },
-
-    onLearnerSignUp: function() {
-      this.tabNumber = 0
-      this.page = 'signUpPage'
     },
 
     onRequestLesson: function(item) {

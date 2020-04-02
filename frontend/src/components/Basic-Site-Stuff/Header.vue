@@ -1,15 +1,22 @@
 <template>
     <v-app-bar app color="primary" absolute>
-        <v-btn class="headerButton" text v-on:click="onHomePage()" align="left" style="font-size: 30px; font-weight: bold">
-            Debate Academy
+      <router-link to="/">
+        <v-btn text align="left" style="font-size: 20px; font-weight: bold">
+          Debate Academy
         </v-btn>
-        <v-spacer/>
-        <v-btn class="headerButton" text x-large v-on:click="onSignUp()" align="right">
-            Sign up
+      </router-link>
+     <v-spacer/>
+
+      <router-link to="/signup">
+        <v-btn class="header-button" text align="right">
+          Sign up
         </v-btn>
-        <v-btn class="headerButton" text x-large v-on:click="onLogIn()" align="right">
-            Log in
+      </router-link>
+      <router-link to="/login">
+        <v-btn class="header-button" text align="right">
+          Login
         </v-btn>
+      </router-link>
     </v-app-bar>
 </template>
 
@@ -17,17 +24,19 @@
 import axios from "axios"
 
 export default {
-  name: 'App',
-  props: ["onSignUp", "onLogIn", "onHomePage"],
-
   components: {
   },
 
   data: () => ({
   }),
-
-
 }
 
 </script>
 
+
+<style scoped>
+.header-button {
+  font-size: 20px !important;
+  font-weight: bold !important;
+}
+</style>
