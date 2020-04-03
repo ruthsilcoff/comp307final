@@ -22,11 +22,6 @@
             <v-icon left>mdi-timeline-text</v-icon>Calendar
           </router-link>
         </v-list-item>
-        <v-list-item link>
-          <router-link to="/">
-            <v-icon left>mdi-timeline-text</v-icon>Home
-          </router-link>
-         </v-list-item>
       </v-list>
     </v-menu>
 
