@@ -1,6 +1,8 @@
 from rest_framework import routers
 
-from app.views import UserViewSet, SubjectViewSet, NoteSetViewSet, EventViewSet, AvailabilityViewSet, ProfileViewSet, TutoringSessionViewSet
+from app.views import UserViewSet, SubjectViewSet, NoteSetViewSet, \
+	EventViewSet, AvailabilityViewSet, ProfileViewSet, TutoringSessionViewSet, \
+	ChatViewSet, DirectMessageViewSet
 
 router = routers.DefaultRouter()
 router.register('subject', SubjectViewSet)
