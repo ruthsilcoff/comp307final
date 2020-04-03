@@ -11,7 +11,7 @@
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <span class="title">My Plants</span>
+      <span class="title">Debate Academy</span>
       <v-row style="margin-left: 30px; width: 100px !important;" align="center" justify="center">
         <v-text-field
             class="d-none d-md-flex"
