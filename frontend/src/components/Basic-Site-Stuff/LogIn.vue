@@ -40,7 +40,6 @@ export default {
       let user = {username: this.usernameInput, password: this.passwordInput}
       try {
         await this.login(user)
-        this.createSnackbar({message: 'Logged in successfully.', color: 'success', mode: ''})
         const response2 = await axios.get('/api/user/current/')
         await this.setMyUser(response2.data.id)
         await this.$router.push('/')
