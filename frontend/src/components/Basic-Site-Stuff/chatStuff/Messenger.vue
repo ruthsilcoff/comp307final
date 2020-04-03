@@ -187,15 +187,16 @@
       </v-content>
 
       <div style="display: flex; position: absolute; left: 20%; right: 20%; bottom: 0; width: 100%; background-color: transparent;">
-        <v-text-field placeholder="Aa" style="border: 1px solid black; " v-model="messageInput"></v-text-field>
+        <v-text-field placeholder="Aa" style="border: 1px solid black; max-width: 300px !important;" v-model="messageInput"></v-text-field>
         <v-file-input
           dense
-          style="margin: 20px; width: 0 !important;"
+          style="margin: 20px; max-width: 0 !important;"
           accept="image/png, image/jpeg, image/bmp"
           placeholder="Add Photo"
           prepend-icon="mdi-camera"
           v-model="photoInput"
         ></v-file-input>
+        <v-btn large color="success" v-on:click="sendMessage"><v-icon dark left>mdi-reply</v-icon>Send</v-btn>
       </div>
     </v-content>
 
@@ -248,9 +249,20 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setMessageDialog', 'logOut']),
+    ...mapActions(['setMessageDialog', 'logOut', 'sendNewMessage', 'createSnackbar']),
     openChat(item) {
       this.viewingChat = item
+    },
+
+    async sendMessage() {
+      try {
+        await this.sendNewMessage({to: this.viewingChat.otherUser.id, content: this.messageInput})
+        this.createSnackbar({message: 'Message sent.', color: 'success', mode: ''})
+      } catch(error){
+        console.log(error.response.data)
+        this.createSnackbar({message: 'Problem sending message.', color: 'error', mode: ''})
+      }
+      this.setMessageDialog(false)
     },
 
   },
