@@ -2,7 +2,7 @@
   <v-container>
     <h1>View All Teachers:</h1>
     <v-data-iterator
-      :items="teachers"
+      :items="allTeachers"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -33,9 +33,11 @@
                 <h4>(price)</h4>
               </v-card-text>
 
-              <v-btn color="success" text v-on:click="goToProfileOf(item.id)">
-                    See lessons
-              </v-btn>
+              <router-link :to="'/profile/' + item.username">
+                <v-btn color="secondary" text >View Profile
+                  <v-icon color="white" small>mdi-eye</v-icon>
+                </v-btn>
+              </router-link>
             </v-card>
           </v-col>
         </v-row>
@@ -102,11 +104,10 @@
 
 <script>
   import axios from "axios"
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
     data: () => ({
-			users: [],
-      userProfileList: [],
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -115,28 +116,15 @@
 			itemsPerPage: 4,
 		}),
 
-    props: ['goToProfileOf'],
-
-		mounted() {
-			this.getUsers()
-      this.getProfileData()
-		},
+    props: [],
 
 		computed: {
+      ...mapGetters(['allTeachers']),
       numberOfPages () {
-        return Math.ceil(this.teachers.length / this.itemsPerPage)
+        return Math.ceil(this.allTeachers.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
-      },
-      teachers () {
-        let teacherList = [];
-        for (let i=0; i<this.userProfileList.length; i++) {
-          if (this.userProfileList[i].isTeacher) {
-            teacherList.push(this.userProfileList[i])
-          }
-        }
-        return teacherList
       },
     },
 
@@ -150,31 +138,8 @@
       updateItemsPerPage (number) {
         this.itemsPerPage = number
       },
-
-			getUsers() {
-				axios.get('/api/user/')
-        .then((response) => {
-          this.users=response.data;
-        })
-        .catch((err) => {
-          console.error(err.response.data);
-        })
-			},
-
-      getProfileData: function () {
-        for (let i=0; i<this.users.length; i++) {
-          axios.get('/api/profile/' + this.users[i].id + "/")
-            .then((response) => {
-              this.userProfileList[i] = response.data
-            })
-            .catch((err) => {
-              console.error(err.response.data)
-            })
-        }
-
 		},
 
-    },
 
 	}
 </script>

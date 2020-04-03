@@ -1,6 +1,6 @@
 <template>
-    <v-app-bar app color="primary">
-        <v-menu offset-y>
+    <v-app-bar app dense color="primary">
+      <v-menu offset-y>
       <template v-slot:activator="{ on }">
         <v-btn
           color="white"
@@ -13,6 +13,11 @@
       </template>
       <v-list>
         <v-list-item link>
+          <router-link to="/">
+            <v-icon left>mdi-home</v-icon>Homepage
+          </router-link>
+        </v-list-item>
+        <v-list-item link>
           <router-link to="/calendar">
             <v-icon left>mdi-timeline-text</v-icon>Calendar
           </router-link>
@@ -20,7 +25,7 @@
       </v-list>
     </v-menu>
 
-      <v-row style="margin-left: 30px;" align="center" justify="center">
+      <v-row style="margin-left: 30px; " align="center" justify="center">
         <v-text-field
             dense
             class="d-none d-md-flex"
@@ -29,6 +34,7 @@
             hide-details
             label="Search"
             prepend-inner-icon="mdi-magnify"
+            style="max-width: 300px !important;"
         ></v-text-field>
       </v-row>
 

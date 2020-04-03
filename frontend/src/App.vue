@@ -176,9 +176,9 @@ export default {
 
     async checkLogIn() {
       if (localStorage.getItem('token')) {
-        await this.yesLoggedIn()
         const response = await axios.get('api/user/current')
-        this.setMyUser(response.data.id)
+        await this.setMyUser(response.data.id)
+        await this.yesLoggedIn()
         this.loading = false
       } else {
         this.notLoggedIn()

@@ -123,6 +123,6 @@ class DirectMessage(models.Model):
     content = models.CharField(max_length=5000, null=True)
     seen = models.BooleanField(default=False)
     dateSent = models.DateTimeField(auto_now_add=True, null=True)
-    picture = models.FileField(upload_to=get_chat_upload_path)
+    picture = models.FileField(upload_to=get_chat_upload_path, null=True)
 
 

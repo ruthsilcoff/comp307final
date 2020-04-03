@@ -44,6 +44,7 @@ export default {
         const response2 = await axios.get('/api/user/current/')
         await this.setMyUser(response2.data.id)
         await this.$router.push('/')
+				this.createSnackbar({message: 'logged in', color:'success', mode: ''})
       }
       catch (error) {
         console.error(error)

@@ -93,18 +93,25 @@ export default {
 	}),
 
 	methods: {
-		...mapActions(['addUser',]),
+		...mapActions(['addUser', 'createSnackbar']),
 
 		signUp: async function (isTeacher) {
-			let newUser = {
-				first_name: this.fNameInput,
-				last_name: this.lNameInput,
-				username: this.usernameInput,
-				password: this.passwordInput,
-				email: this.emailInput,
-				isTeacher: isTeacher,}
-      const response = await this.addUser(newUser)
-      await this.$router.push('/LogIn')
+			try {
+				let newUser = {
+					first_name: this.fNameInput,
+					last_name: this.lNameInput,
+					username: this.usernameInput,
+					password: this.passwordInput,
+					email: this.emailInput,
+					isTeacher: isTeacher,
+				}
+				const response = await this.addUser(newUser)
+				await this.$router.push('/LogIn')
+				this.createSnackbar({message: 'successful sign up', color:'success', mode: ''})
+			}catch(error) {
+				this.createSnackbar({message: 'problem signing up', color:'error', mode: ''})
+				console.log(error.response.data)
+			}
 		},
 
 		initializeTabNumber() {
