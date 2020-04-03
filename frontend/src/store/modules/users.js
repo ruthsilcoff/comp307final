@@ -118,6 +118,7 @@ const actions = {
       //await dispatch('login({username: this.usernameInput, password: this.passwordInput})')
     } catch(error) {
       console.log(error.response.data)
+      throw error
     }
   },
 
