@@ -52,25 +52,39 @@ const actions = {
 
   async sendNewMessage({commit}, {to, content}) {
     try {
-      const chats = await axios.get('/api/chat/').data
+      const chats = await axios.get('/api/chat/')
       const response = await axios.post('/api/dm/', {sentTo: to, content})
-      commit('newMessage', response.data)
 
       // check if there's a chat for it, otherwise create two of them
-      let chat = chats.find(chat =>
-        (chat.owner === response.data.author && chat.otherUser === response.data.sentTo))
-      if (!chat) {
+      if (chats.data.length > 0) {
+        let chat = chats.data.find(chat =>
+          (chat.owner === response.data.author && chat.otherUser === response.data.sentTo) ||
+          (chat.otherUser === response.data.author && chat.owner === response.data.sentTo)
+        )
+        if (!chat) {
+          const chat1 = await axios.post('/api/chat/', {owner: state.selfID, otherUser: to})
+          commit('newChat', chat1.data)
+          const chat2 = await axios.post('/api/chat/', {owner: to, otherUser: state.selfID})
+          commit('newChat', chat2.data)
+        }
+        else {
+          if (!chat.messages) {
+            chat.messages = []
+          }
+          chat.messages.push(response.data)
+          chat.mostRecent = response.data
+        }
+      }
+      else {
         const chat1 = await axios.post('/api/chat/', {owner: state.selfID, otherUser: to})
         commit('newChat', chat1.data)
         const chat2 = await axios.post('/api/chat/', {owner: to, otherUser: state.selfID})
         commit('newChat', chat2.data)
       }
-      else {
-          chat.messages.push(response.data)
-          chat.mostRecent = response.data
-        }
+      commit('newMessage', response.data)
     }catch(error) {
-      console.log(error.response.data)
+      console.log(error)
+      throw error
     }
   },
 

@@ -87,11 +87,11 @@ export default {
       try {
         await this.sendNewMessage({to: this.personInput.id, content: this.contentInput})
         this.createSnackbar({message: 'Message sent.', color: 'success', mode: ''})
+        this.setMessageDialog(false)
       } catch(error){
-        console.log(error.response.data)
+        console.log(error)
         this.createSnackbar({message: 'Problem sending message.', color: 'error', mode: ''})
       }
-      this.setMessageDialog(false)
     },
   },
 
