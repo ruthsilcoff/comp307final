@@ -75,6 +75,7 @@ const actions = {
   },
 
 
+  //opens new message forum box when send new message
   setMessageDialog({commit}, bool) {
     try {
       commit('changeMessageDialog', bool)

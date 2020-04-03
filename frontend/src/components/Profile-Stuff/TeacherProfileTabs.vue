@@ -44,8 +44,8 @@
       tab: null,
 			items: [
 				'Lessons',
-        'Note Sets',
-        'Attending Events'
+                'Note Sets',
+                'Attending Events'
 			],
 			availabilities: [],
 			noteSets: [],

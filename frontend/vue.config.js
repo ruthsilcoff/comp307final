@@ -7,7 +7,7 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  publicPath: prod ? '/static/' : "http://0.0.0.0:8060/",
+  publicPath: prod ? '/static/' : "http://localhost:8060/",
   outputDir: './dist/',
   chainWebpack: config => {
     config.optimization

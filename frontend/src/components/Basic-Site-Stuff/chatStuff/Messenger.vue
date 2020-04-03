@@ -11,6 +11,7 @@
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -38,6 +39,10 @@
 
       <span class="title">Messenger</span>
       <v-row style="margin-left: 30px; max-width: 300px !important;" align="center" justify="center">
+      
+      <span class="title">Debate Academy</span>
+      <v-row style="margin-left: 30px; width: 100px !important;" align="center" justify="center">
+
         <v-text-field
             class="d-none d-md-flex"
             solo-inverted
