@@ -5,11 +5,11 @@ from rest_framework.decorators import action
 
 from .permissions import IsOwner
 from .models import User, Subject, Availability, TeachesSubjects, NoteSet, NoteSetSubjects, \
-    NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile
+    NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile, Chat, DirectMessage
 from .serializers import UserSerializer, SubjectSerializer, AvailabilitySerializer, \
     TeachesSubjectsSerializer, NoteSetSerializer, NoteSetSubjectsSerializer, \
     NoteSetContentSerializer, TutoringSessionSerializer, EventSerializer, \
-    UserAttendEventSerializer, ProfileSerializer
+    UserAttendEventSerializer, ProfileSerializer, ChatSerializer, DirectMessageSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -92,3 +92,17 @@ class EventViewSet(viewsets.ModelViewSet):
 class UserAttendEventViewSet(viewsets.ModelViewSet):
     queryset = UserAttendEvent.objects.all()
     serializer_class = UserAttendEventSerializer
+
+
+class ChatViewSet(viewsets.ModelViewSet):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+
+class DirectMessageViewSet(viewsets.ModelViewSet):
+    queryset = DirectMessage.objects.all()
+    serializer_class = DirectMessageSerializer
+
+    def create(self, request, *args, **kwargs):
+        request.data['author'] = request.user.id
+        return super().create(request, *args, **kwargs)

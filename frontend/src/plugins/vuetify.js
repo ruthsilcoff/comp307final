@@ -15,6 +15,9 @@ export default new Vuetify({
     iconfont: 'mdi', // default - only for display purposes
   },
 	theme: {
+		options: {
+      customProperties: true,
+    },
 		themes: {
 			light: {
 				primary: '#00CCFF',
@@ -26,6 +29,7 @@ export default new Vuetify({
 				warning: '#FFC107',
 				extra: '#FFFFFF',
 				other: '#006e99',
+				unreadColor: '#5240ac',
 			},
 			dark: {
 				primary: '#00a3cc',
@@ -37,6 +41,7 @@ export default new Vuetify({
 				warning: '#FFC107',
 				extra: '#282828',
 				other: '#8efbff',
+				unreadColor: '#5240ac',
 			}
 		},
 	}

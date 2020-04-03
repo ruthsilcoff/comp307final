@@ -1,6 +1,8 @@
 <template>
 <v-content style="margin-top: 100px;" v-if="viewingUser">
   <v-content id="innerPage">
+    <h1 v-if="viewingUser.profile.isTeacher">Teacher</h1>
+    <h1 v-if="!viewingUser.profile.isTeacher">Student</h1>
     <v-row>
       <v-col cols="4">
         <v-card style="width: 300px;">

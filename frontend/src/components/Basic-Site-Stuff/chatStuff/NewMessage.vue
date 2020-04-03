@@ -28,14 +28,15 @@
 
       <v-combobox
         v-model="personInput"
-        :items="myFriends"
+        :items="myCommunications"
         required
         label="To:"
       >
         <template v-slot:item="{ item }">
           <v-avatar v-if="item.profile.avatar" dark size="30"><v-img :src="item.profile.avatar"></v-img></v-avatar>
-          <v-avatar v-if="!item.profile.avatar" dark size="30" color="avatarColor">{{item.first_name[0]}}</v-avatar>
-          <span>{{item.first_name}} {{item.last_name}}</span>
+          <v-avatar v-if="!item.profile.avatar" dark size="30" color="avatarColor">{{item.username[0]}}</v-avatar>
+          <span v-if="item.first_name">{{item.first_name}} {{item.last_name}}</span>
+          <span v-if="!item.first_name">{{item.username}}</span>
         </template>
 
       </v-combobox>
@@ -60,10 +61,19 @@ export default {
 
   computed: {
     ...mapGetters([
+      'myUser',
       'newMessageDialog',
       'loggedIn',
       'allUsers',
     ]),
+    myCommunications() {
+      if (this.myUser.profile.isTeacher) {
+        return this.allUsers.filter(user => !user.profile.isTeacher)
+      }
+      else {
+        return this.allUsers.filter(user => user.profile.isTeacher)
+      }
+    }
 
   },
 

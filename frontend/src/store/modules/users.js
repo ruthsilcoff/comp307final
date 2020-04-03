@@ -11,10 +11,11 @@ const state = {
 
 const getters = {
 	newMessageDialog: (state) => state.messageDialog,
-  allChats: (state) => state.chats,
-  allMessages: (state) => state.messages,
+  myChatsGetter: (state) => state.chats,
+  allMessagesGetter: (state) => state.messages,
 
   allUsers: (state) => state.users,
+  allTeachers: (state) => state.users.filter(user => user.profile.isTeacher),
   myID: (state) => state.selfID,
   viewingID: (state) => state.viewingID,
   isViewing: (state) => state.selfID !== state.viewingID,
@@ -24,20 +25,28 @@ const getters = {
 }
 
 const actions = {
-	async getAllChats({commit}) {
-    try {
-      const response = await axios.get('/api/chat/')
-      commit('setChats', response.data)
-    }catch(error) {
-      console.log(error.response.data)
-    }
-  },
-  async getAllMessages({commit}) {
+   async getMyChatsAndAllMessages({commit}) {
     try {
       const response = await axios.get('/api/dm/')
+      let messages = response.data
       commit('setMessages', response.data)
+
+      const response2 = await axios.get('/api/chat/')
+      let chats = response2.data.filter(chat => chat.owner === state.selfID)
+      for (let i = 0; i < chats.length; i++) {
+        messages = messages.filter(
+          msg => ((msg.author === chats[i].owner && msg.sentTo === chats[i].otherUser)
+            || (msg.author === chats[i].otherUser && msg.sentTo === chats[i].owner))
+        )
+        chats[i].messages = messages
+        chats[i].mostRecent = chats[i].messages[(messages.length)-1]
+        chats[i].otherUser = state.users.find(user => user.id === chats[i].otherUser)
+        messages = response.data
+      }
+      commit('setChats', chats)
+
     }catch(error) {
-      console.log(error.response.data)
+      console.log(error)
     }
   },
 
@@ -56,6 +65,10 @@ const actions = {
         const chat2 = await axios.post('/api/chat/', {owner: to, otherUser: state.selfID})
         commit('newChat', chat2.data)
       }
+      else {
+          chat.messages.push(response.data)
+          chat.mostRecent = response.data
+        }
     }catch(error) {
       console.log(error.response.data)
     }
@@ -96,11 +109,11 @@ const actions = {
 
 	async addUser({commit, dispatch}, {first_name, last_name, username, password, email, isTeacher}) {
     try {
-      const response = await axios.post('/api/user/', {first_name, last_name, username, password, email, isTeacher})
+      const response = await axios.post('/api/user/', {first_name, last_name, username, password, email})
       console.log('created account!')
       console.log(response.data)
       commit('setSelfUser', response.data.id)
-      await axios.post('/api/profile/', {user: response.data.id})
+      await axios.post('/api/profile/', {user: response.data.id, isTeacher: isTeacher})
       console.log("created profile!")
       //await dispatch('login({username: this.usernameInput, password: this.passwordInput})')
     } catch(error) {

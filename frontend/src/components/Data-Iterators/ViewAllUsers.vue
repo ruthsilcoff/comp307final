@@ -24,22 +24,24 @@
 
 
           <v-card-text>
-            <h1 v-if="item.isTeacher === true">Teacher</h1>
-            <h1 v-if="item.isTeacher === false">Student</h1>
-            <h3>{{ item.bio}}</h3>
-            <h3>{{ item.country}}</h3>
+            <h1 v-if="item.profile.isTeacher">Teacher</h1>
+            <h1 v-if="!item.profile.isTeacher">Student</h1>
+            <h3>Bio: {{ item.profile.bio}}</h3>
+            <h3>Country: {{ item.country}}</h3>
 
-            <h3>Subjects:</h3>
-            <h4>(subject list)</h4>
-            <h3>Rating:</h3>
-            <h4>(rating)</h4>
-            <h3>Price:</h3>
-            <h4>(price)</h4>
+            <h3 v-if="item.profile.isTeacher">Subjects:</h3>
+            <h4 v-if="item.profile.isTeacher">(subject list)</h4>
+            <h3 v-if="item.profile.isTeacher">Rating:</h3>
+            <h4 v-if="item.profile.isTeacher">(rating)</h4>
+            <h3 v-if="item.profile.isTeacher">Price:</h3>
+            <h4 v-if="item.profile.isTeacher">(price)</h4>
           </v-card-text>
+          <router-link :to="'/profile/' + item.username">
+            <v-btn color="secondary" text >View Profile
+              <v-icon color="white" small>mdi-eye</v-icon>
+            </v-btn>
+          </router-link>
 
-          <v-btn color="secondary" v-on:click="routeToProfile(item.username)" text >View Profile
-            <v-icon color="white" small>mdi-eye</v-icon>
-          </v-btn>
         </v-card>
       </v-col>
     </v-row>
