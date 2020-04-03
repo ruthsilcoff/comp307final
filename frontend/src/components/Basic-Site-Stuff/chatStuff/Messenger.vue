@@ -41,7 +41,6 @@
 
       <span class="title">Debate Academy</span>
       <v-row style="margin-left: 30px; width: 100px !important;" align="center" justify="center">
-
         <v-text-field
             class="d-none d-md-flex"
             solo-inverted
@@ -132,14 +131,12 @@
       <div style="overflow: scroll; " >
         <v-list dense style="margin-top: 65px; margin-bottom: 20px">
           <v-list-item
-            id="messengerChatThing"
             three-line
             link
-            v-for="(item) in myChats"
+            v-for="(item) in myChatsGetter"
             v-bind:key="item.id"
-            v-on:click="openChat(item)"
           >
-            <v-list-item-avatar>
+            <v-list-item-avatar v-on:click="openChat(item)">
               <v-icon
                 color="green"
                 dark
@@ -147,15 +144,23 @@
             </v-list-item-avatar>
 
             <div style="display: block;">
-              <v-list-item-title>{{item.name}}</v-list-item-title>
-              <v-list-item-content>{{item.message}}</v-list-item-content>
+              <v-list-item-title v-if="item.otherUser.first_name">{{item.otherUser.first_name}} {{item.otherUser.last_name}}</v-list-item-title>
+              <v-list-item-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-list-item-title>
+              <v-list-item-content>{{item.mostRecent.content}}</v-list-item-content>
             </div>
 
-            <v-list-item-avatar v-if="item.unread">
+            <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === myID)">
               <v-icon
                 v-text="item.icon"
                 color="red"
               >mdi-circle</v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === item.otherUser)">
+              <v-icon
+                v-text="item.icon"
+                color="unreadColor"
+              >mdi-circle-outline</v-icon>
             </v-list-item-avatar>
 
           </v-list-item>
@@ -166,11 +171,21 @@
 
 
     <!-- THE ACTUAL CONTENT OF THE PAGE-->
-    <v-content style=" position: relative; margin: 20px; padding: 20px" v-if="this.viewingChat">
-      <v-content style="display: flex; position: absolute !important; top: 0; left: 0">
-        <h1>{{this.viewingChat.name}} Hi </h1>
-        <h2>{{this.viewingChat.content}} lol</h2>
+    <v-content id="conversationBox"  style="position: relative; margin: 20px; padding: 20px">
+      <v-content v-if="this.viewingChat" style="display: block; position: relative !important;">
+        <h1 v-if="viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.first_name}} {{this.viewingChat.otherUser.last_name}} </h1>
+        <h1 v-if="!viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.username}} </h1>
+        <v-chip-group v-for="item in viewingChat.messages" v-bind:key="item.id">
+          <v-chip style="margin-left:50%;" v-if="item.author === myID">
+            {{item.content}} <span class="subtitle-1">{{item.dateSent}}</span>
+          </v-chip>
+          <v-chip v-if="item.author !== myID">
+            <v-list-item-title>{{item.content}}</v-list-item-title>
+            <v-list-item-subtitle>{{item.dateSent}}</v-list-item-subtitle>
+          </v-chip>
+        </v-chip-group>
       </v-content>
+
       <div style="display: flex; position: absolute; left: 20%; right: 20%; bottom: 0; width: 100%; background-color: transparent;">
         <v-text-field placeholder="Aa" style="border: 1px solid black; " v-model="messageInput"></v-text-field>
         <v-file-input
@@ -196,16 +211,7 @@ export default {
 	data: () => ({
     messageInput: null,
     photoInput: '',
-    viewingChat: {},
-    myChats: [
-      {name: 'Marie', message:'hey are you there?', unread: true},
-      {name: 'Chels', message:'want to get brunch this weekend?', unread: true},
-      {name: 'Alex', message:'I\'m working now', unread: true},
-      {name: 'Heyzeus', message:'What\'s for dinner tonight?', unread: false},
-      {name: 'Ju', message:'When are you coming home?', unread: false},
-      {name: 'Mike', message:'Date this weekend?', unread: true},
-      {name: 'Ruth', message:'I\'m working on the AI project', unread: false},
-    ],
+    viewingChat: null,
     snackbar: false,
     snackbarMessage: '',
     snackbarColor: '',
@@ -223,12 +229,15 @@ export default {
   },
 
   computed: {
-		...mapGetters([]),
+		...mapGetters(['myChatsGetter', 'myID']),
     numberUnread() {
       let num = 0;
-      for (let i = 0; i < this.myChats.length; i++) {
-        if (this.myChats[i].unread) {
-          num++
+      console.log(this.myChatsGetter)
+      for (let x= 0; x< this.myChatsGetter.length; x++) {
+        for (let i = 0; i < this.myChatsGetter[x].messages.length; i++) {
+          if (!this.myChatsGetter[x].messages[i].seen && (this.myChatsGetter[x].messages[i].sentTo === this.myID)) {
+            num++
+          }
         }
       }
       return num
@@ -239,7 +248,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setMessageDialog']),
+    ...mapActions(['setMessageDialog', 'logOut']),
     openChat(item) {
       this.viewingChat = item
     },
