@@ -1,118 +1,147 @@
 <template>
-	<v-app>
-		<v-container style="margin: 0; padding: 0;">
-			<v-content align="center" v-if="isTeacher === true" style="margin: 0; padding: 0;">
-				<h1>Teacher: {{ userData.first_name }} {{ userData.last_name }}</h1>
-			</v-content>
-			<v-content align="center" v-if="isTeacher === false" style="margin: 0; padding: 0;">
-				<h1>Student: {{ userData.first_name }} {{ userData.last_name }}</h1>
-			</v-content>
+<v-content style="margin-top: 100px;" v-if="viewingUser">
+  <v-content id="innerPage">
+    <v-row>
+      <v-col cols="4">
+        <v-card style="width: 300px;">
+          <v-card-title>
+            <v-avatar v-on:mouseenter="showAvatarInput = true" style="position:relative !important" v-if="viewingUser.profile.avatar !== null" size="200px">
+              <v-img :src="viewingUser.profile.avatar"></v-img>
+            </v-avatar>
+            <v-avatar v-on:mouseenter="showAvatarInput = true" style="position:relative !important" v-if="viewingUser.profile.avatar == null" size="200px" color="cyan">{{viewingUser.first_name[0]}}</v-avatar>
+            <v-file-input
+                v-if="showAvatarInput"
+                position="absolute"
+                hide-details="auto"
+                accept="image/png, image/jpeg, image/bmp"
+                prepend-icon="mdi-camera"
+                v-model="avatarInput"
+                style="width: 0 !important; position:absolute !important; top: 35%; left: 40%;"
+                v-on:change="submitAvatar"
+            ></v-file-input>
+          </v-card-title>
+          <h3 style="margin-left:10px;">{{ viewingUser.username }}</h3>
+          <v-card-text>
+            <h2>{{ viewingUser.first_name }} {{ viewingUser.last_name }}</h2>
 
-			<v-card style="width: 300px; margin-top: -50px;">
-				<v-card-title>
-					<v-row justify="center" align="center">
-						<v-avatar style="margin-bottom:10px;" color="tertiary" size="50px" v-if="editingProfile === false">
-							<span class="white--text headline">C</span>
-						</v-avatar>
-						<h3 style="margin-left:10px;">{{ userData.username }}</h3>
-					</v-row>
-					<v-card-text>
-						<v-content v-if="editingProfile === true" style="margin: 0; padding: 0 !important;">
-								<EditProfile :avatarInput="avatarInput" :cancelEdit="cancelEdit" :onSuccessfulEdit="onSuccessfulEdit" :userData="userData" :profileData="profileData" :editingProfile="editingProfile"/>
-						</v-content>
+            <v-content v-if="editingProfile === true" style="margin: 0; padding: 0 !important;">
+              <EditProfile :currentBio="viewingUser.profile.bio" :currentCountry="viewingUser.profile.country"
+                           :cancelEdit="cancelEdit" :avatarInput="avatarInput"
+                           :onSuccessfulEdit="onSuccessfulEdit" :editingProfile="editingProfile"/>
+            </v-content>
+            Bio:
+            <v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">
+              <h2 style="margin: 0; padding: 0;" v-if="viewingUser.profile.bio !== '' && viewingUser.profile.bio !== null">{{ viewingUser.profile.bio }} </h2>
+              <v-btn v-if="isViewing === false" color="secondary" icon medium v-on:click="editProfilePage()">
+                <v-icon color="secondary" large>mdi-pencil</v-icon>
+              </v-btn>
+            </v-content>
 
-						<v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">
-							<h2 style="margin: 0; padding: 0;" v-if="profileData.bio !== '' && profileData.bio !== null">{{ profileData.bio }} </h2>
-						</v-content>
-						<v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">
-						<h3 class="grey--text" style="margin: 0; padding: 0;" v-if="profileData.country !== '' && profileData.country !== null">
-							<v-icon small color="grey">mdi-map-marker</v-icon>
-							{{ profileData.country }}
-						</h3>
-						</v-content>
-						<v-content align="center" v-if="editingProfile === false && isViewing === false" style="margin: 0; padding: 0;">
-							<v-btn color="secondary" dark style="margin: 0; padding: 0;" text medium v-on:click="editProfilePage()">
-									Edit Profile <v-icon color="secondary" large>mdi-account-edit</v-icon>
-							</v-btn>
-						</v-content>
-					</v-card-text>
-				</v-card-title>
-			</v-card>
-			<v-container>
-					<v-content style="margin: 0; padding:0" v-if="this.isTeacher === true">
-						<TeacherProfileTabs :AddAvailability="AddAvailability" />
-					</v-content>
-					<v-content style="margin: 0; padding:0" v-if="this.isTeacher === false">
-						<RegularProfileTabs />
-					</v-content>
-			</v-container>
-		</v-container>
-	</v-app>
+            Country:
+            <v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">
+              <h3 class="grey--text" style="margin: 0; padding: 0;" v-if="viewingUser.profile.country !== '' && viewingUser.profile.country !== null">
+                <v-icon small color="grey">mdi-map-marker</v-icon>
+                {{ viewingUser.profile.country }}
+              </h3>
+              <v-btn v-if="isViewing === false" color="secondary" icon medium v-on:click="editProfilePage()">
+                <v-icon color="secondary" large>mdi-pencil</v-icon>
+              </v-btn>
+            </v-content>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="8">
+        <v-content v-if="this.isViewing === false">
+          <RegularProfileTabs :userData="viewingUser"/>
+        </v-content>
+        <v-content v-if="this.isViewing === true">
+          <TeacherProfileTabs :somePosts="viewingPosts" :userData="viewingUser"/>
+        </v-content>
+      </v-col>
+    </v-row>
+  </v-content>
+</v-content>
 </template>
 
 <script>
 
-import axios from "axios"
+import {mapGetters, mapActions} from 'vuex'
 import EditProfile from "./EditProfile"
-import TeacherProfileTabs from "./TeacherProfileTabs"
 import RegularProfileTabs from "./RegularProfileTabs"
+import TeacherProfileTabs from "./TeacherProfileTabs"
+import axios from "axios"
 
 export default {
-	props: ['userData', 'isViewing', 'onRequestLesson', 'AddAvailability'],
+  props: ['username'],
 
-	mounted() {
-		this.getProfileData()
-		this.getCurrentProfile()
+  mounted: async function() {
+    const viewingUser = await this.allUsers.find(user => user.username === this.$route.params.username)
+    console.log(viewingUser)
+    this.setViewingUser(viewingUser.id)
   },
 
   components: {
-		TeacherProfileTabs,
-		EditProfile,
-		RegularProfileTabs,
-	},
+    EditProfile,
+    RegularProfileTabs,
+    TeacherProfileTabs,
+  },
 
   data: () => ({
-		events: [],
-		profileData: {},
-		editingProfile: false,
-		isTeacher: false,
-		avatarInput: '',
-	}),
+    showAvatarInput:false,
+    events: [],
+    editingProfile: false,
+    editAvatar: false,
+    avatarInput: null,
+  }),
 
-	methods: {
-		getProfileData: function () {
-			console.log("user ID is")
-			console.log(this.userData.id)
-			axios.get('/api/profile/' + this.userData.id + "/")
-        .then((response) => {
-					console.log(response.data)
-          this.profileData = response.data
-					if (this.profileData.isTeacher) {
-						this.isTeacher = true
-					}
-				})
-				.catch((err) => {
-					console.error(err.response.data)
-				})
-		},
+  computed: {
+    ...mapGetters(['allUsers', 'myID', 'viewingID', 'viewingUser', 'isViewing']),
+  },
 
-		editProfilePage: function () {
-			this.editingProfile = true
-		},
+  methods: {
+    ...mapActions(['setViewingUser', 'updateAvatar']),
+    submitAvatar: async function () {
+      console.log(this.avatarInput)
+      try {
+				await this.updateAvatar({avatar: this.avatarInput})
+        this.avatarInput = null
+			} catch(error){
+        console.log(error.response.data)
+      }
+    },
+    showAvatarEdit() {
+      this.editAvatar = true
+    },
+    hideAvatarEdit() {
+      this.editAvatar = false
+    },
+    editProfilePage() {
+      this.editingProfile = !this.editingProfile;
+    },
+    onSuccessfulEdit: async function (newProfile) {
+      this.editingProfile = false
+      // TODO: move to mutation
+      this.viewingUser.bio = newProfile.bio
+      this.viewingUser.country = newProfile.country
+    },
+    cancelEdit: function () {
+      this.editingProfile = false
+    },
 
-		onSuccessfulEdit: function (newProfile) {
-			this.profileData=newProfile
-			this.editingProfile = false
-		},
-
-		cancelEdit: function () {
-			this.editingProfile = false
-		},
-
-		getCurrentProfile: function () {
-			this.avatarInput = this.profileData.avatar
-		},
-
-  }
+  },
 };
 </script>
+
+<style scoped>
+
+#innerPage {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+@media only screen and (max-width: 600px) {
+  #innerPage {
+  }
+}
+
+</style>

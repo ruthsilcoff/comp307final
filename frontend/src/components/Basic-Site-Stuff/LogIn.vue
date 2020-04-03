@@ -10,7 +10,7 @@
 				<h1>Log In</h1>
 				<v-text-field label="Username" v-model="usernameInput"></v-text-field>
 				<v-text-field label="Password" v-model="passwordInput"></v-text-field>
-				<v-btn text v-on:click="logIn()">Submit</v-btn>
+				<v-btn text v-on:click="logInFunction()">Submit</v-btn>
 			</v-card-text>
 		</v-card>
 	</v-content>
@@ -21,33 +21,35 @@
 
 <script>
 import axios from "axios"
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
-	name: 'App',
-	props: ['onLoginSuccess'],
-
 	components: {},
 
 	data: () => ({
+		loading: false,
 		passwordInput: '',
 		usernameInput: ''
 	}),
 
 	methods: {
-		logIn: function () {
-				axios.post('/api-token-auth/', {
-					username: this.usernameInput,
-					password: this.passwordInput,
-				})
-				.then((response) => {
-						console.log('logged in')
-						localStorage.setItem('token', response.data.token)
-						this.onLoginSuccess()
-					})
-				.catch((err) => {
-						console.error(err.response)
-				})
-		}
+		...mapActions(['login', 'setMyUser', 'createSnackbar']),
+
+    logInFunction: async function () {
+      this.loading = true
+      let user = {username: this.usernameInput, password: this.passwordInput}
+      try {
+        await this.login(user)
+        this.createSnackbar({message: 'Logged in successfully.', color: 'success', mode: ''})
+        const response2 = await axios.get('/api/user/current/')
+        await this.setMyUser(response2.data.id)
+        await this.$router.push('/')
+      }
+      catch (error) {
+        console.error(error)
+        this.createSnackbar({message: 'Problem logging in', color: 'error', mode: ''})
+      }
+    }
 	}
 
 };

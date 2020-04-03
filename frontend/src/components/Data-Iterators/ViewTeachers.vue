@@ -1,5 +1,5 @@
 <template>
-  <v-container max-width="200px">
+  <v-container>
     <h1>View All Teachers:</h1>
     <v-data-iterator
       :items="teachers"
