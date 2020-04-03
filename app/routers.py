@@ -10,4 +10,6 @@ router.register('event', EventViewSet)
 router.register('availability', AvailabilityViewSet)
 router.register('profile', ProfileViewSet)
 router.register('tutoringSession', TutoringSessionViewSet)
+router.register('chat', ChatViewSet)
+router.register('dm', DirectMessageViewSet)
 
