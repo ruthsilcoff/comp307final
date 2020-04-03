@@ -38,8 +38,7 @@
       </v-menu>
 
       <span class="title">Messenger</span>
-      <v-row style="margin-left: 30px; max-width: 300px !important;" align="center" justify="center">
-      
+
       <span class="title">Debate Academy</span>
       <v-row style="margin-left: 30px; width: 100px !important;" align="center" justify="center">
 
