@@ -8,6 +8,7 @@ import ProfilePage from './components/Profile-Stuff/ProfilePage'
 import Calendar from './components/Calendars/Calendar'
 import Messenger from "./components/Basic-Site-Stuff/chatStuff/Messenger"
 import NewAvailability from "./components/Data-Iterators/NewAvailability"
+import NewNoteSet from "./components/NewNoteSet"
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,7 @@ const routes = [
   { path: '/profile/:username', component: ProfilePage, props: true },
   { path: '/messenger', component: Messenger},
   { path: '/addAvailability', component: NewAvailability},
+  { path: '/newNoteSet', component: NewNoteSet},
 ]
 
 const router = new VueRouter({

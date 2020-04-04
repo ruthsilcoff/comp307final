@@ -21,12 +21,16 @@
           <v-btn large>
             AddAvailability
           </v-btn>
-
         </router-link>
         <ViewAvails :userData="userData" :availabilities="availabilities"/>
       </v-container>
     </v-tab-item>
     <v-tab-item>
+      <router-link v-if="!isViewing" to="/newNoteSet">
+          <v-btn large>
+            Add Note Set
+          </v-btn>
+        </router-link>
       <ViewNoteSets/>
     </v-tab-item>
     <v-tab-item>
