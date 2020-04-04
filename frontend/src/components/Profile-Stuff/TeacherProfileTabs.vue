@@ -6,15 +6,22 @@
     color="primary"
     grow
   >
-    <v-tab
-      v-for="item in items"
-      :key="item"
-    >
-      {{ item }}
+    <v-tab >
+      Lesson Availabilities
+    </v-tab>
+    <v-tab >
+      Note Sets
+    </v-tab>
+    <v-tab v-if="!isViewing">
+      Lessons booked
+    </v-tab>
+    <v-tab v-if="!isViewing">
+      Lesson Requests
     </v-tab>
   </v-tabs>
 
   <v-tabs-items v-model="tab">
+
     <v-tab-item>
       <v-container max-width="200px">
         <router-link v-if="!isViewing" to="/addAvailability">
@@ -25,6 +32,7 @@
         <ViewAvails :userData="userData" :availabilities="availabilities"/>
       </v-container>
     </v-tab-item>
+
     <v-tab-item>
       <router-link v-if="!isViewing" to="/newNoteSet">
           <v-btn large>
@@ -33,9 +41,13 @@
         </router-link>
       <ViewNoteSets/>
     </v-tab-item>
-    <v-tab-item>
-      <ViewEvents/>
+
+    <v-tab-item v-if="!isViewing">
     </v-tab-item>
+
+    <v-tab-item v-if="!isViewing">
+    </v-tab-item>
+
   </v-tabs-items>
 </v-container>
 </template>
@@ -45,16 +57,10 @@
   import {mapGetters, mapActions} from 'vuex'
   import ViewAvails from "./ViewAvails"
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
-  import ViewEvents from "../Data-Iterators/ViewEvents"
 
 	export default {
     data: () => ({
       tab: null,
-			items: [
-				'Lessons',
-        'Note Sets',
-        'Attending Events'
-			],
 			availabilities: [],
 			noteSets: [],
     }),
@@ -64,7 +70,6 @@
     components: {
       ViewAvails,
       ViewNoteSets,
-      ViewEvents
     },
 
     mounted() {

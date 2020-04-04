@@ -1,116 +1,16 @@
 <template>
 <v-content style="margin: 0; padding: 0">
   <v-app id="inspire">
-    <v-app-bar
-      app
-      flat
-      dense
-      clipped-right
-      clipped-left
-      color="primary"
-      dark
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            color="white"
-            v-on="on"
-            large
-            text
-          >
-            Debate Academy
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item link>
-            <router-link to="/">
-              <v-icon left>mdi-home</v-icon>Homepage
-            </router-link>
-          </v-list-item>
-          <v-list-item link>
-            <router-link to="/calendar">
-              <v-icon left>mdi-timeline-text</v-icon>Calendar
-            </router-link>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-
-      <span class="title">Messenger</span>
-
-      <span class="title">Debate Academy</span>
-      <v-row style="margin-left: 30px; width: 100px !important;" align="center" justify="center">
-        <v-text-field
-            class="d-none d-md-flex"
-            solo-inverted
-            flat
-            hide-details
-            label="Search"
-            prepend-inner-icon="mdi-magnify"
-            v-model="searchInput"
-            style="max-width: 300px !important;"
-        ></v-text-field>
-      </v-row>
-
-      <v-spacer/>
-
-      <v-menu
-      offset-y
-      :close-on-content-click="false"
-      :nudge-width="300"
-  >
-      <template v-slot:activator="{ on }">
-        <v-btn
-          icon
-          color="white"
-          v-on="on"
-          style="position:relative"
-        >
-          <v-icon large>mdi-chat</v-icon>
-          <div v-if="numberUnread > 0" id="iconNumberUnread">{{numberUnread}}</div>
-        </v-btn>
-
-      </template>
-      <MiniChat/>
-      <div style="position: absolute; bottom: 0; background-color: white; width: 100%;">
-        <router-link to="/messenger" style="margin-left: 22%" color="secondary" text><v-btn text color="secondary"> View All in Messenger</v-btn></router-link>
-      </div>
-    </v-menu>
-
-      <v-menu offset-y>
-      <template v-slot:activator="{ on }">
-        <v-btn
-          icon
-          color="white"
-          v-on="on"
-        >
-          <v-icon large>mdi-account-circle</v-icon>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item link>
-          <router-link v-if="myUser" :to="'/profile/' + myUser.username">
-            <v-icon left>mdi-account</v-icon>Profile
-          </router-link>
-        </v-list-item>
-        <v-list-item link v-on:click="logOutFunction()" >
-          <router-link to="/">
-            <v-icon left>mdi-logout</v-icon>Log out
-          </router-link>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-
-    </v-app-bar>
-
     <!-- LEFT DRAWER -->
     <v-navigation-drawer
-      v-model="drawer"
+      v-model="leftDrawerGetter"
       app
       clipped
       left
       width="220px"
+      mobile-break-point="500px"
+      overlay-color="secondary"
+      disable-resize-watcher
     >
       <v-toolbar fixed absolute width="100%" floating color="green" dark >
         <v-icon v-on:click="setMessageDialog(true)" dark style="position: absolute !important; right: 5px; top:5px;" large >mdi-pencil-box-outline</v-icon>
@@ -205,7 +105,6 @@
 </template>
 
 <script>
-import MiniChat from './MiniChat'
 import {mapGetters, mapActions} from "vuex"
 
 export default {
@@ -226,11 +125,10 @@ export default {
   }),
 
   components: {
-    MiniChat,
   },
 
   computed: {
-		...mapGetters(['myChatsGetter', 'myID']),
+		...mapGetters(['myChatsGetter', 'myID', 'leftDrawerGetter']),
     numberUnread() {
       let num = 0;
       console.log(this.myChatsGetter)

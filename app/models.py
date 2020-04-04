@@ -91,6 +91,7 @@ class TutoringSession(models.Model):
     tutorID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tutorID')
     learnerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learnerID')
     availabilityID = models.ForeignKey(Availability, on_delete=models.CASCADE, null=True)
+    isConfirmed = models.BooleanField(default=False)
 
 
 class Event(models.Model):

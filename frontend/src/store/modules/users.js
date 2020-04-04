@@ -7,9 +7,17 @@ const state = {
   messageDialog: false,
   chats: [],
   messages: [],
+  tutoringSessions: [],
+  availabilities: [],
+  requests: [],
 }
 
 const getters = {
+  availabilitiesGetter: (state) => state.availabilities,
+  availabilitiesOneTeacher: (state) => (id) => state.availabilities.filter(avail => avail.userID === id),
+
+  tutoringSessionsGetter: (state) => state.tutoringSessions,
+
 	newMessageDialog: (state) => state.messageDialog,
   myChatsGetter: (state) => state.chats,
   allMessagesGetter: (state) => state.messages,
@@ -25,6 +33,77 @@ const getters = {
 }
 
 const actions = {
+  async bookLesson({commit}, {availabilityID, tutorID}) {
+    try {
+      const response = await axios.post('/api/tutoringSession/', {availabilityID: availabilityID, tutorID: tutorID})
+      commit('addTutoringSession', response.data)
+      commit('setPending', availabilityID)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async confirmLesson({commit}, {tutoringSessionID, bool}) {
+    try {
+      if (!bool) {
+        const response = await axios.delete(`/api/tutoringSession/${tutoringSessionID}/`)
+        commit('removeTutoringSession', response.data)
+      }
+      if (bool) {
+        const response = await axios.patch(`/api/tutoringSession/${tutoringSessionID}/`, {isConfirmed: true})
+        commit('confirmLessonTrue', response.data)
+      }
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async getAllAvailabilities({commit}) {
+    try {
+      const response = await axios.get('/api/availability/')
+      let avails = response.data
+      if ((avails.length > 0) && (!state.users.find(user => user.id === state.selfID).profile.isTeacher)) {
+        for (let i= 0; i < avails.length; i++) {
+          let session = state.tutoringSessions.find(session =>
+            session.availabilityID === avails[i].id &&
+            session.learnerID === state.myID
+          )
+          if (session) {
+            if (session.isConfirmed) {
+              avails[i].booked = 'pending'
+            }
+            else {
+              avails[i].booked = 'confirmed'
+            }
+
+          }
+        }
+      }
+      commit('setAvails', avails)
+    }catch(error) {
+      console.log(error)
+      throw error
+    }
+  },
+
+  async getAllTutoringSessions({commit}) {
+    try {
+      const response = await axios.get('/api/tutoringSession/')
+      if (state.users.find(user => user.id === state.selfID).profile.isTeacher) {
+        if (response.data.length > 0) {
+          let requests = response.data.filter(session => session.tutorID === state.selfID && !session.isConfirmed)
+          commit('setRequests', requests)
+        }
+      }
+      commit('setTutoringSessions', response.data)
+    }catch(error) {
+      console.log(error)
+      throw error
+    }
+  },
+
    async getMyChatsAndAllMessages({commit}) {
     try {
       const response = await axios.get('/api/dm/')
@@ -167,6 +246,31 @@ const actions = {
 }
 
 const mutations = {
+  setPending: (state, id) => {
+    let index = state.availabilities.indexOf(avail => avail.id === id)
+    state.availabilities[index].booked = 'pending'
+  },
+
+  removeTutoringSession: (state, session) => {
+    let index = state.tutoringSessions.indexOf(session)
+    state.tutoringSessions.splice(index, 1)
+
+    let index2 = state.availabilities.indexOf(avail => avail.id === session.availabilityID)
+    state.availabilities[index2].booked = null
+  },
+  confirmLessonTrue: (state, session) => {
+    let index = state.tutoringSessions.indexOf(session)
+    state.tutoringSessions[index].isConfirmed = true
+
+    let index2 = state.availabilities.indexOf(avail => avail.id === session.availabilityID)
+    state.availabilities[index2].booked = 'confirmed'
+  },
+
+  addTutoringSession: (state, session) => state.tutoringSessions.push(session),
+  setTutoringSessions: (state, sessions) => state.tutoringSessions = sessions,
+  setAvails: (state, avails) => state.availabilities = avails,
+  setRequests: (state, requests) => state.requests = requests,
+
 	changeMessageDialog: (state, bool) => state.messageDialog = bool,
   setUsers: (state, users) => { state.users = users },
   setViewingUser: (state, userID) => { state.viewingID = userID },

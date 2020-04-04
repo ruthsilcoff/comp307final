@@ -54,8 +54,11 @@ const actions = {
 
   async yesLoggedIn({commit, dispatch}) {
     commit('setLoggedIn', true)
-    await dispatch('getAllUsers') // before messages and chats
+    await dispatch('getAllUsers') // before messages and chats and avails
     await dispatch('getMyChatsAndAllMessages')
+    await dispatch('getAllTutoringSessions') // before avails
+    await dispatch('getAllAvailabilities')
+
   },
 
   notLoggedIn({commit}) {

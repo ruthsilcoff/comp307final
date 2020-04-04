@@ -19,7 +19,7 @@
             md="16"
             lg="4"
           >
-            <v-card v-if="item.booked === false">
+            <v-card v-if="!item.booked">
               <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>
@@ -29,8 +29,14 @@
                 <h4>{{item.start}}</h4>
               </v-card-text>
 
-              <v-btn color="success" text v-on:click="bookLesson(item)">
+              <v-btn v-if="!item.booked" color="success" text v-on:click="requestLesson(item)">
                     Request
+              </v-btn>
+              <v-btn disabled v-if="item.booked === 'pending'" color="grey" text>
+                    Pending
+              </v-btn>
+              <v-btn v-if="item.booked === 'confirmed'" color="success" text>
+                    Booked
               </v-btn>
             </v-card>
           </v-col>
@@ -98,6 +104,7 @@
 
 <script>
   import axios from "axios"
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
     data: () => ({
@@ -116,9 +123,14 @@
 			],
 		}),
 
-    props: ['availabilities', 'userData', 'onRequestLesson'],
+    props: ['userData'],
 
 		computed: {
+      ...mapGetters(['availabilitiesOneTeacher']),
+      availabilities() {
+        return this.availabilitiesOneTeacher(this.userData.id)
+      },
+
       numberOfPages () {
         return Math.ceil(this.availabilities.length / this.itemsPerPage)
       },
@@ -128,6 +140,16 @@
     },
 
 		methods: {
+      ...mapActions(['bookLesson', 'createSnackbar']),
+      async requestLesson(item) {
+        try {
+          await this.bookLesson({availabilityID: item.id, tutorID: this.userData.id})
+          this.createSnackbar({message: 'lesson requested!', color: 'success', mode: ''})
+        }catch(error) {
+          this.createSnackbar({message: 'problem requesting lesson', color: 'error', mode: ''})
+        }
+
+      },
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
       },
@@ -137,10 +159,6 @@
       updateItemsPerPage (number) {
         this.itemsPerPage = number
       },
-
-      bookLesson (item) {
-        this.onRequestLesson(item)
-      }
     },
 
 	}

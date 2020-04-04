@@ -1,9 +1,15 @@
 <template>
   <v-content>
 
-    <v-list>
-      <v-list-item :v-for="item in noteSets" v-bind:key="item.id">
-        {{item.title}}
+    <v-list two-line>
+      <v-list-item link v-for="item in noteSets" v-bind:key="item.id">
+        <v-list-item-title>
+          {{item.title}}
+        </v-list-item-title>
+
+        <v-list-item-subtitle>
+          {{item.description}}
+        </v-list-item-subtitle>
       </v-list-item>
     </v-list>
 
@@ -16,9 +22,9 @@
 import axios from "axios"
 
 export default {
-  name: 'App',
 
   mounted() {
+    this.getNoteSets()
   },
 
   components: {
@@ -32,6 +38,7 @@ export default {
     getNoteSets: function() {
       axios.get('/api/noteSet/')
         .then((response) => {
+          console.log(response.data)
           this.noteSets=response.data;
         })
       .catch((err) => {
