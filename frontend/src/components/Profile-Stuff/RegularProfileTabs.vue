@@ -41,7 +41,7 @@
       tab: 0,
 			items: [
 				'Upcoming Sessions',
-        'Favourite Teachers',
+        'Teachers',
         'Attending Events'
 			],
     }),
