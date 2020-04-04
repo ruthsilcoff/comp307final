@@ -1,12 +1,10 @@
 <template>
   <v-app>
-    <v-content v-if="allUsers.length > 0">
     <Header v-if="loggedIn === false"/>
     <profileHeader v-if="loggedIn === true"/>
 
     <NewMessage v-if="newMessageDialog"/>
 
-    <!-- Home page when you're not logged in -->
    <router-view v-if="!loading" :key="$route.fullPath"></router-view>
 
     <v-snackbar
@@ -60,7 +58,6 @@
         <v-switch style="margin: 0" v-model="$vuetify.theme.dark" v-on:change="changeTheme()" color="secondary" inset label="Dark theme"/>
       </v-bottom-navigation>
     </v-footer>
-  </v-content>
   </v-app>
 </template>
 
@@ -120,7 +117,7 @@ export default {
 
   data: () => ({
     timeout: 5000,
-    loading: false,
+    loading: true,
     page: 'homePage',
     testStatus: 0,
     userData: {},
