@@ -116,14 +116,7 @@ export default {
   methods: {
     ...mapActions(['setViewingUser', 'updateAvatar']),
     async initialize() {
-      if (this.allUsers.length === 0) {
-        console.log("why is this not working")
-        this.loading = true
-      }
-      this.loading = false
       const viewingUser = this.allUsers.find(user => user.username === this.$route.params.username)
-      console.log(this.allUsers)
-      console.log(viewingUser)
       this.setViewingUser(viewingUser.id)
     },
 
