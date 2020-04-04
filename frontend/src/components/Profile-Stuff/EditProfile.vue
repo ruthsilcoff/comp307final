@@ -15,7 +15,7 @@ import axios from "axios"
 import {mapActions} from 'vuex'
 
 export default {
-	props: ['userData', 'cancelEdit', 'onSuccessfulEdit', 'avatarInput'],
+	props: ['userData', 'cancelEdit', 'onSuccessfulEdit'],
 
 	data: () => ({
 		bioInput: '',
