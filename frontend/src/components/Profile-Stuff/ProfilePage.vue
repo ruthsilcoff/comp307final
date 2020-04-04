@@ -27,9 +27,9 @@
             <h2 v-if="viewingUser.first_name">{{ viewingUser.first_name }} {{ viewingUser.last_name }}</h2>
 
             <v-content v-if="editingProfile === true" style="margin: 0; padding: 0 !important;">
-              <EditProfile :currentBio="viewingUser.profile.bio" :currentCountry="viewingUser.profile.country"
-                           :cancelEdit="cancelEdit" :avatarInput="avatarInput"
-                           :onSuccessfulEdit="onSuccessfulEdit" :editingProfile="editingProfile"/>
+              <EditProfile :userData="viewingUser"
+                           :cancelEdit="cancelEdit"
+                           :onSuccessfulEdit="onSuccessfulEdit" />
             </v-content>
             Bio:
             <v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">

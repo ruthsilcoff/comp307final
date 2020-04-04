@@ -139,7 +139,6 @@ const actions = {
 	async updateProfile({commit}, {bio, country}) {
     try {
       const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country})
-      console.log(response.data)
       commit('updateUserProfile', response.data)
     } catch (error) {
       console.log(error.response.data)
@@ -173,7 +172,7 @@ const mutations = {
   setViewingUser: (state, userID) => { state.viewingID = userID },
 	setSelfUser: (state, userID) => { state.selfID = userID },
 	updateUserProfile: (state, newProfile) => {
-    const user = state.users.find(user => user.id = newProfile.user)
+    let user = state.users.find(user => user.id === newProfile.user)
     user.profile = newProfile
   },
   setChats: (state, chats) => state.chats = chats,
