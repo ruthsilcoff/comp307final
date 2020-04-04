@@ -101,8 +101,8 @@ const actions = {
 	async getAllUsers({commit}) {
     const userResponse = await axios.get('/api/user/')
     const users = userResponse.data
-    const profileResposne = await axios.get('/api/profile/')
-    const profiles = profileResposne.data
+    const profileResponse = await axios.get('/api/profile/')
+    const profiles = profileResponse.data
     users.forEach(user => {
       const profile = profiles.find(profile => profile.user === user.id)
       if (!profile) {
@@ -136,13 +136,14 @@ const actions = {
     }
   },
 
-	async updateProfile({commit}, {bio, country, avatar}) {
+	async updateProfile({commit}, {bio, country}) {
     try {
-      const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country, avatar:avatar})
+      const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country})
       console.log(response.data)
       commit('updateUserProfile', response.data)
     } catch (error) {
       console.log(error.response.data)
+      throw error
     }
   },
 
