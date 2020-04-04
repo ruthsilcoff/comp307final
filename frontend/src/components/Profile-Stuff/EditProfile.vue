@@ -4,7 +4,7 @@
 		</v-textarea>
 		<v-text-field filled label="Country" v-model="countryInput" value=profileData.country></v-text-field>
 		<v-row>
-			<v-btn color="primary" v-on:click="editProfile()">Submit</v-btn>
+			<v-btn color="success" v-on:click="editProfile()">Submit</v-btn>
 			<v-btn color="error" v-on:click="cancelEdit()">Cancel</v-btn>
 		</v-row>
 	</v-content>
@@ -12,9 +12,10 @@
 
 <script>
 import axios from "axios"
+import {mapActions} from 'vuex'
 
 export default {
-	props: ['userData', 'profileData', 'cancelEdit', 'onSuccessfulEdit', 'avatarInput'],
+	props: ['userData', 'cancelEdit', 'onSuccessfulEdit', 'avatarInput'],
 
 	data: () => ({
 		bioInput: '',
@@ -26,19 +27,21 @@ export default {
 	},
 
 	methods: {
-		editProfile: function () {
-			axios.patch('/api/profile/' + this.userData.id + "/", { bio: this.bioInput, country: this.countryInput, avatar:this.avatarInput})
-			.then((response) => {
-          this.onSuccessfulEdit(response.data)
-        })
-      .catch((err) => {
-        console.error(err.response);
-      })
-		},
+		...mapActions(['updateProfile']),
+
+		editProfile: async function () {
+      let newProfile = {bio: this.bioInput, country: this.countryInput}
+      try {
+        await this.updateProfile(newProfile)
+        this.onSuccessfulEdit(newProfile)
+      } catch(error) {
+        console.log(error.response.data)
+      }
+    },
 
 		getCurrentProfile: function () {
-			this.bioInput = this.profileData.bio
-			this.countryInput = this.profileData.country
+			this.bioInput = this.userData.profile.bio
+			this.countryInput = this.userData.profile.country
 		},
 
 	}

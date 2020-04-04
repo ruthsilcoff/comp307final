@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <v-content v-if="allUsers.length > 0">
     <Header v-if="loggedIn === false"/>
     <profileHeader v-if="loggedIn === true"/>
 
@@ -59,7 +60,7 @@
         <v-switch style="margin: 0" v-model="$vuetify.theme.dark" v-on:change="changeTheme()" color="secondary" inset label="Dark theme"/>
       </v-bottom-navigation>
     </v-footer>
-
+  </v-content>
   </v-app>
 </template>
 
@@ -88,6 +89,7 @@ export default {
 
   computed: {
     ...mapGetters([
+      'allUsers',
       'newMessageDialog',
       'loggedIn',
       'getSnackbar',
@@ -221,6 +223,11 @@ export default {
 
 
 <style>
+
+a {
+  text-decoration: none !important;
+}
+
 .Header {
   position: absolute;
 }

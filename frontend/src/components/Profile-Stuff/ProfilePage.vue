@@ -24,7 +24,7 @@
           </v-card-title>
           <h3 style="margin-left:10px;">{{ viewingUser.username }}</h3>
           <v-card-text>
-            <h2>{{ viewingUser.first_name }} {{ viewingUser.last_name }}</h2>
+            <h2 v-if="viewingUser.first_name">{{ viewingUser.first_name }} {{ viewingUser.last_name }}</h2>
 
             <v-content v-if="editingProfile === true" style="margin: 0; padding: 0 !important;">
               <EditProfile :currentBio="viewingUser.profile.bio" :currentCountry="viewingUser.profile.country"
@@ -76,10 +76,9 @@ import axios from "axios"
 export default {
   props: ['username'],
 
-  mounted: async function() {
-    const viewingUser = await this.allUsers.find(user => user.username === this.$route.params.username)
-    console.log(viewingUser)
-    this.setViewingUser(viewingUser.id)
+  mounted: function() {
+    this.initialize()
+
   },
 
   components: {
@@ -89,6 +88,7 @@ export default {
   },
 
   data: () => ({
+    loading: true,
     showAvatarInput:false,
     events: [],
     editingProfile: false,
@@ -97,11 +97,26 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(['allUsers', 'myID', 'viewingID', 'viewingUser', 'isViewing']),
+    ...mapGetters(['myID', 'viewingID', 'viewingUser', 'isViewing', 'allUsers']),
+    viewingUserID() {
+      return this.allUsers.find(user => user.username === this.$route.params.username).id
+    },
   },
 
   methods: {
     ...mapActions(['setViewingUser', 'updateAvatar']),
+    async initialize() {
+      if (this.allUsers.length === 0) {
+        console.log("why is this not working")
+        this.loading = true
+      }
+      this.loading = false
+      const viewingUser = this.allUsers.find(user => user.username === this.$route.params.username)
+      console.log(this.allUsers)
+      console.log(viewingUser)
+      this.setViewingUser(viewingUser.id)
+    },
+
     submitAvatar: async function () {
       console.log(this.avatarInput)
       try {
@@ -120,11 +135,8 @@ export default {
     editProfilePage() {
       this.editingProfile = !this.editingProfile;
     },
-    onSuccessfulEdit: async function (newProfile) {
+    onSuccessfulEdit: async function () {
       this.editingProfile = false
-      // TODO: move to mutation
-      this.viewingUser.bio = newProfile.bio
-      this.viewingUser.country = newProfile.country
     },
     cancelEdit: function () {
       this.editingProfile = false
