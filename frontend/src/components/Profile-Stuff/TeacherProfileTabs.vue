@@ -45,7 +45,7 @@
 			items: [
 				'Lessons',
                 'Note Sets',
-                'Attending Events'
+                'Upcoming Lessons',
 			],
 			availabilities: [],
 			noteSets: [],
