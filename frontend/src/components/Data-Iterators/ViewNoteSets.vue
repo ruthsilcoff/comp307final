@@ -2,8 +2,13 @@
   <v-content>
 
     <v-list>
-      <v-list-item :v-for="item in noteSets" v-bind:key="item.id">
-        {{item.title}}
+      <v-list-item link v-for="item in noteSets" v-bind:key="item.id">
+        <v-list-item-title>
+          {{item.title}}
+        </v-list-item-title>
+        <v-list-item-subtitle>
+          {{item.description}}
+        </v-list-item-subtitle>
       </v-list-item>
     </v-list>
 
@@ -19,6 +24,7 @@ export default {
   name: 'App',
 
   mounted() {
+    this.getNoteSets()
   },
 
   components: {
