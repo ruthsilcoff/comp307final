@@ -250,6 +250,13 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.availabilities=response.data;
+          for (let i = 0; i < this.availabilities.length; i++) {
+            let start = this.availabilities[i].start.split("T")
+            this.availabilities[i].start = start[0] + " " + start[1]
+
+            let end = this.availabilities[i].end.split("T")
+            this.availabilities[i].end = end[0] + " " + end[1]
+          }
         })
       .catch((err) => {
         console.error(err.response.data);
@@ -269,7 +276,14 @@ export default {
       this.inputEnd = endD + ' ' + this.endTime
       axios.post('/api/availability/', {title:this.titleInput, start:this.inputStart, end:this.inputEnd})
         .then((response) => {
-          this.availabilities.push(response.data)
+          let newEvent = response.data
+          let start = newEvent.start.split("T")
+          newEvent.start = start[0] + " " + start[1]
+
+          let end = newEvent.end.split("T")
+          newEvent.end = end[0] + " " + end[1]
+
+          this.availabilities.push(newEvent)
         })
       .catch((err) => {
         console.error(err.response.data);
