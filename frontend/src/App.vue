@@ -25,24 +25,9 @@
       </v-btn>
     </v-snackbar>
 
-    <!-- Your own profile -->
-    <v-content v-if="page === 'ProfilePage'">
-      <ProfilePage :AddAvailability="AddAvailability" :onRequestLesson="onRequestLesson" :isViewing="false" :userData="userData"/>
-    </v-content>
-
-    <!-- Someone else's profile -->
-    <v-content v-if="page === 'ViewingProfilePage'">
-      <ProfilePage :AddAvailability="AddAvailability" :onRequestLesson="onRequestLesson" :isViewing="true" :userData="viewingUser"/>
-    </v-content>
-
     <!-- Book a lesson with a teacher -->
     <v-content v-if="page === 'RequestLesson'">
       <BookLesson :lessonIDinput="requestLessonID"/>
-    </v-content>
-
-    <!-- This is for teachers to add new times that they are available to teach -->
-    <v-content v-if="page === 'AddAvailability'">
-      <NewAvailability/>
     </v-content>
 
     <v-content v-if="page === 'CalendarPage'" justify="center">
@@ -78,8 +63,6 @@ export default {
     Header,
     profileHeader,
     LargeCalendar,
-    ProfilePage,
-    NewAvailability,
     BookLesson,
     NewMessage,
   },
@@ -191,10 +174,6 @@ export default {
 
     onCalendar: function () {
       this.page = 'CalendarPage'
-    },
-
-    AddAvailability: function () {
-      this.page = 'AddAvailability'
     },
 
     onRequestLesson: function(item) {

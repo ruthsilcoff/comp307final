@@ -53,10 +53,10 @@
         </v-card>
       </v-col>
       <v-col cols="8">
-        <v-content v-if="this.isViewing === false">
+        <v-content v-if="!viewingUser.profile.isTeacher">
           <RegularProfileTabs :userData="viewingUser"/>
         </v-content>
-        <v-content v-if="this.isViewing === true">
+        <v-content v-if="viewingUser.profile.isTeacher">
           <TeacherProfileTabs :somePosts="viewingPosts" :userData="viewingUser"/>
         </v-content>
       </v-col>

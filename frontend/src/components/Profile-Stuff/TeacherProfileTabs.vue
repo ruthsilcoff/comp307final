@@ -17,9 +17,12 @@
   <v-tabs-items v-model="tab">
     <v-tab-item>
       <v-container max-width="200px">
-        <v-btn large v-on:click="AddAvailability">
-              AddAvailability
-        </v-btn>
+        <router-link v-if="!isViewing" to="/addAvailability">
+          <v-btn large>
+            AddAvailability
+          </v-btn>
+
+        </router-link>
         <ViewAvails :userData="userData" :availabilities="availabilities"/>
       </v-container>
     </v-tab-item>
@@ -35,6 +38,7 @@
 
 <script>
   import axios from "axios"
+  import {mapGetters, mapActions} from 'vuex'
   import ViewAvails from "./ViewAvails"
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
   import ViewEvents from "../Data-Iterators/ViewEvents"
@@ -44,8 +48,8 @@
       tab: null,
 			items: [
 				'Lessons',
-                'Note Sets',
-                'Attending Events'
+        'Note Sets',
+        'Attending Events'
 			],
 			availabilities: [],
 			noteSets: [],
@@ -63,18 +67,11 @@
       this.getAvailabilities()
     },
 
-		methods: {
-			getAvailabiliti: function () {
-				axios.get('/api/availability/?userID=' + this.userData.id + "/")
-						.then((response) => {
-							console.log(response.data)
-							this.availabilities = response.data
-						})
-						.catch((err) => {
-							console.error(err.response)
-						})
-			},
+    computed: {
+      ...mapGetters(['isViewing']),
+    },
 
+		methods: {
       getAvailabilities: function() {
           axios.get('/api/availability/')
             .then((response) => {
