@@ -1,7 +1,7 @@
 <template>
   <v-container max-width="200px">
     <v-data-iterator
-      :items="availabilities"
+      :items="requestsGetter"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -25,19 +25,22 @@
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Date:</h3>
-                <h4>{{item.start}}</h4>
+                <h3>Request for:</h3>
+                <h4>{{item.avail.title}}</h4>
+                <h3>From:</h3>
+                <h4>{{item.student.username}}</h4>
               </v-card-text>
 
-              <v-btn v-if="item.booked === 'none'" color="success" text v-on:click="requestLesson(item)">
-                    Request
+              <v-btn v-if="!item.isConfirmed" color="success" v-on:click="confirm(item)">
+                    Confirm
               </v-btn>
-              <v-btn disabled v-if="item.booked === 'pending'" color="grey" text>
-                    Pending
+              <v-btn v-if="!item.isConfirmed" color="error" v-on:click="rejectRequest(item)">
+                    Reject
               </v-btn>
-              <v-btn v-if="item.booked === 'confirmed'" color="success" text>
-                    Booked
+              <v-btn v-if="item.isConfirmed" color="grey">
+                    Confirmed
               </v-btn>
+
 
             </v-card>
           </v-col>
@@ -128,12 +131,9 @@
     props: ['userData'],
 
 		computed: {
-      ...mapGetters(['availabilitiesOneTeacher']),
-      availabilities() {
-        return this.availabilitiesOneTeacher(this.userData.id)
-      },
+      ...mapGetters(['requestsGetter']),
       numberOfPages () {
-        return Math.ceil(this.availabilities.length / this.itemsPerPage)
+        return Math.ceil(this.requestsGetter.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
@@ -141,17 +141,27 @@
     },
 
 		methods: {
-      ...mapActions(['bookLesson', 'createSnackbar']),
-      async requestLesson(item) {
+      ...mapActions(['confirmLesson', 'createSnackbar']),
+      async confirm(item) {
         try {
-          await this.bookLesson({availabilityID: item.id, tutorID: this.userData.id})
-          this.createSnackbar({message: 'lesson requested!', color: 'success', mode: ''})
+          await this.confirmLesson({tutoringSessionID: item.id, bool: true})
+          this.createSnackbar({message: 'lesson confirmed!', color: 'success', mode: ''})
+        } catch (error) {
+          console.log(error)
+          this.createSnackbar({message: 'problem confirming lesson', color: 'error', mode: ''})
+        }
+      },
+
+        async rejectRequest(item) {
+        try {
+          await this.confirmLesson({tutoringSessionID: item.id, bool: false})
+          this.createSnackbar({message: 'lesson rejected', color: 'success', mode: ''})
         }catch(error) {
           console.log(error)
-          this.createSnackbar({message: 'problem requesting lesson', color: 'error', mode: ''})
+          this.createSnackbar({message: 'problem rejecting lesson', color: 'error', mode: ''})
         }
-
       },
+
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
       },

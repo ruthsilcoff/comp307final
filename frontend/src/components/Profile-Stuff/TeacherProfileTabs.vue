@@ -43,9 +43,11 @@
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
+      <ViewBooked/>
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
+      <ViewRequests/>
     </v-tab-item>
 
   </v-tabs-items>
@@ -57,6 +59,8 @@
   import {mapGetters, mapActions} from 'vuex'
   import ViewAvails from "./ViewAvails"
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
+  import ViewRequests from "./ViewRequests"
+  import ViewBooked from "./ViewBookedTeacher"
 
 	export default {
     data: () => ({
@@ -76,6 +80,8 @@
     components: {
       ViewAvails,
       ViewNoteSets,
+      ViewRequests,
+      ViewBooked,
     },
 
     mounted() {

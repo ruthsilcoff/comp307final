@@ -13,6 +13,8 @@ const state = {
 }
 
 const getters = {
+  requestsGetter: (state) => state.requests,
+  confirmedRequestsGetter: (state) => state.requests.filter(req => req.isConfirmed),
   availabilitiesGetter: (state) => state.availabilities,
   availabilitiesOneTeacher: (state) => (id) => state.availabilities.filter(avail => avail.userID === id),
 
@@ -95,9 +97,20 @@ const actions = {
     try {
       const response = await axios.get('/api/tutoringSession/')
       let currentUser = await state.users.find(user => user.id === state.selfID)
+
+      const response2 = await axios.get('/api/availability')
+      let avails = response2.data
+
       if (currentUser.profile.isTeacher) {
         if (response.data.length > 0) {
-          let requests = response.data.filter(session => session.tutorID === state.selfID && !session.isConfirmed)
+          let requests = response.data.filter(session => session.tutorID === state.selfID)
+
+          if (requests) {
+            for (let i = 0; i < requests.length; i++) {
+              requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
+              requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
+            }
+          }
           commit('setRequests', requests)
         }
       }
@@ -259,9 +272,6 @@ const mutations = {
   removeTutoringSession: (state, session) => {
     let index = state.tutoringSessions.indexOf(session)
     state.tutoringSessions.splice(index, 1)
-
-    let index2 = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === session.availabilityID))
-    state.availabilities[index2].booked = null
   },
   confirmLessonTrue: (state, session) => {
     let index = state.tutoringSessions.indexOf(session)

@@ -1,7 +1,7 @@
 <template>
   <v-container max-width="200px">
     <v-data-iterator
-      :items="availabilities"
+      :items="requestsGetter"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -19,25 +19,20 @@
             md="16"
             lg="4"
           >
-            <v-card>
+            <v-card v-if="item.isConfirmed">
               <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Date:</h3>
-                <h4>{{item.start}}</h4>
+                <h3>Confirmed Lesson for:</h3>
+                <h4>{{item.avail.title}}</h4>
+                <h3>From:</h3>
+                <h4>{{item.student.username}}</h4>
+                  <h3>On:</h3>
+                  <h4>{{item.start}}</h4>
               </v-card-text>
 
-              <v-btn v-if="item.booked === 'none'" color="success" text v-on:click="requestLesson(item)">
-                    Request
-              </v-btn>
-              <v-btn disabled v-if="item.booked === 'pending'" color="grey" text>
-                    Pending
-              </v-btn>
-              <v-btn v-if="item.booked === 'confirmed'" color="success" text>
-                    Booked
-              </v-btn>
 
             </v-card>
           </v-col>
@@ -128,12 +123,9 @@
     props: ['userData'],
 
 		computed: {
-      ...mapGetters(['availabilitiesOneTeacher']),
-      availabilities() {
-        return this.availabilitiesOneTeacher(this.userData.id)
-      },
+      ...mapGetters(['requestsGetter']),
       numberOfPages () {
-        return Math.ceil(this.availabilities.length / this.itemsPerPage)
+        return Math.ceil(this.requestsGetter.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
@@ -141,17 +133,7 @@
     },
 
 		methods: {
-      ...mapActions(['bookLesson', 'createSnackbar']),
-      async requestLesson(item) {
-        try {
-          await this.bookLesson({availabilityID: item.id, tutorID: this.userData.id})
-          this.createSnackbar({message: 'lesson requested!', color: 'success', mode: ''})
-        }catch(error) {
-          console.log(error)
-          this.createSnackbar({message: 'problem requesting lesson', color: 'error', mode: ''})
-        }
-
-      },
+      ...mapActions(['createSnackbar']),
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
       },
