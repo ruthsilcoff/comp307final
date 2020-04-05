@@ -1,7 +1,7 @@
 <template>
   <v-container max-width="200px">
     <v-data-iterator
-      :items="tutoringSessionsGetter"
+      :items="requestsGetter"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -19,16 +19,16 @@
             md="16"
             lg="4"
           >
-            <v-card v-if="item.isConfirmed && item.selfID===id">
+            <v-card v-if="item.isConfirmed">
               <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Confirmed Lesson:</h3>
+                <h3>Confirmed Lesson for:</h3>
                 <h4>{{item.avail.title}}</h4>
-                <h3>With Teacher:</h3>
-                <h4>{{item.tutorID}}</h4>
+                <h3>From:</h3>
+                <h4>{{item.student.username}}</h4>
                   <h3>On:</h3>
                   <h4>{{item.start}}</h4>
               </v-card-text>
@@ -123,7 +123,7 @@
     props: ['userData'],
 
 		computed: {
-      ...mapGetters(['tutoringSessionsGetter']),
+      ...mapGetters(['requestsGetter']),
       numberOfPages () {
         return Math.ceil(this.requestsGetter.length / this.itemsPerPage)
       },

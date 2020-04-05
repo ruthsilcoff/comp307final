@@ -43,6 +43,7 @@
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
+      <ViewBooked/>
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
@@ -59,6 +60,8 @@
   import ViewAvails from "./ViewAvails"
   import ViewRequests from "./ViewRequests"
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
+  import ViewRequests from "./ViewRequests"
+  import ViewBooked from "./ViewBookedTeacher"
 
 	export default {
     data: () => ({
@@ -79,6 +82,8 @@
       ViewRequests,
       ViewAvails,
       ViewNoteSets,
+      ViewRequests,
+      ViewBooked,
     },
 
     mounted() {

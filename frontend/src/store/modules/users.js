@@ -210,9 +210,7 @@ const actions = {
           if (requests) {
             for (let i = 0; i < requests.length; i++) {
               requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
-
               requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
-
             }
           }
           commit('setRequests', requests)
