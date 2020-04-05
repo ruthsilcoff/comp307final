@@ -61,10 +61,17 @@
 	export default {
     data: () => ({
       tab: null,
+			items: [
+				'Lesson Availabilities',
+        'Note Sets',
+        'Lessons Booked',
+                    'Lesson Requests'
+			],
+			availabilities: [],
 			noteSets: [],
     }),
 
-		props: ['userData', 'onRequestLesson', 'AddAvailability'],
+		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
     components: {
       ViewAvails,
@@ -75,7 +82,7 @@
     },
 
     computed: {
-      ...mapGetters(['isViewing']),
+      ...mapGetters(['isViewing', 'availabilitiesGetter', 'tutoringSessionsGetter', 'availabilitiesOneTeacher']),
     },
 
 		methods: {

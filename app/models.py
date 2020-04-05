@@ -125,4 +125,3 @@ class DirectMessage(models.Model):
     dateSent = models.DateTimeField(auto_now_add=True, null=True)
     picture = models.FileField(upload_to=get_chat_upload_path, null=True)
 
-

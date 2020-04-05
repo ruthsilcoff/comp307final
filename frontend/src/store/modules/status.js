@@ -63,7 +63,6 @@ const actions = {
     await dispatch('getMyChatsAndAllMessages')
     await dispatch('getAllTutoringSessions') // before avails
     await dispatch('getAllAvailabilities')
-
   },
 
   notLoggedIn({commit}) {

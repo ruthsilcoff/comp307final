@@ -19,7 +19,7 @@
             md="16"
             lg="4"
           >
-            <v-card>
+            <v-card v-if="!item.booked">
               <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>
@@ -38,6 +38,7 @@
               <v-btn v-if="item.booked === 'confirmed'" color="success" text>
                     Booked
               </v-btn>
+
             </v-card>
           </v-col>
         </v-row>
@@ -107,7 +108,18 @@
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
+     name: 'App',
+
+    mounted() {
+    this.getAvailabilities()
+  },
+
+    components: {
+  },
+
     data: () => ({
+      availabilities: [],
+      requests: [],
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -130,7 +142,6 @@
       availabilities() {
         return this.availabilitiesOneTeacher(this.userData.id)
       },
-
       numberOfPages () {
         return Math.ceil(this.availabilities.length / this.itemsPerPage)
       },
@@ -160,6 +171,7 @@
       updateItemsPerPage (number) {
         this.itemsPerPage = number
       },
+
     },
 
 	}

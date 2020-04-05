@@ -15,6 +15,7 @@
 <script>
 import axios from "axios"
 import {mapActions, mapGetters} from 'vuex'
+import {mapActions} from "vuex";
 
 export default {
   name: 'App',
@@ -33,7 +34,7 @@ export default {
   }),
 
   methods: {
-  ...mapActions(['createSnackbar']),
+    ...mapActions(['createSnackbar']),
     getNoteSets: function() {
       axios.get('/api/noteSet/')
         .then((response) => {
@@ -52,8 +53,9 @@ export default {
                 //await axios.post('/api/noteSetContent/',)
             }
             this.noteSets.push(response.data)
-            this.createSnackbar({message: 'note set created', color: 'success', mode: ''})
+            this.createSnackbar({message: 'Notes uploaded', color:'success', mode: ''})
         }catch(error){
+            this.createSnackbar({message: 'Problem uploading notes', color: 'error', mode: ''})
             console.log(error.response.data);
         }
     }
