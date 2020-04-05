@@ -30,7 +30,7 @@ const getters = {
   availabilitiesOneTeacher: (state) => (id) => state.availabilities.filter(session => session.avail.userID === id),
 
   tutoringSessionsGetter: (state) => state.tutoringSessions,
-  sessionsOneStudent: (state) => (id) => state.tutoringSessions.filter(avail => avail.learnerID === id && avail.isConfirmed),
+  sessionsOneStudent: (state) => (id) => state.tutoringSessions.filter(session => session.learnerID === id && session.isConfirmed),
 
 	newMessageDialog: (state) => state.messageDialog,
   myChatsGetter: (state) => state.chats,
