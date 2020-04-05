@@ -34,7 +34,7 @@
 
 <script>
 import axios from "axios"
-import Header from "./Basic-Site-Stuff/Header"
+import Header from "../Basic-Site-Stuff/Header"
 
 export default {
   name: 'App',

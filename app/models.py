@@ -14,11 +14,11 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def get_upload_path(instance, filename):
-    return 'photos/user-' + str(instance.user) + '/' + filename
+    return 'photos/noteSet-' + str(instance.noteSetID) + '/' + filename
 
 
 def get_chat_upload_path(instance, filename):
-    return 'chatPhotos/user-' + str(instance.user) + '/' + filename
+    return 'chatPhotos/user-' + str(instance.author) + '/' + filename
 
 
 def get_avatar_path(instance, filename):

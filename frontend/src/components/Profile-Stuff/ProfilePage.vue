@@ -1,11 +1,9 @@
 <template>
-<v-content style="margin-top: 100px;" v-if="viewingUser">
+<v-content v-if="viewingUser">
   <v-content id="innerPage">
-    <h1 v-if="viewingUser.profile.isTeacher">Teacher</h1>
-    <h1 v-if="!viewingUser.profile.isTeacher">Student</h1>
-    <v-row>
+    <v-row style="padding: 0; margin: 0;">
       <v-col cols="4">
-        <v-card style="width: 300px;">
+        <v-card style="width: 300px; position: relative !important;">
           <v-card-title>
             <v-avatar v-on:mouseenter="showAvatarInput = true" style="position:relative !important" v-if="viewingUser.profile.avatar !== null" size="200px">
               <v-img :src="viewingUser.profile.avatar"></v-img>
@@ -24,39 +22,67 @@
           </v-card-title>
           <h3 style="margin-left:10px;">{{ viewingUser.username }}</h3>
           <v-card-text>
-            <h2 v-if="viewingUser.first_name">{{ viewingUser.first_name }} {{ viewingUser.last_name }}</h2>
+            <EditProfile v-if="editingProfile === true" :userData="viewingUser"
+                         :cancelEdit="cancelEdit"
+                         :onSuccessfulEdit="onSuccessfulEdit" />
 
-            <v-content v-if="editingProfile === true" style="margin: 0; padding: 0 !important;">
-              <EditProfile :userData="viewingUser"
-                           :cancelEdit="cancelEdit"
-                           :onSuccessfulEdit="onSuccessfulEdit" />
-            </v-content>
-            Bio:
-            <v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">
-              <h2 style="margin: 0; padding: 0;" v-if="viewingUser.profile.bio !== '' && viewingUser.profile.bio !== null">{{ viewingUser.profile.bio }} </h2>
-              <v-btn v-if="isViewing === false" color="secondary" icon medium v-on:click="editProfilePage()">
-                <v-icon color="secondary" large>mdi-pencil</v-icon>
-              </v-btn>
-            </v-content>
+            <v-divider ></v-divider>
 
-            Country:
-            <v-content v-if="editingProfile === false" style="margin: 0; padding: 0; line-height:2;">
-              <h3 class="grey--text" style="margin: 0; padding: 0;" v-if="viewingUser.profile.country !== '' && viewingUser.profile.country !== null">
-                <v-icon small color="grey">mdi-map-marker</v-icon>
-                {{ viewingUser.profile.country }}
-              </h3>
-              <v-btn v-if="isViewing === false" color="secondary" icon medium v-on:click="editProfilePage()">
-                <v-icon color="secondary" large>mdi-pencil</v-icon>
+            <h1 style="margin: 10px;" v-if="viewingUser.profile.bio && !editingProfile">{{ viewingUser.profile.bio }} </h1>
+
+            <v-divider ></v-divider>
+
+            <h3 style="margin: 10px;" class="grey--text" v-if="viewingUser.profile.country && !editingProfile">
+              <v-icon small color="grey">mdi-map-marker</v-icon>
+              {{ viewingUser.profile.country }}
+            </h3>
+            <v-row justify="center">
+              <v-btn style="margin: 0;" v-if="!isViewing && !editingProfile" color="secondary" text medium v-on:click="editProfilePage()">
+                <v-icon >mdi-pencil</v-icon>Edit
               </v-btn>
-            </v-content>
+            </v-row>
           </v-card-text>
+        </v-card>
+        <v-card style="width: 300px; margin-top: 20px;">
+          <v-btn v-on:click="editingSubjects = true" style="position: absolute !important; margin: 0; padding: 0; right: 5px; top: 5px;" color="secondary">Add</v-btn>
+          <v-card-title>Subjects</v-card-title>
+          <v-chip-group>
+            <v-chip v-for="item in subjectsTaught" v-bind:key="item.id" value="item.name"></v-chip>
+          </v-chip-group>
+          <v-divider></v-divider>
+          <v-combobox
+            v-if="editingSubjects"
+            v-model="subjectsInput"
+            :items="allSubjectNames"
+            chips
+            clearable
+            label="Subjects you teach"
+            multiple
+            solo
+          >
+            <template v-slot:selection="{ attrs, item, select, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                close
+                @click="select"
+                @click:close="remove(item)"
+              >
+                <strong>{{ item }}</strong>&nbsp;
+              </v-chip>
+            </template>
+          </v-combobox>
+          <v-btn v-on:click="updateSubjectsTaught()" v-if="editingSubjects" color="success"><v-icon left>mdi-save-content</v-icon>Save</v-btn>
         </v-card>
       </v-col>
       <v-col cols="8">
-        <v-content v-if="!viewingUser.profile.isTeacher">
+        <h1 v-if="viewingUser.profile.isTeacher">Teacher</h1>
+        <h1 v-if="!viewingUser.profile.isTeacher">Student</h1>
+        <h2 style="font-size: 50px; margin: 10px;" v-if="viewingUser.first_name">{{ viewingUser.first_name }} {{ viewingUser.last_name }}</h2>
+        <v-content style="margin: 0; padding: 0" v-if="!viewingUser.profile.isTeacher">
           <RegularProfileTabs :userData="viewingUser"/>
         </v-content>
-        <v-content v-if="viewingUser.profile.isTeacher">
+        <v-content style="margin: 0; padding: 0" v-if="viewingUser.profile.isTeacher">
           <TeacherProfileTabs :userData="viewingUser"/>
         </v-content>
       </v-col>
@@ -88,26 +114,78 @@ export default {
   },
 
   data: () => ({
+    subjectsInput: [],
     loading: true,
     showAvatarInput:false,
     events: [],
     editingProfile: false,
+    editingSubjects: false,
     editAvatar: false,
     avatarInput: null,
   }),
 
   computed: {
-    ...mapGetters(['myID', 'viewingID', 'viewingUser', 'isViewing', 'allUsers']),
+    ...mapGetters(['myID', 'viewingID', 'viewingUser', 'isViewing', 'allUsers', 'subjectsGetter', 'subjectsOneTeacher']),
     viewingUserID() {
       return this.allUsers.find(user => user.username === this.$route.params.username).id
+    },
+    subjectsTaught() {
+      if (this.viewingUser) {
+        if (this.viewingUser.profile.isTeacher) {
+          return this.subjectsOneTeacher(this.viewingID).map(subject => subject.name)
+        }
+        else {
+          return []
+        }
+      }
+      else {
+        return []
+      }
+    },
+    allSubjectNames() {
+      return this.subjectsGetter.map(subject => subject.name)
     },
   },
 
   methods: {
-    ...mapActions(['setViewingUser', 'updateAvatar']),
+    ...mapActions(['setViewingUser', 'updateAvatar', 'addNewSubject', 'addTeacherSubject', 'createSnackbar']),
+    async updateSubjectsTaught() {
+      this.subjectsInput = [...this.subjectsInput]
+      console.log(this.subjectsInput)
+      for (let i = 0; i < this.subjectsInput.length; i++) {
+        if (!this.subjectsTaught.includes(this.subjectsInput[i])) {
+          if (this.allSubjectNames.includes(this.subjectsInput[i]) ) {
+            try {
+              this.addTeacherSubject({name: this.subjectsInput[i]})
+              this.createSnackbar({message: "Subject added to list", color: 'success'})
+            }catch(error) {
+              this.createSnackbar({message: "Problem adding subject", color: 'error'})
+            }
+          }
+          else {
+            try {
+              await this.addNewSubject({name: this.subjectsInput[i]})
+              this.createSnackbar({message: "New subject created", color: 'success'})
+              await this.addTeacherSubject({name: this.subjectsInput[i]})
+              this.createSnackbar({message: "Subject added to list", color: 'success'})
+            }catch(error) {
+              this.createSnackbar({message: "Problem adding subject", color: 'error'})
+            }
+          }
+        }
+      }
+      this.editingSubjects = false
+    },
+
+    remove (item) {
+      this.subjectsInput.splice(this.subjectsInput.indexOf(item), 1)
+      this.subjectsInput = [...this.subjectsInput]
+    },
+
     async initialize() {
       const viewingUser = this.allUsers.find(user => user.username === this.$route.params.username)
-      this.setViewingUser(viewingUser.id)
+      await this.setViewingUser(viewingUser.id)
+      this.subjectsInput = this.subjectsTaught
     },
 
     submitAvatar: async function () {

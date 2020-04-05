@@ -18,7 +18,7 @@
 
 <script>
 import axios from "axios"
-import NewNoteSet from "../NewNoteSet"
+import NewNoteSet from "../Data-Iterators/NewNoteSet"
 import SearchBySubject from "../SearchBySubject"
 import file from "../file"
 

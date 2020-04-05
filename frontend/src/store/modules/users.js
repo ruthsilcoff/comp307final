@@ -10,11 +10,22 @@ const state = {
   tutoringSessions: [],
   availabilities: [],
   requests: [],
+  subjects: [],
+  teacherSubjects: [],
+  noteSets: [],
 }
 
 const getters = {
+  noteSetsGetter: (state) => state.noteSets,
+  oneNoteSet: (state) => (id) => state.noteSets.find(set => set.id === id),
+  noteSetsOneTeacher: (state) => (id) => state.noteSets.filter(set => set.userID === id),
+
+  subjectsGetter: (state) => state.subjects,
+  subjectsOneTeacher: (state) => (id) => state.teacherSubjects.filter(subject => subject.teacherID === id),
+
   requestsGetter: (state) => state.requests,
   confirmedRequestsGetter: (state) => state.requests.filter(req => req.isConfirmed),
+
   availabilitiesGetter: (state) => state.availabilities,
   availabilitiesOneTeacher: (state) => (id) => state.availabilities.filter(avail => avail.userID === id),
 
@@ -35,6 +46,96 @@ const getters = {
 }
 
 const actions = {
+  async getAllNoteSets({commit}) {
+    try {
+      const response = await axios.get('/api/noteSet/')
+      let noteSets = response.data
+      const response2 = await axios.get('/api/noteSetContent/')
+      let noteSetContentFiles = response2.data
+
+      for (let i = 0; i < noteSets.length; i++) {
+        noteSets[i].content = noteSetContentFiles.filter(file => file.noteSetID === noteSets[i].id)
+      }
+      commit('setAllNoteSets', noteSets)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async newNoteSet({commit}, {title, description, files}) {
+    try {
+      const response = await axios.post('/api/noteSet/', {title, description})
+      let newNoteSet = response.data
+      let contentFiles = []
+      for (let i = 0; i < files.length; i++) {
+        console.log(files[i])
+        let fileData = new FormData()
+        fileData.append('content', files[i])
+        fileData.append('noteSetID', newNoteSet.id)
+        const response2 = await axios.post('/api/noteSetContent/', fileData, {
+        headers: {'Content-Type': 'multipart/form-data'}
+        })
+        contentFiles.push(response2.data)
+      }
+      newNoteSet.content = contentFiles
+      commit('addNoteSet', newNoteSet)
+    }catch(error){
+        console.log(error.response.data);
+        throw error
+    }
+  },
+
+  async getAllSubjects({commit}) {
+    try {
+      const response = await axios.get('/api/subject/')
+      commit('setAllSubjects', response.data)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async addNewSubject({commit}, {name}) {
+    try {
+      console.log("hi")
+      const response = await axios.post('/api/subject/', {name})
+      commit('newSubject', response.data)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async addTeacherSubject({commit}, {name}) {
+    try {
+      let subjectID = state.subjects.find(subject => subject.name === name).id
+      const response = await axios.post('/api/teachesSubjects/', {subject: subjectID})
+      let teacherSubject = response.data
+      teacherSubject.subject = state.subjects.find(subject => subject.id === teacherSubject.subject.id)
+      commit('newTeacherSubject', teacherSubject)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async getAllTeacherSubjects({commit}) {
+    try {
+      const response = await axios.get('/api/teachesSubjects/')
+      let subjects = response.data
+      if (subjects.length > 0) {
+        for (let i = 0; i < subjects.length; i++) {
+          subjects[i].subject = state.subjects.find(subject => subject.id === subjects[i].subject.id)
+        }
+      }
+      commit('setAllTeachesSubjects', subjects)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
   async bookLesson({commit}, {availabilityID, tutorID}) {
     try {
       const response = await axios.post('/api/tutoringSession/', {availabilityID: availabilityID, tutorID: tutorID})
@@ -57,7 +158,7 @@ const actions = {
         commit('confirmLessonTrue', response.data)
       }
     }catch(error) {
-      console.log(error.response.data)
+      console.log(error)
       throw error
     }
   },
@@ -98,10 +199,11 @@ const actions = {
       const response = await axios.get('/api/tutoringSession/')
       let currentUser = await state.users.find(user => user.id === state.selfID)
 
-      const response2 = await axios.get('/api/availability')
+      const response2 = await axios.get('/api/availability/')
       let avails = response2.data
 
       if (currentUser.profile.isTeacher) {
+
         if (response.data.length > 0) {
           let requests = response.data.filter(session => session.tutorID === state.selfID)
 
@@ -127,12 +229,21 @@ const actions = {
       let messages = response.data
       commit('setMessages', response.data)
 
+      for (let m=0; m < messages.length; m++) {
+        let convertedDate = (new Date(messages[m].dateSent)).toString()
+        convertedDate = convertedDate.split(":")
+        convertedDate = convertedDate[0] + convertedDate[1]
+        messages[m].dateSent = convertedDate
+
+        messages[m].author = state.users.find(user => user.id === messages[m].author)
+      }
+
       const response2 = await axios.get('/api/chat/')
       let chats = response2.data.filter(chat => chat.owner === state.selfID)
       for (let i = 0; i < chats.length; i++) {
         messages = messages.filter(
-          msg => ((msg.author === chats[i].owner && msg.sentTo === chats[i].otherUser)
-            || (msg.author === chats[i].otherUser && msg.sentTo === chats[i].owner))
+          msg => ((msg.author.id === chats[i].owner && msg.sentTo === chats[i].otherUser)
+            || (msg.author.id === chats[i].otherUser && msg.sentTo === chats[i].owner))
         )
         chats[i].messages = messages
         chats[i].mostRecent = chats[i].messages[(messages.length)-1]
@@ -205,7 +316,6 @@ const actions = {
         throw `error: profile not found for user ${user.id}`
       }
       user.profile = profile
-      console.log(user.profile)
     })
     commit('setUsers', users)
   },
@@ -264,17 +374,25 @@ const actions = {
 }
 
 const mutations = {
+  setAllNoteSets: (state, sets) => state.noteSets = sets,
+  addNoteSet: (state, newSet) => state.noteSets.push(newSet),
+
+  setAllSubjects: (state, subjects) => state.subjects = subjects,
+  newSubject: (state, newSubject) => state.subjects.push(newSubject),
+  setAllTeachesSubjects: (state, subjects) => state.teacherSubjects = subjects,
+  newTeacherSubject: (state, newSubject) => state.teacherSubjects.push(newSubject),
+
   setPending: (state, id) => {
     let index = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === id))
     state.availabilities[index].booked = 'pending'
   },
 
   removeTutoringSession: (state, session) => {
-    let index = state.tutoringSessions.indexOf(session)
+    let index = state.tutoringSessions.indexOf(state.tutoringSessions.find(sesh => sesh.id === session.id))
     state.tutoringSessions.splice(index, 1)
   },
   confirmLessonTrue: (state, session) => {
-    let index = state.tutoringSessions.indexOf(session)
+    let index = state.tutoringSessions.indexOf(state.tutoringSessions.find(sesh => sesh.id === session.id))
     state.tutoringSessions[index].isConfirmed = true
 
     let index2 = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === session.availabilityID))

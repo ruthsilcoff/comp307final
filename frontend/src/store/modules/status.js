@@ -7,6 +7,10 @@ const state = {
   snackbarColor: '',
   snackbarMode: '',
   tab: 0,
+  leftDrawer: false,
+  rightDrawer: false,
+  tempLeft: false,
+  tempRight: false,
 }
 
 const getters = {
@@ -17,18 +21,37 @@ const getters = {
   getSnackbarMode: (state) => (state.snackbarMode),
   loggedIn: (state) => state.loggedIn,
   loggedInSnackBar: (state) => state.loggedInSnackBar,
+  leftDrawerGetter: (state) => (state.leftDrawer),
+  rightDrawerGetter: (state) => (state.rightDrawer),
+  tempLeftGetter: (state) => (state.tempLeft),
+  tempRightGetter: (state) => (state.tempRight),
 }
 
 const actions = {
+  changeLeftDrawer({commit}, bool) {
+    commit('setLeftDrawer', bool)
+  },
+
+  changeRightDrawer({commit}, bool) {
+    commit('setRightDrawer', bool)
+  },
+
+  changeTempLeft({commit}, bool) {
+    commit('setTempLeft', bool)
+  },
+
+  changeTempRight({commit}, bool) {
+    commit('setTempRight', bool)
+  },
+
   setTabNumber({commit}, num) {
     commit('setTab', num)
   },
 
-  createSnackbar({commit}, {message, color, mode}) {
+  createSnackbar({commit}, {message, color}) {
     commit('setSnackBar', true)
     commit('setSnackBarMessage', message)
     commit('setSnackBarColor', color)
-    commit('setSnackBarMode', mode)
   },
 
   removeSnackbar({commit}) {
@@ -63,6 +86,9 @@ const actions = {
     await dispatch('getMyChatsAndAllMessages')
     await dispatch('getAllTutoringSessions') // before avails
     await dispatch('getAllAvailabilities')
+    await dispatch('getAllSubjects')
+    await dispatch('getAllTeacherSubjects') // after getAllSubjects
+    await dispatch('getAllNoteSets')
   },
 
   notLoggedIn({commit}) {
@@ -71,6 +97,10 @@ const actions = {
 }
 
 const mutations = {
+  setLeftDrawer: (state, bool) => (state.leftDrawer = bool),
+  setRightDrawer: (state, bool) => (state.rightDrawer = bool),
+  setTempLeft: (state, bool) => (state.tempLeft = bool),
+  setTempRight: (state, bool) => (state.tempRight = bool),
   setTab: (state, tab) => state.tab = tab,
   setLoggedIn: (state, loggedIn) => { state.loggedIn = loggedIn },
   setLogInSnackBar: (state, bool) => (state.loggedInSnackBar = bool),

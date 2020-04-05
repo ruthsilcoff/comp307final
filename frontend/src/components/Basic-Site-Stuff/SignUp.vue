@@ -107,9 +107,9 @@ export default {
 				}
 				const response = await this.addUser(newUser)
 				await this.$router.push('/LogIn')
-				this.createSnackbar({message: 'successful sign up', color:'success', mode: ''})
+				this.createSnackbar({message: 'successful sign up', color:'success'})
 			}catch(error) {
-				this.createSnackbar({message: 'problem signing up', color:'error', mode: ''})
+				this.createSnackbar({message: 'problem signing up', color:'error'})
 				console.log(error.response.data)
 			}
 		},

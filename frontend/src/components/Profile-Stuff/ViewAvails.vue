@@ -108,8 +108,8 @@
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
+
     data: () => ({
-      requests: [],
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -145,10 +145,10 @@
       async requestLesson(item) {
         try {
           await this.bookLesson({availabilityID: item.id, tutorID: this.userData.id})
-          this.createSnackbar({message: 'lesson requested!', color: 'success', mode: ''})
+          this.createSnackbar({message: 'lesson requested!', color: 'success'})
         }catch(error) {
           console.log(error)
-          this.createSnackbar({message: 'problem requesting lesson', color: 'error', mode: ''})
+          this.createSnackbar({message: 'problem requesting lesson', color: 'error'})
         }
 
       },

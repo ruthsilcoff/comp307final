@@ -7,13 +7,13 @@
       app
       clipped
       left
-      width="220px"
+      width="250px"
       mobile-break-point="500px"
       overlay-color="secondary"
       disable-resize-watcher
     >
-      <v-toolbar fixed absolute width="100%" floating color="green" dark >
-        <v-icon v-on:click="setMessageDialog(true)" dark style="position: absolute !important; right: 5px; top:5px;" large >mdi-pencil-box-outline</v-icon>
+      <v-toolbar fixed absolute width="100%" floating color="yellowSwitch" >
+        <v-icon v-on:click="setMessageDialog(true)" dark style="position: absolute !important; right: 8px; top:15px;" large >mdi-pencil-box-outline</v-icon>
         <v-toolbar-title class="title">Chats({{this.numberUnread}})</v-toolbar-title>
         <v-row style="margin-left: 20px; margin-right: 40px" align="center" justify="center">
           <v-text-field
@@ -35,8 +35,9 @@
             link
             v-for="(item) in myChatsGetter"
             v-bind:key="item.id"
+            v-on:click="openChat(item)"
           >
-            <v-list-item-avatar v-on:click="openChat(item)">
+            <v-list-item-avatar>
               <v-icon
                 color="green"
                 dark
@@ -71,19 +72,36 @@
 
 
     <!-- THE ACTUAL CONTENT OF THE PAGE-->
-    <v-content id="conversationBox"  style="position: relative; margin: 20px; padding: 20px">
-      <v-content v-if="this.viewingChat" style="display: block; position: relative !important;">
+    <v-content id="conversationBox" class="conversationBoxWhite" style="position: relative; margin: 20px; padding: 20px">
+      <v-content v-if="this.viewingChat" >
         <h1 v-if="viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.first_name}} {{this.viewingChat.otherUser.last_name}} </h1>
         <h1 v-if="!viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.username}} </h1>
-        <v-chip-group v-for="item in viewingChat.messages" v-bind:key="item.id">
-          <v-chip style="margin-left:50%;" v-if="item.author === myID">
-            {{item.content}} <span class="subtitle-1">{{item.dateSent}}</span>
-          </v-chip>
-          <v-chip v-if="item.author !== myID">
-            <v-list-item-title>{{item.content}}</v-list-item-title>
-            <v-list-item-subtitle>{{item.dateSent}}</v-list-item-subtitle>
-          </v-chip>
-        </v-chip-group>
+        <v-row v-for="item in viewingChat.messages" v-bind:key="item.id" :justify="(item.author.id === myID) ? 'right' : 'left'">
+          <v-col>
+            <v-chip-group >
+              <v-chip style="margin-left: 30%;" v-if="item.author.id === myID">
+                <v-avatar large v-if="item.author.profile.avatar" left>
+                  <v-img :src="item.author.profile.avatar"></v-img>
+                </v-avatar>
+                <v-avatar large v-if="!item.author.profile.avatar" left color="red">
+                  {{item.author.username[0]}}
+                </v-avatar>
+                {{item.content}}
+              </v-chip>
+              <v-chip v-if="item.author.id !== myID">
+                <v-avatar large v-if="item.author.profile.avatar" left>
+                  <v-img :src="item.author.profile.avatar"></v-img>
+                </v-avatar>
+                <v-avatar large v-if="!item.author.profile.avatar" left color="blue">
+                  {{item.author.username[0]}}
+                </v-avatar>
+                {{item.content}}
+              </v-chip>
+            </v-chip-group>
+            <span :style="(item.author.id === myID) ? 'margin-left: 30%;' : 'margin-left: 0;'"  class="subtitle-1">{{item.dateSent}}</span>
+          </v-col>
+        </v-row>
+
       </v-content>
 
       <div style="display: flex; position: absolute; left: 20%; right: 20%; bottom: 0; width: 100%; background-color: transparent;">
@@ -100,6 +118,27 @@
       </div>
     </v-content>
 
+    <!-- RIGHT DRAWER -->
+    <v-navigation-drawer
+      v-model="rightDrawerGetter"
+      app
+      clipped
+      right
+      width="220px"
+      mobile-break-point="500px"
+      overlay-color="secondary"
+      disable-resize-watcher
+    >
+      <v-combobox
+            style=" margin: 0;"
+            v-model="backgroundColor"
+            :items="['purple', 'blue', 'red', 'yellow', 'green', 'white', 'rainbow']"
+            label="Background Color"
+            required
+            v-on:change="updateBackground"
+        />
+    </v-navigation-drawer>
+
   </v-app>
 </v-content>
 </template>
@@ -109,6 +148,7 @@ import {mapGetters, mapActions} from "vuex"
 
 export default {
 	data: () => ({
+    backgroundColor: 'white',
     messageInput: null,
     photoInput: '',
     viewingChat: null,
@@ -128,7 +168,7 @@ export default {
   },
 
   computed: {
-		...mapGetters(['myChatsGetter', 'myID', 'leftDrawerGetter']),
+		...mapGetters(['myChatsGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter']),
     numberUnread() {
       let num = 0;
       console.log(this.myChatsGetter)
@@ -144,10 +184,11 @@ export default {
   },
 
   mounted() {
+    this.changeLeftDrawer(true)
   },
 
   methods: {
-    ...mapActions(['setMessageDialog', 'logOut', 'sendNewMessage', 'createSnackbar']),
+    ...mapActions(['setMessageDialog', 'logOut', 'sendNewMessage', 'createSnackbar', 'changeLeftDrawer']),
     openChat(item) {
       this.viewingChat = item
     },
@@ -155,12 +196,36 @@ export default {
     async sendMessage() {
       try {
         await this.sendNewMessage({to: this.viewingChat.otherUser.id, content: this.messageInput})
-        this.createSnackbar({message: 'Message sent.', color: 'success', mode: ''})
+        this.createSnackbar({message: 'Message sent.', color: 'success'})
       } catch(error){
         console.log(error.response.data)
-        this.createSnackbar({message: 'Problem sending message.', color: 'error', mode: ''})
+        this.createSnackbar({message: 'Problem sending message.', color: 'error'})
       }
       this.setMessageDialog(false)
+    },
+
+    updateBackground() {
+      if (this.backgroundColor === 'blue') {
+        document.getElementById("conversationBox").className = "conversationBoxBlue"
+      }
+      else if (this.backgroundColor === 'purple') {
+        document.getElementById("conversationBox").className = "conversationBoxBlue"
+      }
+      else if (this.backgroundColor === 'red') {
+        document.getElementById("conversationBox").className = "conversationBoxRed"
+      }
+      else if (this.backgroundColor === 'yellow') {
+        document.getElementById("conversationBox").className = "conversationBoxYellow"
+      }
+      else if (this.backgroundColor === 'green') {
+        document.getElementById("conversationBox").className = "conversationBoxGreen"
+      }
+      else if (this.backgroundColor === 'rainbow') {
+        document.getElementById("conversationBox").className = "conversationBoxRainbow"
+      }
+      else {
+        document.getElementById("conversationBox").style.background = this.backgroundColor
+      }
     },
 
   },
@@ -175,6 +240,58 @@ export default {
 #messengerChatThing {
   border-top: 1px solid black;
   border-bottom: 1px solid black;
+}
+
+.conversationBoxWhite {
+  background-color: white;
+}
+
+.conversationBoxPurple {
+  background-color: #922fff;
+}
+
+.conversationBoxBlue {
+  background-color: #00d3ff;
+}
+
+.conversationBoxYellow {
+  background-color: #fff800;
+}
+
+.conversationBoxGreen {
+  background-color: #00ff0f;
+}
+
+.conversationBoxRed {
+  background-color: #de0007;
+}
+
+.conversationBoxRainbow {
+  animation-name: messengerBackground;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes messengerBackground {
+  0% {
+    background-color: #00d3ff;
+  }
+  20% {
+    background-color: #7950ff;
+  }
+  40% {
+    background-color: #de0007;
+  }
+  60% {
+    background-color: #fff800;
+  }
+  80% {
+    background-color: #00ff0f;
+  }
+  100% {
+    background-color: #00d3ff;
+  }
 }
 
 </style>

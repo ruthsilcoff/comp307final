@@ -46,6 +46,11 @@ class SubjectViewSet(viewsets.ModelViewSet):
     serializer_class = SubjectSerializer
 
 
+class TeachesSubjectsViewSet(viewsets.ModelViewSet):
+    queryset = TeachesSubjects.objects.all()
+    serializer_class = TeachesSubjectsSerializer
+
+
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.all()
     serializer_class = AvailabilitySerializer
@@ -55,14 +60,13 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class TeachesSubjectsViewSet(viewsets.ModelViewSet):
-    queryset = TeachesSubjects.objects.all()
-    serializer_class = TeachesSubjectsSerializer
-
-
 class NoteSetViewSet(viewsets.ModelViewSet):
     queryset = NoteSet.objects.all()
     serializer_class = NoteSetSerializer
+
+    def create(self, request, *args, **kwargs):
+        request.data['userID'] = request.user.id
+        return super().create(request, *args, **kwargs)
 
 
 class NoteSetSubjectsViewSet(viewsets.ModelViewSet):

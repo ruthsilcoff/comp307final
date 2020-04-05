@@ -31,16 +31,18 @@
                 <h4>{{item.student.username}}</h4>
               </v-card-text>
 
-              <v-btn v-if="!item.isConfirmed" color="success" v-on:click="confirm(item)">
-                    Confirm
-              </v-btn>
-              <v-btn v-if="!item.isConfirmed" color="error" v-on:click="rejectRequest(item)">
-                    Reject
-              </v-btn>
-              <v-btn v-if="item.isConfirmed" color="grey">
+              <v-row>
+                <v-btn v-if="!item.isConfirmed" color="success" v-on:click="confirm(item)">
+                      Confirm
+                </v-btn>
+                <v-btn v-if="!item.isConfirmed" color="error" v-on:click="rejectRequest(item)">
+                      Reject
+                </v-btn>
+              </v-row>
+
+              <v-btn disabled v-if="item.isConfirmed" color="grey" >
                     Confirmed
               </v-btn>
-
 
             </v-card>
           </v-col>
@@ -111,8 +113,8 @@
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
+
     data: () => ({
-      requests: [],
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -132,6 +134,7 @@
 
 		computed: {
       ...mapGetters(['requestsGetter']),
+
       numberOfPages () {
         return Math.ceil(this.requestsGetter.length / this.itemsPerPage)
       },
@@ -145,22 +148,23 @@
       async confirm(item) {
         try {
           await this.confirmLesson({tutoringSessionID: item.id, bool: true})
-          this.createSnackbar({message: 'lesson confirmed!', color: 'success', mode: ''})
-        } catch (error) {
+          this.createSnackbar({message: 'lesson confirmed!', color: 'success'})
+        }catch(error) {
           console.log(error)
-          this.createSnackbar({message: 'problem confirming lesson', color: 'error', mode: ''})
+          this.createSnackbar({message: 'problem confirming lesson', color: 'error'})
+        }
+      },
+      async rejectRequest(item) {
+        try {
+          await this.confirmLesson({tutoringSessionID: item.id, bool: false})
+          this.createSnackbar({message: 'lesson confirmed!', color: 'success'})
+        }catch(error) {
+          console.log(error)
+          this.createSnackbar({message: 'problem confirming lesson', color: 'error'})
         }
       },
 
-        async rejectRequest(item) {
-        try {
-          await this.confirmLesson({tutoringSessionID: item.id, bool: false})
-          this.createSnackbar({message: 'lesson rejected', color: 'success', mode: ''})
-        }catch(error) {
-          console.log(error)
-          this.createSnackbar({message: 'problem rejecting lesson', color: 'error', mode: ''})
-        }
-      },
+
 
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
