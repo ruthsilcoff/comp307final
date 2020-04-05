@@ -58,7 +58,6 @@
   import axios from "axios"
   import {mapGetters, mapActions} from 'vuex'
   import ViewAvails from "./ViewAvails"
-  import ViewRequests from "./ViewRequests"
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
   import ViewRequests from "./ViewRequests"
   import ViewBooked from "./ViewBookedTeacher"
@@ -79,11 +78,10 @@
 		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
     components: {
-      ViewRequests,
       ViewAvails,
       ViewNoteSets,
-      ViewRequests,
       ViewBooked,
+      ViewRequests,
     },
 
     mounted() {
