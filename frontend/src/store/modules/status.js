@@ -56,6 +56,8 @@ const actions = {
     commit('setLoggedIn', true)
     await dispatch('getAllUsers') // before messages and chats
     await dispatch('getMyChatsAndAllMessages')
+    await dispatch('getAllTutoringSessions')
+    await dispatch('getAllAvailabilities')
   },
 
   notLoggedIn({commit}) {

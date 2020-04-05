@@ -19,7 +19,7 @@
             md="16"
             lg="4"
           >
-            <v-card v-if="item.booked === false">
+            <v-card v-if="!item.booked">
               <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>
@@ -29,9 +29,16 @@
                 <h4>{{item.start}}</h4>
               </v-card-text>
 
-              <v-btn color="success" text v-on:click="bookLesson(item)">
+              <v-btn v-if="!item.booked" color="success" text v-on:click="requestLesson(item)">
                     Request
               </v-btn>
+              <v-btn disabled v-if="item.booked === 'pending'" color="grey" text>
+                    Pending
+              </v-btn>
+              <v-btn v-if="item.booked === 'confirmed'" color="success" text>
+                    Booked
+              </v-btn>
+
             </v-card>
           </v-col>
         </v-row>
@@ -98,9 +105,21 @@
 
 <script>
   import axios from "axios"
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
+     name: 'App',
+
+    mounted() {
+    this.getAvailabilities()
+  },
+
+    components: {
+  },
+
     data: () => ({
+      availabilities: [],
+      requests: [],
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -116,9 +135,13 @@
 			],
 		}),
 
-    props: ['availabilities', 'userData', 'onRequestLesson'],
+    props: ['userData','onRequestLesson', 'AddAvailability'],
 
 		computed: {
+      ...mapGetters(['isViewing', 'availabilitiesGetter', 'tutoringSessionsGetter', 'availabilitiesOneTeacher']),
+          availabilities() {
+        return this.availabilitiesOneTeacher(this.userData.id)
+          },
       numberOfPages () {
         return Math.ceil(this.availabilities.length / this.itemsPerPage)
       },
@@ -128,6 +151,16 @@
     },
 
 		methods: {
+      ...mapActions(['bookLesson', 'createSnackbar','confirmLesson', 'getAllAvailabilities', 'getAllTutoringSessions']),
+          async requestLesson(item) {
+            try {
+              await this.bookLesson({id: item.id, tutorID: this.userData.id})
+              this.createSnackbar({message: 'lesson requested!', color: 'success', mode: ''})
+            }catch(error) {
+              this.createSnackbar({message: 'problem requesting lesson', color: 'error', mode: ''})
+            }
+          },
+
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
       },
@@ -137,6 +170,17 @@
       updateItemsPerPage (number) {
         this.itemsPerPage = number
       },
+
+           getAvailabilities: function() {
+          axios.get('/api/availability/')
+            .then((response) => {
+              console.log(response.data)
+              this.availabilities=response.data;
+            })
+          .catch((err) => {
+            console.error(err.response.data);
+          })
+    },
 
       bookLesson (item) {
         this.onRequestLesson(item)

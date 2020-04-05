@@ -6,11 +6,17 @@
     color="primary"
     grow
   >
-    <v-tab
-      v-for="item in items"
-      :key="item"
-    >
-      {{ item }}
+    <v-tab>
+      Lesson Availabilities
+    </v-tab>
+    <v-tab>
+      Note Sets
+    </v-tab>
+    <v-tab v-if="!isViewing">
+    Lessons Booked
+    </v-tab>
+    <v-tab v-if="!isViewing">
+      Lesson Requests
     </v-tab>
   </v-tabs>
 
@@ -25,6 +31,7 @@
         <ViewAvails :userData="userData" :availabilities="availabilities"/>
       </v-container>
     </v-tab-item>
+
     <v-tab-item>
       <router-link v-if="!isViewing" to="/newNoteSet">
           <v-btn large>
@@ -33,9 +40,15 @@
         </router-link>
       <ViewNoteSets/>
     </v-tab-item>
-    <v-tab-item>
+
+    <v-tab-item v-if="!isViewing">
       <ViewEvents/>
     </v-tab-item>
+
+    <v-tab-item v-if="!isViewing">
+      <ViewAvails :userData="userData" :availabilities="requests"/>
+    </v-tab-item>
+
   </v-tabs-items>
 </v-container>
 </template>
@@ -51,15 +64,16 @@
     data: () => ({
       tab: null,
 			items: [
-				'Lessons',
+				'Lesson Availabilities',
         'Note Sets',
-        'Attending Events'
+        'Lessons Booked',
+                    'Lesson Requests'
 			],
 			availabilities: [],
 			noteSets: [],
     }),
 
-		props: ['userData', 'onRequestLesson', 'AddAvailability'],
+		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
     components: {
       ViewAvails,
@@ -72,7 +86,7 @@
     },
 
     computed: {
-      ...mapGetters(['isViewing']),
+      ...mapGetters(['isViewing', 'availabilitiesGetter', 'tutoringSessionsGetter', 'availabilitiesOneTeacher']),
     },
 
 		methods: {
