@@ -40,9 +40,14 @@ const actions = {
   },
 
   async login({commit, dispatch}, {username, password}) {
-    const response = await axios.post('/api-token-auth/', {username, password})
-    localStorage.setItem('token', response.data.token)
-    await dispatch('yesLoggedIn')
+    try {
+      const response = await axios.post('/api-token-auth/', {username, password})
+      localStorage.setItem('token', response.data.token)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+
   },
 
   logOut({commit}) {
@@ -54,9 +59,9 @@ const actions = {
 
   async yesLoggedIn({commit, dispatch}) {
     commit('setLoggedIn', true)
-    await dispatch('getAllUsers') // before messages and chats
+    await dispatch('getAllUsers') // before messages and chats and avails
     await dispatch('getMyChatsAndAllMessages')
-    await dispatch('getAllTutoringSessions')
+    await dispatch('getAllTutoringSessions') // before avails
     await dispatch('getAllAvailabilities')
   },
 

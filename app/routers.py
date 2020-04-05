@@ -1,6 +1,6 @@
 from rest_framework import routers
 
-from app.views import UserViewSet, SubjectViewSet, NoteSetViewSet, \
+from .views import UserViewSet, SubjectViewSet, NoteSetViewSet, \
 	EventViewSet, AvailabilityViewSet, ProfileViewSet, TutoringSessionViewSet, \
 	ChatViewSet, DirectMessageViewSet, NoteSetContentViewSet
 

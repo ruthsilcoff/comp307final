@@ -33,7 +33,7 @@ export default {
 	}),
 
 	methods: {
-		...mapActions(['login', 'setMyUser', 'createSnackbar']),
+		...mapActions(['login', 'setMyUser', 'createSnackbar', 'yesLoggedIn']),
 
     logInFunction: async function () {
       this.loading = true
@@ -42,11 +42,11 @@ export default {
         await this.login(user)
         const response2 = await axios.get('/api/user/current/')
         await this.setMyUser(response2.data.id)
+				await this.yesLoggedIn()
         await this.$router.push('/')
 				this.createSnackbar({message: 'logged in', color:'success', mode: ''})
       }
       catch (error) {
-        console.error(error)
         this.createSnackbar({message: 'Problem logging in', color: 'error', mode: ''})
       }
     }

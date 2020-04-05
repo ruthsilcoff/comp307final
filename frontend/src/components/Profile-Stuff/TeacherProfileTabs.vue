@@ -6,14 +6,14 @@
     color="primary"
     grow
   >
-    <v-tab>
+    <v-tab >
       Lesson Availabilities
     </v-tab>
-    <v-tab>
+    <v-tab >
       Note Sets
     </v-tab>
     <v-tab v-if="!isViewing">
-    Lessons Booked
+      Lessons booked
     </v-tab>
     <v-tab v-if="!isViewing">
       Lesson Requests
@@ -21,6 +21,7 @@
   </v-tabs>
 
   <v-tabs-items v-model="tab">
+
     <v-tab-item>
       <v-container max-width="200px">
         <router-link v-if="!isViewing" to="/addAvailability">
@@ -28,7 +29,7 @@
             AddAvailability
           </v-btn>
         </router-link>
-        <ViewAvails :userData="userData" :availabilities="availabilities"/>
+        <ViewAvails :userData="userData" />
       </v-container>
     </v-tab-item>
 
@@ -42,11 +43,9 @@
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
-      <ViewEvents/>
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
-      <ViewAvails :userData="userData" :availabilities="requests"/>
     </v-tab-item>
 
   </v-tabs-items>
@@ -58,7 +57,6 @@
   import {mapGetters, mapActions} from 'vuex'
   import ViewAvails from "./ViewAvails"
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
-  import ViewEvents from "../Data-Iterators/ViewEvents"
 
 	export default {
     data: () => ({
@@ -78,11 +76,9 @@
     components: {
       ViewAvails,
       ViewNoteSets,
-      ViewEvents
     },
 
     mounted() {
-      this.getAvailabilities()
     },
 
     computed: {
@@ -90,17 +86,7 @@
     },
 
 		methods: {
-      getAvailabilities: function() {
-          axios.get('/api/availability/')
-            .then((response) => {
-              console.log(response.data)
-              this.availabilities=response.data;
-            })
-          .catch((err) => {
-            console.error(err.response.data);
-          })
     },
 
-		},
   }
 </script>

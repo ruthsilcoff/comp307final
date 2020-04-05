@@ -51,7 +51,6 @@ class Availability(models.Model):
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
     duration = models.DurationField(null=True)
-    booked = models.BooleanField(default=False)
     background = models.BooleanField(default=False)
     allDay = models.BooleanField(default=False)
 

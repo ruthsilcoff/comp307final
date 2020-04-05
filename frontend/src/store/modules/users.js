@@ -33,29 +33,29 @@ const getters = {
 }
 
 const actions = {
-  async confirmLesson({commit}, {tutoringSessionID, bool}) {
+  async bookLesson({commit}, {availabilityID, tutorID}) {
     try {
-      if(!bool) {
-        const response = await axios.delete( `/api/tutoring/Session/${tutoringSessionID}/`)
-        commit('removeTutoringSession', response.data)
-      }
-      if (bool) {
-        const response = await axios.patch(`/api/tutoring/Session/${tutoringSessionID}/`, {isConfirmed: bool})
-        commit('confirmLessonTrue', response.data)
-      }
+      const response = await axios.post('/api/tutoringSession/', {availabilityID: availabilityID, tutorID: tutorID})
+      commit('addTutoringSession', response.data)
+      commit('setPending', availabilityID)
     }catch(error) {
       console.log(error)
       throw error
     }
   },
 
-  async bookLesson({commit}, {availabilityID, tutorID}) {
+  async confirmLesson({commit}, {tutoringSessionID, bool}) {
     try {
-      const response = await axios.post( '/api/tutoringSession/', {availabilityID: availabilityID, tutorID: tutorID})
-      commit('addTutoringSession', response.data)
-      commit('asetPending', availabilityID)
+      if (!bool) {
+        const response = await axios.delete(`/api/tutoringSession/${tutoringSessionID}/`)
+        commit('removeTutoringSession', response.data)
+      }
+      if (bool) {
+        const response = await axios.patch(`/api/tutoringSession/${tutoringSessionID}/`, {isConfirmed: true})
+        commit('confirmLessonTrue', response.data)
+      }
     }catch(error) {
-      console.log(error)
+      console.log(error.response.data)
       throw error
     }
   },
@@ -64,24 +64,28 @@ const actions = {
     try {
       const response = await axios.get('/api/availability/')
       let avails = response.data
-      if ((avails.length > 0) && (!state.users.find( user => user.id).profile.isTeacher)) {
-        for (let i=0; i < avails.length; i ++) {
-          let session = state.tutoringSessions.find (session =>
-          session.availabilityID === avails[i].id &&
-          session.learnerID === state.myID
+      let currentUser = await state.users.find(user => user.id === state.selfID)
+      if ((avails.length > 0) && (!currentUser.profile.isTeacher)) {
+        for (let i= 0; i < avails.length; i++) {
+          let session = state.tutoringSessions.find(session =>
+            (session.availabilityID === avails[i].id) &&
+            (session.learnerID === state.selfID)
           )
           if (session) {
-            if (session.isConfirmed) {
+            if (!session.isConfirmed) {
               avails[i].booked = 'pending'
             }
             else {
               avails[i].booked = 'confirmed'
             }
           }
+          else {
+          avails[i].booked = 'none'
+          }
         }
       }
-
-    }catch(error){
+      commit('setAvails', avails)
+    }catch(error) {
       console.log(error)
       throw error
     }
@@ -89,17 +93,19 @@ const actions = {
 
   async getAllTutoringSessions({commit}) {
     try {
-      const response = await axios.get( '/api/tutoringSession/')
-      if (state.users.find( user => user.id).profile.isTeacher) {
-        let requests = response.data.filter(session => session.tutorID === state.selfID && !session.isConfirmed)
-        commit('setRequests', requests)
+      const response = await axios.get('/api/tutoringSession/')
+      let currentUser = await state.users.find(user => user.id === state.selfID)
+      if (currentUser.profile.isTeacher) {
+        if (response.data.length > 0) {
+          let requests = response.data.filter(session => session.tutorID === state.selfID && !session.isConfirmed)
+          commit('setRequests', requests)
+        }
       }
       commit('setTutoringSessions', response.data)
     }catch(error) {
       console.log(error)
       throw error
     }
-
   },
 
    async getMyChatsAndAllMessages({commit}) {
@@ -177,15 +183,16 @@ const actions = {
 
 	async getAllUsers({commit}) {
     const userResponse = await axios.get('/api/user/')
-    const users = userResponse.data
+    let users = userResponse.data
     const profileResponse = await axios.get('/api/profile/')
-    const profiles = profileResponse.data
+    let profiles = profileResponse.data
     users.forEach(user => {
       const profile = profiles.find(profile => profile.user === user.id)
       if (!profile) {
         throw `error: profile not found for user ${user.id}`
       }
       user.profile = profile
+      console.log(user.profile)
     })
     commit('setUsers', users)
   },
@@ -245,27 +252,30 @@ const actions = {
 
 const mutations = {
   setPending: (state, id) => {
-    let index = state.availabilities.find(avail => avail.id === id)
-  state.availabilities[index].booked = 'pending'
-},
+    let index = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === id))
+    state.availabilities[index].booked = 'pending'
+  },
+
   removeTutoringSession: (state, session) => {
     let index = state.tutoringSessions.indexOf(session)
     state.tutoringSessions.splice(index, 1)
 
-    let index2 = state.availabilities.find(avail => avail.id === session.availabilityID)
+    let index2 = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === session.availabilityID))
     state.availabilities[index2].booked = null
   },
   confirmLessonTrue: (state, session) => {
     let index = state.tutoringSessions.indexOf(session)
     state.tutoringSessions[index].isConfirmed = true
 
-    let index2 = state.availabilities.find(avail => avail.id === session.availabilityID)
+    let index2 = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === session.availabilityID))
     state.availabilities[index2].booked = 'confirmed'
   },
+
   addTutoringSession: (state, session) => state.tutoringSessions.push(session),
   setTutoringSessions: (state, sessions) => state.tutoringSessions = sessions,
-  setAvails: (state, avails) => state.availabilites = avails,
+  setAvails: (state, avails) => state.availabilities = avails,
   setRequests: (state, requests) => state.requests = requests,
+
 	changeMessageDialog: (state, bool) => state.messageDialog = bool,
   setUsers: (state, users) => { state.users = users },
   setViewingUser: (state, userID) => { state.viewingID = userID },

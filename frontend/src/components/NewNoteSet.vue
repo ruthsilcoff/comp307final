@@ -14,6 +14,7 @@
 
 <script>
 import axios from "axios"
+import {mapActions, mapGetters} from 'vuex'
 import {mapActions} from "vuex";
 
 export default {
@@ -33,7 +34,7 @@ export default {
   }),
 
   methods: {
-      ...mapActions(['createSnackbar']),
+    ...mapActions(['createSnackbar']),
     getNoteSets: function() {
       axios.get('/api/noteSet/')
         .then((response) => {
@@ -46,7 +47,7 @@ export default {
 
     addNoteSets: async function() {
         try {
-            const response = await axios.post('/api/noteSet/', {title:this.titleInput, description:this.descriptionInput})
+            const response = await axios.post('/api/noteSet/', {title:this.titleInput, description: this.descriptionInput})
             for (let i = 0; i < this.filesInput.length; i++) {
                 //TODO: need a file input function like the one used for uploading pictures
                 //await axios.post('/api/noteSetContent/',)
