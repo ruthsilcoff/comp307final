@@ -25,7 +25,7 @@
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Class: </h3>
+                <h3>Class:</h3>
                 <h3>Teacher ID: {{item.tutorID}}</h3>
                 <h3>Date: </h3>
               </v-card-text>

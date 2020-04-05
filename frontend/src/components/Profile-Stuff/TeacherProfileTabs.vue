@@ -18,6 +18,9 @@
     <v-tab v-if="!isViewing">
       Lesson Requests
     </v-tab>
+    <v-tab>
+      Reviews
+    </v-tab>
   </v-tabs>
 
   <v-tabs-items v-model="tab">
@@ -50,6 +53,15 @@
       <ViewRequests/>
     </v-tab-item>
 
+    <v-tab-item>
+      <router-link v-if="isViewing" to="/NewReview">
+          <v-btn color="success" large>
+            Add Review
+          </v-btn>
+        </router-link>
+      <ViewReviews/>
+    </v-tab-item>
+
   </v-tabs-items>
 </v-container>
 </template>
@@ -61,6 +73,7 @@
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
   import ViewRequests from "./ViewRequests"
   import ViewBooked from "./ViewBookedTeacher"
+  import ViewReviews from "./ViewReviews"
 
 	export default {
     data: () => ({
@@ -69,7 +82,8 @@
 				'Lesson Availabilities',
         'Note Sets',
         'Lessons Booked',
-                    'Lesson Requests'
+                    'Lesson Requests',
+                    'Reviews',
 			],
 			availabilities: [],
 			noteSets: [],
@@ -82,6 +96,7 @@
       ViewNoteSets,
       ViewBooked,
       ViewRequests,
+      ViewReviews,
     },
 
     mounted() {

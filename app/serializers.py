@@ -3,7 +3,7 @@ from rest_framework import serializers
 from . import models
 from .models import User, Subject, Availability, TeachesSubjects, NoteSet, \
     NoteSetSubjects, NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile, \
-    Chat, DirectMessage, NoteSetContent
+    Chat, DirectMessage, NoteSetContent, Reviews
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -80,4 +80,10 @@ class DirectMessageSerializer(serializers.ModelSerializer):
 class NoteSetContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = NoteSetContent
+        fields = '__all__'
+
+
+class ReviewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reviews
         fields = '__all__'
