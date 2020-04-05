@@ -25,7 +25,7 @@
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Student:</h3>
+                <h3>From:</h3>
                 <h4>{{item.student.username}}</h4>
                   <h3>Date:</h3>
                   <h4>{{item.avail.start}}</h4>
