@@ -27,9 +27,10 @@ const getters = {
   confirmedRequestsGetter: (state) => state.requests.filter(req => req.isConfirmed),
 
   availabilitiesGetter: (state) => state.availabilities,
-  availabilitiesOneTeacher: (state) => (id) => state.availabilities.filter(avail => avail.userID === id),
+  availabilitiesOneTeacher: (state) => (id) => state.availabilities.filter(session => session.avail.userID === id),
 
   tutoringSessionsGetter: (state) => state.tutoringSessions,
+  sessionsOneStudent: (state) => (id) => state.tutoringSessions.filter(avail => avail.learnerID === id && avail.isConfirmed),
 
 	newMessageDialog: (state) => state.messageDialog,
   myChatsGetter: (state) => state.chats,

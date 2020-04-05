@@ -1,7 +1,7 @@
 <template>
   <v-container max-width="200px">
     <v-data-iterator
-      :items="tutoringSessionsGetter"
+      :items="tutoringSessions"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -19,18 +19,15 @@
             md="16"
             lg="4"
           >
-            <v-card v-if="item.isConfirmed && item.selfID===id">
-              <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
+            <v-card>
+              <v-card-title class="subheading font-weight-bold">Session ID: {{ item.id}}</v-card-title>
 
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Confirmed Lesson:</h3>
-                <h4>{{item.avail.title}}</h4>
-                <h3>With Teacher:</h3>
-                <h4>{{item.tutorID}}</h4>
-                  <h3>On:</h3>
-                  <h4>{{item.start}}</h4>
+                <h3>Class: </h3>
+                <h3>Teacher ID: {{item.tutorID}}</h3>
+                <h3>Date: </h3>
               </v-card-text>
 
 
@@ -123,9 +120,12 @@
     props: ['userData'],
 
 		computed: {
-      ...mapGetters(['tutoringSessionsGetter']),
+      ...mapGetters(['sessionsOneStudent']),
+          tutoringSessions () {
+              return this.sessionsOneStudent(this.userData.id)
+          },
       numberOfPages () {
-        return Math.ceil(this.requestsGetter.length / this.itemsPerPage)
+        return Math.ceil(this.tutoringSessions.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
