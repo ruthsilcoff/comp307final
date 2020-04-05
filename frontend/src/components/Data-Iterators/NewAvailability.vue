@@ -191,7 +191,7 @@
               <v-toolbar color="info" dark>
                 <v-toolbar-title>My Calendar</v-toolbar-title>
               </v-toolbar>
-            <Calendar :events="availabilities"/>
+            <Calendar/>
           </v-content>
         </v-col>
       </v-row>

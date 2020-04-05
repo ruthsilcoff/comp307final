@@ -1,9 +1,9 @@
 <template>
 <v-card class="mx-auto" max-height="500px">
-  <v-toolbar fixed absolute width="100%" floating color="green" dark >
-    <v-icon v-on:click="setMessageDialog(true)" dark style="position: absolute !important; right: 5px; top:5px;" large >mdi-pencil-box-outline</v-icon>
+  <v-toolbar fixed absolute width="100%" floating color="yellowSwitch" >
+    <v-icon v-on:click="setMessageDialog(true)" style="position: absolute !important; right: 0; top:15px;" large >mdi-pencil-box-outline</v-icon>
     <v-toolbar-title class="title">Chats({{this.numberUnread}})</v-toolbar-title>
-    <div style="margin-left: 20px; margin-right: 40px" align="center" justify="center">
+    <v-row style="margin-left: 20px; margin-right: 40px" align="center" justify="center">
       <v-text-field
           dense
           class="d-none d-md-flex"
@@ -14,7 +14,7 @@
           prepend-inner-icon="mdi-magnify"
           style="width: 160px !important"
       ></v-text-field>
-    </div>
+    </v-row>
   </v-toolbar>
   <div style="overflow: scroll; max-height: 500px;" >
     <v-list dense style="margin-top: 65px; margin-bottom: 20px">

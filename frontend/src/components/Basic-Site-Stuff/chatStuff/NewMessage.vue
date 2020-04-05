@@ -39,6 +39,13 @@
           <span v-if="!item.first_name">{{item.username}}</span>
         </template>
 
+        <template v-slot:selection="{ item }">
+          <v-avatar v-if="item.profile.avatar" dark size="30"><v-img :src="item.profile.avatar"></v-img></v-avatar>
+          <v-avatar v-if="!item.profile.avatar" dark size="30" color="avatarColor">{{item.username[0]}}</v-avatar>
+          <span v-if="item.first_name">{{item.first_name}} {{item.last_name}}</span>
+          <span v-if="!item.first_name">{{item.username}}</span>
+        </template>
+
       </v-combobox>
 
       <v-textarea label="Content" v-model="contentInput"></v-textarea>
@@ -86,11 +93,11 @@ export default {
     async sendMessage() {
       try {
         await this.sendNewMessage({to: this.personInput.id, content: this.contentInput})
-        this.createSnackbar({message: 'Message sent.', color: 'success', mode: ''})
+        this.createSnackbar({message: 'Message sent.', color: 'success'})
         this.setMessageDialog(false)
       } catch(error){
         console.log(error)
-        this.createSnackbar({message: 'Problem sending message.', color: 'error', mode: ''})
+        this.createSnackbar({message: 'Problem sending message.', color: 'error'})
       }
     },
   },

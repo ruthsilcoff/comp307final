@@ -25,7 +25,7 @@
     <v-tab-item>
       <v-container max-width="200px">
         <router-link v-if="!isViewing" to="/addAvailability">
-          <v-btn large>
+          <v-btn color="success" large>
             AddAvailability
           </v-btn>
         </router-link>
@@ -35,7 +35,7 @@
 
     <v-tab-item>
       <router-link v-if="!isViewing" to="/newNoteSet">
-          <v-btn large>
+          <v-btn color="success" large>
             Add Note Set
           </v-btn>
         </router-link>
@@ -46,6 +46,7 @@
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
+      <ViewRequests/>
     </v-tab-item>
 
   </v-tabs-items>
@@ -56,6 +57,7 @@
   import axios from "axios"
   import {mapGetters, mapActions} from 'vuex'
   import ViewAvails from "./ViewAvails"
+  import ViewRequests from "./ViewRequests"
   import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
 
 	export default {
@@ -74,6 +76,7 @@
 		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
     components: {
+      ViewRequests,
       ViewAvails,
       ViewNoteSets,
     },

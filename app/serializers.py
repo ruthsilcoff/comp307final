@@ -24,15 +24,15 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AvailabilitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Availability
-        fields = '__all__'
-
-
 class TeachesSubjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeachesSubjects
+        fields = '__all__'
+
+
+class AvailabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Availability
         fields = '__all__'
 
 

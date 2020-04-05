@@ -1,7 +1,7 @@
 <template>
   <v-content style="margin: 0; padding: 0;">
 		<vue-cal
-				:events="events"
+				:events="lessons"
 				:time-from="9 * 60"
 				:time-to="23 * 60"
 				events-count-on-year-view
@@ -18,22 +18,28 @@
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
 import axios from "axios"
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
-  name: 'App',
-	props: ['events'],
+	props: [],
 
   components: { VueCal },
 
-	mounted() {
+	computed: {
+		...mapGetters(['myUser', 'requestsGetter', 'availabilitiesGetter']),
+		lessons() {
+			if (!this.myUser.profile.isTeacher) {
+				return this.requestsGetter.map(req => req.avail)
+			}
+			else {
+				//return something that we haven't set up yet for students
+				// lets just displaying everything for now
+				return this.availabilitiesGetter
+			}
+
+		}
 	},
 
-  data: () => ({
-	}),
-
-	methods: {
-
-  }
 };
 
 </script>

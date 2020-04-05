@@ -44,10 +44,10 @@ export default {
         await this.setMyUser(response2.data.id)
 				await this.yesLoggedIn()
         await this.$router.push('/')
-				this.createSnackbar({message: 'logged in', color:'success', mode: ''})
+				this.createSnackbar({message: 'logged in', color:'success'})
       }
       catch (error) {
-        this.createSnackbar({message: 'Problem logging in', color: 'error', mode: ''})
+        this.createSnackbar({message: 'Problem logging in', color: 'error'})
       }
     }
 	}
