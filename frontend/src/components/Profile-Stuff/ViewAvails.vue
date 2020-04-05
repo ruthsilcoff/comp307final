@@ -19,7 +19,7 @@
             md="16"
             lg="4"
           >
-            <v-card v-if="!item.booked">
+            <v-card>
               <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>
@@ -29,7 +29,7 @@
                 <h4>{{item.start}}</h4>
               </v-card-text>
 
-              <v-btn v-if="!item.booked" color="success" text v-on:click="requestLesson(item)">
+              <v-btn v-if="item.booked === 'none'" color="success" text v-on:click="requestLesson(item)">
                     Request
               </v-btn>
               <v-btn disabled v-if="item.booked === 'pending'" color="grey" text>
@@ -146,6 +146,7 @@
           await this.bookLesson({availabilityID: item.id, tutorID: this.userData.id})
           this.createSnackbar({message: 'lesson requested!', color: 'success', mode: ''})
         }catch(error) {
+          console.log(error)
           this.createSnackbar({message: 'problem requesting lesson', color: 'error', mode: ''})
         }
 

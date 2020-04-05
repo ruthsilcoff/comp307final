@@ -57,7 +57,7 @@
           <RegularProfileTabs :userData="viewingUser"/>
         </v-content>
         <v-content v-if="viewingUser.profile.isTeacher">
-          <TeacherProfileTabs :somePosts="viewingPosts" :userData="viewingUser"/>
+          <TeacherProfileTabs :userData="viewingUser"/>
         </v-content>
       </v-col>
     </v-row>

@@ -29,7 +29,7 @@
             AddAvailability
           </v-btn>
         </router-link>
-        <ViewAvails :userData="userData" :availabilities="availabilities"/>
+        <ViewAvails :userData="userData" />
       </v-container>
     </v-tab-item>
 
@@ -61,7 +61,6 @@
 	export default {
     data: () => ({
       tab: null,
-			availabilities: [],
 			noteSets: [],
     }),
 
@@ -73,7 +72,6 @@
     },
 
     mounted() {
-      this.getAvailabilities()
     },
 
     computed: {
@@ -81,17 +79,7 @@
     },
 
 		methods: {
-      getAvailabilities: function() {
-          axios.get('/api/availability/')
-            .then((response) => {
-              console.log(response.data)
-              this.availabilities=response.data;
-            })
-          .catch((err) => {
-            console.error(err.response.data);
-          })
     },
 
-		},
   }
 </script>
