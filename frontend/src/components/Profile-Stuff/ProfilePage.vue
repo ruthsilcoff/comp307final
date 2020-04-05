@@ -44,7 +44,7 @@
           </v-card-text>
         </v-card>
         <v-card style="width: 300px; margin-top: 20px;">
-          <v-btn v-on:click="editingSubjects = true" style="position: absolute !important; margin: 0; padding: 0; right: 5px; top: 5px;" color="secondary">Add</v-btn>
+          <v-btn v-if="!isViewing" v-on:click="editingSubjects = true" style="position: absolute !important; margin: 0; padding: 0; right: 5px; top: 5px;" color="secondary">Add</v-btn>
           <v-card-title>Subjects</v-card-title>
           <v-chip-group>
             <v-chip v-for="item in subjectsTaught" v-bind:key="item.id" value="item.name"></v-chip>

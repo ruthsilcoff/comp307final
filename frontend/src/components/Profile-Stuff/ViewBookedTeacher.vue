@@ -20,17 +20,15 @@
             lg="4"
           >
             <v-card v-if="item.isConfirmed">
-              <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
+              <v-card-title class="subheading font-weight-bold">{{ item.avail.title }}</v-card-title>
 
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Confirmed Lesson for:</h3>
-                <h4>{{item.avail.title}}</h4>
-                <h3>From:</h3>
+                <h3>Student:</h3>
                 <h4>{{item.student.username}}</h4>
-                  <h3>On:</h3>
-                  <h4>{{item.start}}</h4>
+                  <h3>Date:</h3>
+                  <h4>{{item.avail.start}}</h4>
               </v-card-text>
 
 
