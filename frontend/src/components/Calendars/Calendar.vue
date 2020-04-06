@@ -1,7 +1,7 @@
 <template>
   <v-content style="margin: 0; padding: 0;">
 		<vue-cal
-				:events="events"
+				:events="requestsGetter"
 				:time-from="0"
 				:time-to="24 * 60"
 				events-count-on-year-view
