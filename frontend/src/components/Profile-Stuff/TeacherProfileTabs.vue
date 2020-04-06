@@ -7,7 +7,7 @@
     grow
   >
     <v-tab >
-      Lesson Availabilities
+      Availabilities
     </v-tab>
     <v-tab >
       Note Sets
@@ -79,7 +79,7 @@
     data: () => ({
       tab: null,
 			items: [
-				'Lesson Availabilities',
+				'Availabilities',
         'Note Sets',
         'Lessons Booked',
                     'Lesson Requests',

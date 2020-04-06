@@ -20,14 +20,12 @@
             lg="4"
           >
             <v-card>
-              <v-card-title class="subheading font-weight-bold">Rating</v-card-title>
+              <v-card-title class="subheading font-weight-bold">Rating: {{item.rating}}/5</v-card-title>
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Review:</h3>
-                <h4>{{item.content}}</h4>
-                  <h3>By:</h3>
-                  <h4>writer</h4>
+                <h4>{{item.review}}</h4>
+                <h5>Reviewed by: {{item.reviewerID}}</h5>
               </v-card-text>
 
             </v-card>
@@ -107,11 +105,12 @@
 			sortDesc: false,
 			page: 1,
 			itemsPerPage: 4,
-			sortBy: 'duration',
+			sortBy: 'dateAdded',
 			keys: [
 				'Rating',
 				'Review',
 				'Reviewer',
+              'dateAdded',
 			],
 		}),
 
@@ -123,7 +122,7 @@
         return this.reviewsOneTeacher(this.userData.id)
           },
       numberOfPages () {
-        return Math.ceil(this.availabilities.length / this.itemsPerPage)
+        return Math.ceil(this.reviews.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)

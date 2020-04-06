@@ -89,6 +89,7 @@ const actions = {
     await dispatch('getAllSubjects')
     await dispatch('getAllTeacherSubjects') // after getAllSubjects
     await dispatch('getAllNoteSets')
+    await dispatch('getAllReviews')
   },
 
   notLoggedIn({commit}) {
