@@ -1,12 +1,11 @@
 <template>
   <v-content style="margin: 0; padding: 0;">
 		<vue-cal
-				:events="lessons"
-				:time-from="9 * 60"
-				:time-to="23 * 60"
+				:events="events"
+				:time-from="0"
+				:time-to="24 * 60"
 				events-count-on-year-view
 				events-on-month-view="short"
-				editable-events
 				class="vuecal--full-height-delete"
 		/>
 	</v-content>
@@ -23,13 +22,20 @@ import {mapGetters, mapActions} from 'vuex'
 export default {
 	props: [],
 
+	data: () => ({
+		events: [{
+			title: 'an event', start: '2020-04-04 14:12:00Z', end: '2020-04-04 15:14:00Z', allDay: false
+		},]
+	}),
+
   components: { VueCal },
 
 	computed: {
 		...mapGetters(['myUser', 'requestsGetter', 'availabilitiesGetter']),
 		lessons() {
-			if (!this.myUser.profile.isTeacher) {
-				return this.requestsGetter.map(req => req.avail)
+			if (this.myUser.profile.isTeacher) {
+				return this.availabilitiesGetter
+				//return this.requestsGetter.map(req => req.avail)
 			}
 			else {
 				//return something that we haven't set up yet for students
