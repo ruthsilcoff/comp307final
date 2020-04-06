@@ -47,7 +47,8 @@ export default {
 				this.createSnackbar({message: 'logged in', color:'success'})
       }
       catch (error) {
-        this.createSnackbar({message: 'Problem logging in', color: 'error'})
+				console.log("error")
+        this.createSnackbar({message: 'Wrong password', color: 'error'})
       }
     }
 	}

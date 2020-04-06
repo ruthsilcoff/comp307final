@@ -1,8 +1,8 @@
 <template>
   <v-content style="margin: 0; padding: 0;">
 		<vue-cal
-				:events="requestsGetter"
-				:time-from="0"
+				:events="lessons"
+				:time-from="9 * 60"
 				:time-to="24 * 60"
 				events-count-on-year-view
 				events-on-month-view="short"
@@ -31,11 +31,19 @@ export default {
   components: { VueCal },
 
 	computed: {
-		...mapGetters(['myUser', 'requestsGetter', 'availabilitiesGetter']),
+		...mapGetters(['myUser', 'confirmedRequestsGetter', 'availabilitiesGetter']),
 		lessons() {
 			if (this.myUser.profile.isTeacher) {
-				return this.availabilitiesGetter
-				//return this.requestsGetter.map(req => req.avail)
+				let lessons = []
+				for (let i = 0; i < this.confirmedRequestsGetter.length; i++) {
+					let lesson = this.confirmedRequestsGetter[i]
+					let avail = lesson.avail
+					avail.start = avail.start.split("T")[0] + " " + avail.start.split("T")[1]
+					avail.end = avail.end.split("T")[0] + " " + avail.end.split("T")[1]
+					lesson.avail = avail
+					lessons.push(avail)
+				}
+				return lessons
 			}
 			else {
 				//return something that we haven't set up yet for students
