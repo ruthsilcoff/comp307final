@@ -67,6 +67,7 @@ const actions = {
       const response = await axios.post('/api-token-auth/', {username, password})
       localStorage.setItem('token', response.data.token)
     }catch(error) {
+      this.createSnackbar({message: 'Wrong password', color: 'error'})
       console.log(error.response.data)
       throw error
     }

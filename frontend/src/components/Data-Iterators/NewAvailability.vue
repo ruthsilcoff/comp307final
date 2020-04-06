@@ -31,84 +31,89 @@
                   <v-btn text color="primary" @click="$refs.menu.save(startDate)">OK</v-btn>
                 </v-date-picker>
               </v-menu>
+            <v-row align="center" dense>
+              <v-text-field style="max-width: 30px !important;" type="number" v-model="startHour"></v-text-field>
+              :
+              <v-text-field style="max-width: 30px !important;" type="number" v-model="startMinutes"></v-text-field>
+            </v-row>
 
-              <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                :return-value.sync="startTime"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="startTime"
-                    label="Start time"
-                    readonly
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-time-picker
-                  v-if="menu1"
-                  v-model="startTime"
-                  full-width
-                  @click:minute="$refs.menu1.save(startTime)"
-                ></v-time-picker>
-              </v-menu>
-
-              <v-menu
-                ref="menu2"
-                v-model="menu2"
-                :close-on-content-click="false"
-                :return-value.sync="endDate"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
+            <v-menu
+              ref="menu1"
+              v-model="menu1"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="startTime"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
               <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="endDate"
-                    label="End date"
-                    readonly
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-if="menu2" v-model="endDate" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu2 = false">Cancel</v-btn>
-                  <v-btn text color="primary" @click="$refs.menu2.save(endDate)">OK</v-btn>
-                </v-date-picker>
-              </v-menu>
+                <v-text-field
+                  v-model="startTime"
+                  label="Start time"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="menu1"
+                v-model="startTime"
+                full-width
+                @click:minute="$refs.menu1.save(startTime)"
+              ></v-time-picker>
+            </v-menu>
 
-              <v-menu
-                ref="menu3"
-                v-model="menu3"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                :return-value.sync="endTime"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="endTime"
-                    label="End time"
-                    readonly
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-time-picker
-                  v-if="menu3"
+            <v-menu
+              ref="menu2"
+              v-model="menu2"
+              :close-on-content-click="false"
+              :return-value.sync="endDate"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+            <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="endDate"
+                  label="End date"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-if="menu2" v-model="endDate" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu2 = false">Cancel</v-btn>
+                <v-btn text color="primary" @click="$refs.menu2.save(endDate)">OK</v-btn>
+              </v-date-picker>
+            </v-menu>
+
+            <v-menu
+              ref="menu3"
+              v-model="menu3"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="endTime"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
                   v-model="endTime"
-                  full-width
-                  @click:minute="$refs.menu3.save(endTime)"
-                ></v-time-picker>
-              </v-menu>
+                  label="End time"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="menu3"
+                v-model="endTime"
+                full-width
+                @click:minute="$refs.menu3.save(endTime)"
+              ></v-time-picker>
+            </v-menu>
 
             <v-combobox
                 v-model="repeatInput"
@@ -214,6 +219,8 @@ export default {
   },
 
   data: () => ({
+    startHour: '',
+    startMinutes: '',
     availabilities: [],
     titleInput:'Lesson',
     startDate: null,
