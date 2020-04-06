@@ -119,11 +119,11 @@
 
 		computed: {
       ...mapGetters(['reviewsOneTeacher']),
-          reviews () {
+      reviews () {
         return this.reviewsOneTeacher(this.userData.id)
-          },
+      },
       numberOfPages () {
-        return Math.ceil(this.availabilities.length / this.itemsPerPage)
+        return Math.ceil(this.reviewsOneTeacher.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
