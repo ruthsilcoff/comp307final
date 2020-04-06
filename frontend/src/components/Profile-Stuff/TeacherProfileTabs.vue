@@ -7,7 +7,7 @@
     grow
   >
     <v-tab >
-      Lesson Availabilities
+      Availabilities
     </v-tab>
     <v-tab >
       Note Sets
@@ -80,7 +80,7 @@
       addingReview: false,
       tab: null,
 			items: [
-				'Lesson Availabilities',
+				'Availabilities',
         'Note Sets',
         'Lessons Booked',
                     'Lesson Requests',

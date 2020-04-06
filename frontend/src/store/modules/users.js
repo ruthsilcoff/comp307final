@@ -55,9 +55,7 @@ const actions = {
     try {
       const response = await axios.get('/api/review/')
       let revs = response.data
-      for (let i = 0; i < revs.length; i++) {
-        revs[i].content = revs.filter(user => user.id === revs[i].id)
-      }
+
       commit('setReviews', revs)
     }catch(error) {
       console.log(error)
