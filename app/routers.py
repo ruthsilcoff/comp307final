@@ -2,7 +2,7 @@ from rest_framework import routers
 
 from .views import UserViewSet, SubjectViewSet, TeachesSubjectsViewSet, NoteSetViewSet, \
 	EventViewSet, AvailabilityViewSet, ProfileViewSet, TutoringSessionViewSet, \
-	ChatViewSet, DirectMessageViewSet, NoteSetContentViewSet
+	ChatViewSet, DirectMessageViewSet, NoteSetContentViewSet, ReviewsViewSet
 
 router = routers.DefaultRouter()
 router.register('subject', SubjectViewSet)
@@ -16,4 +16,5 @@ router.register('profile', ProfileViewSet)
 router.register('tutoringSession', TutoringSessionViewSet)
 router.register('chat', ChatViewSet)
 router.register('dm', DirectMessageViewSet)
+router.register('review', ReviewsViewSet)
 

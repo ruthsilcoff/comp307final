@@ -13,9 +13,13 @@ const state = {
   subjects: [],
   teacherSubjects: [],
   noteSets: [],
+  reviews: [],
 }
 
 const getters = {
+  reviewsGetter: (state) => state.reviews,
+  reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
+
   noteSetsGetter: (state) => state.noteSets,
   oneNoteSet: (state) => (id) => state.noteSets.find(set => set.id === id),
   noteSetsOneTeacher: (state) => (id) => state.noteSets.filter(set => set.userID === id),
@@ -30,6 +34,7 @@ const getters = {
   availabilitiesOneTeacher: (state) => (id) => state.availabilities.filter(avail => avail.userID === id),
 
   tutoringSessionsGetter: (state) => state.tutoringSessions,
+  sessionsOneStudent: (state) => (id) => state.tutoringSessions.filter(session => session.learnerID === id && session.isConfirmed),
 
 	newMessageDialog: (state) => state.messageDialog,
   myChatsGetter: (state) => state.chats,
@@ -46,6 +51,32 @@ const getters = {
 }
 
 const actions = {
+  async getAllReviews({commit}) {
+    try {
+      const response = await axios.get('/api/review/')
+      let revs = response.data
+      for (let i = 0; i < revs.length; i++) {
+        revs[i].content = revs.filter(user => user.id === revs[i].id)
+      }
+      commit('setReviews', revs)
+    }catch(error) {
+      console.log(error)
+      throw error
+    }
+  },
+
+  async newReview({commit}, {rating, review, teacherID}) {
+    try {
+      const response = await axios.post('/api/review/', {rating, review, teacherID})
+      let revs = response.data
+      commit('setReviews', revs)
+
+    }catch(error) {
+      console.log(error)
+      throw error
+    }
+  },
+
   async getAllNoteSets({commit}) {
     try {
       const response = await axios.get('/api/noteSet/')
@@ -167,6 +198,7 @@ const actions = {
     try {
       const response = await axios.get('/api/availability/')
       let avails = response.data
+
       let currentUser = await state.users.find(user => user.id === state.selfID)
       if ((avails.length > 0) && (!currentUser.profile.isTeacher)) {
         for (let i= 0; i < avails.length; i++) {
@@ -374,6 +406,9 @@ const actions = {
 }
 
 const mutations = {
+  setReviews: (state, revs) => state.reviews = revs,
+  addReviews: (state, newRev) => state.reviews.push(newRev),
+
   setAllNoteSets: (state, sets) => state.noteSets = sets,
   addNoteSet: (state, newSet) => state.noteSets.push(newSet),
 

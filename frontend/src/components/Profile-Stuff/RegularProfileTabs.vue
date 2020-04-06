@@ -23,9 +23,6 @@
     <v-tab-item>
       <ViewTeachers :userData="userData"/>
     </v-tab-item>
-    <v-tab-item>
-      <ViewEvents/>
-    </v-tab-item>
   </v-tabs-items>
 </v-content>
 </template>
@@ -34,7 +31,6 @@
   import axios from "axios"
   import ViewUpcomingLessons from "./ViewUpcomingLessons"
   import ViewTeachers from "../Data-Iterators/ViewTeachers"
-  import ViewEvents from "../Data-Iterators/ViewEvents"
 
 	export default {
     data: () => ({
@@ -42,14 +38,12 @@
 			items: [
 				'Upcoming Sessions',
         'Teachers',
-        'Attending Events'
 			],
     }),
 
 		props: ['userData'],
 
     components: {
-      ViewEvents,
 			ViewUpcomingLessons,
 			ViewTeachers,
     },

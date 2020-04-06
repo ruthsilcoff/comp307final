@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -125,3 +126,11 @@ class DirectMessage(models.Model):
     dateSent = models.DateTimeField(auto_now_add=True, null=True)
     picture = models.FileField(upload_to=get_chat_upload_path, null=True)
 
+
+class Reviews(models.Model):
+    id = models.AutoField(primary_key=True)
+    reviewerID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='student')
+    teacherID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='teacher')
+    rating = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(0)])
+    review = models.CharField(max_length=5000, null=True)
+    dateAdded = models.DateTimeField(auto_now_add=True)

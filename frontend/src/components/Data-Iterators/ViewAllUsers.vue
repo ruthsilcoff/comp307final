@@ -20,15 +20,15 @@
           lg="2"
       >
         <v-card>
-          <v-card-subtitle>{{ item.first_name }} {{ item.last_name }}</v-card-subtitle>
-
+          <v-card-title v-if="item.profile.isTeacher" class="subheading font-weight-bold">{{ item.first_name }} {{ item.last_name }}</v-card-title>
+          <v-card-title v-if="!item.profile.isTeacher" class="subheading font-weight-bold">{{item.username}}</v-card-title>
+          <v-card-subtitle v-if="item.profile.isTeacher">Teacher</v-card-subtitle>
+          <v-card-subtitle v-if="!item.profile.isTeacher">Student</v-card-subtitle>
+          <v-divider></v-divider>
 
           <v-card-text>
-            <h1 v-if="item.profile.isTeacher">Teacher</h1>
-            <h1 v-if="!item.profile.isTeacher">Student</h1>
             <h3>Bio: {{ item.profile.bio}}</h3>
-            <h3>Country: {{ item.country}}</h3>
-
+            <h3>Country: {{ item.profile.country}}</h3>
             <h3 v-if="item.profile.isTeacher">Subjects:</h3>
             <h4 v-if="item.profile.isTeacher">(subject list)</h4>
             <h3 v-if="item.profile.isTeacher">Rating:</h3>

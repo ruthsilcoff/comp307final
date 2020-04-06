@@ -1,7 +1,7 @@
 <template>
   <v-container max-width="200px">
     <v-data-iterator
-      :items="tutoringSessions"
+      :items="reviews"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -20,16 +20,15 @@
             lg="4"
           >
             <v-card>
-              <v-card-title class="subheading font-weight-bold">Session ID: {{ item.id}}</v-card-title>
-
+              <v-card-title class="subheading font-weight-bold">Rating</v-card-title>
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Class:</h3>
-                <h3>Teacher ID: {{item.tutorID}}</h3>
-                <h3>Date: </h3>
+                <h3>Review:</h3>
+                <h4>{{item.content}}</h4>
+                  <h3>By:</h3>
+                  <h4>writer</h4>
               </v-card-text>
-
 
             </v-card>
           </v-col>
@@ -100,8 +99,8 @@
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
+
     data: () => ({
-      requests: [],
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
@@ -110,22 +109,21 @@
 			itemsPerPage: 4,
 			sortBy: 'duration',
 			keys: [
-				'Name',
-				'Date',
-				'Time',
-				'Duration',
+				'Rating',
+				'Review',
+				'Reviewer',
 			],
 		}),
 
     props: ['userData'],
 
 		computed: {
-      ...mapGetters(['sessionsOneStudent']),
-          tutoringSessions () {
-              return this.sessionsOneStudent(this.userData.id)
+      ...mapGetters(['reviewsOneTeacher']),
+          reviews () {
+        return this.reviewsOneTeacher(this.userData.id)
           },
       numberOfPages () {
-        return Math.ceil(this.tutoringSessions.length / this.itemsPerPage)
+        return Math.ceil(this.availabilities.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
@@ -134,6 +132,7 @@
 
 		methods: {
       ...mapActions(['createSnackbar']),
+
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
       },
