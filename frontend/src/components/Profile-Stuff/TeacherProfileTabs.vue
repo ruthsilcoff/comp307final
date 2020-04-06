@@ -54,12 +54,12 @@
     </v-tab-item>
 
     <v-tab-item>
-      <router-link v-if="isViewing" to="/NewReview">
+      <router-link v-if="isViewing" to="/newReview">
           <v-btn color="success" large>
             Add Review
           </v-btn>
         </router-link>
-      <ViewReviews/>
+      <ViewReviews :userData="userData"/>
     </v-tab-item>
 
   </v-tabs-items>

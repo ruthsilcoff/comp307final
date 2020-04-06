@@ -61,6 +61,19 @@ const actions = {
       commit('setReviews', revs)
     }catch(error) {
       console.log(error)
+      throw error
+    }
+  },
+
+  async newReview({commit}, {rating, review}) {
+    try {
+      const response = await axios.post('/api/review/', {rating, review})
+      let revs = response.data
+      commit('setReviews', revs)
+
+    }catch(error) {
+      console.log(error)
+      throw error
     }
   },
 
@@ -394,6 +407,8 @@ const actions = {
 
 const mutations = {
   setReviews: (state, revs) => state.reviews = revs,
+  addReviews: (state, newRev) => state.reviews.push(newRev),
+
   setAllNoteSets: (state, sets) => state.noteSets = sets,
   addNoteSet: (state, newSet) => state.noteSets.push(newSet),
 

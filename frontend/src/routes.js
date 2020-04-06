@@ -10,6 +10,7 @@ import Messenger from "./components/Basic-Site-Stuff/chatStuff/Messenger"
 import NewAvailability from "./components/Data-Iterators/NewAvailability"
 import NewNoteSet from "./components/Data-Iterators/NewNoteSet"
 import NoteSet from "./components/Data-Iterators/NoteSet"
+import NewReview from "./components/Data-Iterators/NewReview"
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,7 @@ const routes = [
   { path: '/messenger', component: Messenger},
   { path: '/addAvailability', component: NewAvailability},
   { path: '/newNoteSet', component: NewNoteSet},
+  { path: '/newReview', component:NewReview},
 ]
 
 const router = new VueRouter({
