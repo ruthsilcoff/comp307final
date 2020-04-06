@@ -65,9 +65,9 @@ const actions = {
     }
   },
 
-  async newReview({commit}, {rating, review}) {
+  async newReview({commit}, {rating, review, teacherID}) {
     try {
-      const response = await axios.post('/api/review/', {rating, review})
+      const response = await axios.post('/api/review/', {rating, review, teacherID})
       let revs = response.data
       commit('setReviews', revs)
 

@@ -24,7 +24,7 @@ const routes = [
   { path: '/messenger', component: Messenger},
   { path: '/addAvailability', component: NewAvailability},
   { path: '/newNoteSet', component: NewNoteSet},
-  { path: '/newReview', component:NewReview},
+  { path: '/newReview/:id', component:NewReview, props: true},
 ]
 
 const router = new VueRouter({
