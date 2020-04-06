@@ -20,7 +20,45 @@
             lg="4"
           >
             <v-card>
-              <v-card-title class="subheading font-weight-bold">Rating: {{item.rating}}/5</v-card-title>
+              <v-card-title class="subheading font-weight-bold">Rating: </v-card-title>
+
+              <v-btn color="yellow">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating >= 2" color="yellow">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating < 2" color="white">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating >= 3" color="yellow">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating < 3" color="white">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating >= 4" color="yellow">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating < 4" color="white">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating >= 5" color="yellow">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+              <v-btn v-if="item.rating < 5" color="white">
+                <v-icon>mdi-star-outline</v-icon>
+              </v-btn>
+
+
               <v-divider></v-divider>
 
               <v-card-text>
