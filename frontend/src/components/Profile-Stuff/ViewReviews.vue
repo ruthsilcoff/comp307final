@@ -118,9 +118,9 @@
 
 		computed: {
       ...mapGetters(['reviewsOneTeacher']),
-          reviews () {
+      reviews () {
         return this.reviewsOneTeacher(this.userData.id)
-          },
+      },
       numberOfPages () {
         return Math.ceil(this.reviews.length / this.itemsPerPage)
       },

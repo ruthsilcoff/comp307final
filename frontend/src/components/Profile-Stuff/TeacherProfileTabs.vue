@@ -54,12 +54,11 @@
     </v-tab-item>
 
     <v-tab-item>
-      <router-link v-if="isViewing" :to="'/newReview/'+ userData.id">
-          <v-btn color="success" large>
-            Add Review
-          </v-btn>
-        </router-link>
-      <ViewReviews :userData="userData" />
+      <v-btn  v-if="isViewing && !addingReview" color="success" large v-on:click="addingReview = true">
+        Add Review
+      </v-btn>
+      <NewReview v-if="addingReview" :id="userData.id"/>
+      <ViewReviews :userData="userData" :submitReview="submitReview" />
     </v-tab-item>
 
   </v-tabs-items>
@@ -74,9 +73,11 @@
   import ViewRequests from "./ViewRequests"
   import ViewBooked from "./ViewBookedTeacher"
   import ViewReviews from "./ViewReviews"
+  import NewReview from "../Data-Iterators/NewReview"
 
 	export default {
     data: () => ({
+      addingReview: false,
       tab: null,
 			items: [
 				'Availabilities',
@@ -92,6 +93,7 @@
 		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
     components: {
+      NewReview,
       ViewAvails,
       ViewNoteSets,
       ViewBooked,
@@ -107,6 +109,9 @@
     },
 
 		methods: {
+      submitReview() {
+        this.addingReview= false
+      }
     },
 
   }
