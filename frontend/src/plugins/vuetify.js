@@ -31,6 +31,9 @@ export default new Vuetify({
 				other: '#006e99',
 				unreadColor: '#5240ac',
 				yellowSwitch: '#269ddb',
+				starColor: '#ffe100',
+				greyChip: '#9d9d9f',
+				blackToWhite: '#000000',
 			},
 			dark: {
 				primary: '#00a3cc',
@@ -44,6 +47,9 @@ export default new Vuetify({
 				other: '#8efbff',
 				unreadColor: '#5240ac',
 				yellowSwitch: '#51b6db',
+				starColor: '#FFC107',
+				greyChip: '#545456',
+				blackToWhite: '#faf4ff',
 			}
 		},
 	}

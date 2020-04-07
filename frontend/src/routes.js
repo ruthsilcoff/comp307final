@@ -10,7 +10,7 @@ import Messenger from "./components/Basic-Site-Stuff/chatStuff/Messenger"
 import NewAvailability from "./components/Data-Iterators/NewAvailability"
 import NewNoteSet from "./components/Data-Iterators/NewNoteSet"
 import NoteSet from "./components/Data-Iterators/NoteSet"
-import NewReview from "./components/Data-Iterators/NewReview"
+import NewReview from "./components/Profile-Stuff/NewReview"
 
 Vue.use(VueRouter)
 

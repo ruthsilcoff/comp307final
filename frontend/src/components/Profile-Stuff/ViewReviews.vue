@@ -9,6 +9,51 @@
       :sort-desc="sortDesc"
       hide-default-footer
     >
+      <template v-slot:header>
+        <v-toolbar
+          color="primary"
+          class="mb-1"
+        >
+          <template v-if="$vuetify.breakpoint.mdAndUp">
+          <span>Sort by:</span>
+            <v-select
+              style="max-width: 300px; margin-left: 20px;"
+              v-model="sortBy"
+              flat
+              solo-inverted
+              hide-details
+              :items="['rating', 'review']"
+              prepend-inner-icon="mdi-magnify"
+              label="Sort by"
+            ></v-select>
+            <v-spacer></v-spacer>
+            <v-btn-toggle
+              v-model="sortDesc"
+              mandatory
+            >
+              <v-btn
+                style="margin: 0; padding: 0;"
+                small
+                depressed
+                color="secondary"
+                :value="false"
+              >
+                <v-icon>mdi-arrow-up</v-icon>
+              </v-btn>
+              <v-btn
+                style="margin: 0; padding: 0;"
+                small
+                depressed
+                color="secondary"
+                :value="true"
+              >
+                <v-icon>mdi-arrow-down</v-icon>
+              </v-btn>
+            </v-btn-toggle>
+          </template>
+        </v-toolbar>
+      </template>
+
       <template v-slot:default="props">
         <v-row>
           <v-col
@@ -20,50 +65,16 @@
             lg="4"
           >
             <v-card>
-              <v-card-title class="subheading font-weight-bold">Rating: </v-card-title>
-
-              <v-btn color="yellow">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating >= 2" color="yellow">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating < 2" color="white">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating >= 3" color="yellow">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating < 3" color="white">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating >= 4" color="yellow">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating < 4" color="white">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating >= 5" color="yellow">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
-
-              <v-btn v-if="item.rating < 5" color="white">
-                <v-icon>mdi-star-outline</v-icon>
-              </v-btn>
+              <v-chip outlined color="greyChip">
+                  <v-icon style="margin-left: 5px; margin-right: 5px; padding: 0;" v-for="num in [1,2,3,4,5]" :key="num" color="starColor">{{item.rating >= num ? 'mdi-star' : 'mdi-star-outline'}}</v-icon>
+              </v-chip>
 
 
               <v-divider></v-divider>
 
               <v-card-text>
                 <h4>{{item.review}}</h4>
-                <h5>Reviewed by: {{item.reviewerID}}</h5>
+                <h5>Reviewed by: {{item.author.username}}</h5>
               </v-card-text>
 
             </v-card>
@@ -137,18 +148,18 @@
   export default {
 
     data: () => ({
-			itemsPerPageArray: [4, 8, 12],
-			search: '',
-			filter: {},
-			sortDesc: false,
+      search: '',
+      filter: {},
+      sortDesc: false,
+      sortBy: 'rating',
+			itemsPerPageArray: [12, 24, 48],
 			page: 1,
-			itemsPerPage: 4,
-			sortBy: 'dateAdded',
+			itemsPerPage: 12,
 			keys: [
 				'Rating',
 				'Review',
 				'Reviewer',
-              'dateAdded',
+        'dateAdded',
 			],
 		}),
 

@@ -79,7 +79,7 @@
         <v-row v-for="item in viewingChat.messages" v-bind:key="item.id" :justify="(item.author.id === myID) ? 'right' : 'left'">
           <v-col>
             <v-chip-group >
-              <v-chip style="margin-left: 30%;" v-if="item.author.id === myID">
+              <v-chip pill style="margin-left: 30%;" v-if="item.author.id === myID">
                 <v-avatar large v-if="item.author.profile.avatar" left>
                   <v-img :src="item.author.profile.avatar"></v-img>
                 </v-avatar>
@@ -88,7 +88,7 @@
                 </v-avatar>
                 {{item.content}}
               </v-chip>
-              <v-chip v-if="item.author.id !== myID">
+              <v-chip pill v-if="item.author.id !== myID">
                 <v-avatar large v-if="item.author.profile.avatar" left>
                   <v-img :src="item.author.profile.avatar"></v-img>
                 </v-avatar>
