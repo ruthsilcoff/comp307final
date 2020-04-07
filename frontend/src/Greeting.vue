@@ -12,8 +12,8 @@
         color="secondary"
       >
         <v-tab>Welcome</v-tab>
-
         <v-tab>View All Teachers</v-tab>
+        <v-tab>Courses Offered</v-tab>
       </v-tabs>
     </v-toolbar>
     <v-content>
@@ -29,6 +29,11 @@
         <v-tab-item>
           <ViewTeachers/>
         </v-tab-item>
+
+        <v-tab-item>
+          <ViewCourses/>
+        </v-tab-item>
+
       </v-tabs-items>
     </v-content>
 
@@ -40,6 +45,7 @@
 import {mapGetters, mapActions} from 'vuex'
 
 import ViewTeachers from "./components/Data-Iterators/ViewTeachers"
+import ViewCourses from "./components/Data-Iterators/ViewCourses"
 import ViewAllUsers from "./components/Data-Iterators/ViewAllUsers"
 
 import welcomePage from "./components/Basic-Site-Stuff/welcomePage"
@@ -55,6 +61,7 @@ export default {
     welcomePage,
     whyItWorks,
     ViewTeachers,
+      ViewCourses,
   },
 
 	methods: {

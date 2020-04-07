@@ -17,6 +17,7 @@ const state = {
 }
 
 const getters = {
+  allCourses: (state) => state.subject,
   reviewsGetter: (state) => state.reviews,
   reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
   reviewOneTeacherOneUser: (state) => (id) => state.reviews.find(rev => rev.reviewerID === state.selfID && rev.teacherID === id),
