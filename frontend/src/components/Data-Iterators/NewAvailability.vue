@@ -3,7 +3,8 @@
     <span v-if="addingAvail">New Availability</span>
     <v-btn v-if="!addingAvail" v-on:click="openAddAvail" color="success">Add availability</v-btn>
 
-    <v-text-field v-if="addingAvail" label="Name" v-model="titleInput"></v-text-field>
+            <v-text-field v-if="addingAvail" label="Class size" v-model="sizeInput"></v-text-field>
+            <v-text-field v-if="addingAvail" label="Name" v-model="titleInput"></v-text-field>
 
     <v-menu
          v-if="addingAvail"
@@ -202,6 +203,7 @@ export default {
     startHour: '',
     startMinutes: '',
     titleInput:'Lesson',
+    sizeInput:'1',
     startDate: null,
     endDate: null,
     startTime: null,
@@ -252,7 +254,7 @@ export default {
       this.inputStart = startD + ' ' + this.startTime
       this.inputEnd = endD + ' ' + this.endTime
       try {
-        await this.newAvail({titleInput: this.titleInput, inputStart: this.inputStart, inputEnd: this.inputEnd})
+        await this.newAvail({titleInput: this.titleInput, inputStart: this.inputStart, inputEnd: this.inputEnd, classSize:this.sizeInput})
         this.createSnackbar({message: 'Availability added', color: 'success'})
       }catch(error) {
         console.error(error.response.data);

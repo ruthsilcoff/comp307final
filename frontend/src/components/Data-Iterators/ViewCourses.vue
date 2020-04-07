@@ -1,11 +1,11 @@
 <template>
-  <v-container max-width="200px">
+  <v-container>
+    <h1>View All Courses:</h1>
     <v-data-iterator
-      :items="requestsGetter"
+      :items="allCourses"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
-      :sort-by="sortBy.toLowerCase()"
       :sort-desc="sortDesc"
       hide-default-footer
     >
@@ -15,41 +15,14 @@
             v-for="item in props.items"
             :key="item.id"
             cols="12"
-            sm="6"
-            md="16"
+            sm="4"
+            md="4"
             lg="4"
           >
             <v-card>
-              <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
-
-              <v-divider></v-divider>
-
-              <v-card-text>
-                <h3>Request for: {{item.avail.title}}</h3>
-                <h4>On: {{item.avail.start}}</h4>
-                <v-divider></v-divider>
-                <h3>From: {{item.student.username}}</h3>
-                <router-link :to="'/profile/' + item.student.username">
-                <v-btn color="secondary" text >View Profile
-                  <v-icon color="white" small>mdi-eye</v-icon>
-                </v-btn>
-              </router-link>
-              </v-card-text>
-
-              <v-row>
-                <v-btn v-if="!item.isConfirmed" color="success" v-on:click="confirm(item)">
-                      Confirm
-                </v-btn>
-                <v-btn v-if="!item.isConfirmed" color="error" v-on:click="rejectRequest(item)">
-                      Reject
-                </v-btn>
-              </v-row>
-
-              <v-btn disabled v-if="item.isConfirmed" color="grey" >
-                    Confirmed
-              </v-btn>
-
+              <v-card-title> Class</v-card-title>
             </v-card>
+
           </v-col>
         </v-row>
       </template>
@@ -117,8 +90,8 @@
   import axios from "axios"
   import {mapGetters, mapActions} from 'vuex'
 
-  export default {
 
+  export default {
     data: () => ({
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
@@ -126,22 +99,14 @@
 			sortDesc: false,
 			page: 1,
 			itemsPerPage: 4,
-			sortBy: 'duration',
-			keys: [
-				'Name',
-				'Date',
-				'Time',
-				'Duration',
-			],
 		}),
 
-    props: ['userData'],
+    props: [],
 
 		computed: {
-      ...mapGetters(['requestsGetter']),
-
+      ...mapGetters(['allCourses']),
       numberOfPages () {
-        return Math.ceil(this.requestsGetter.length / this.itemsPerPage)
+        return Math.ceil(this.allCourses.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
@@ -149,30 +114,6 @@
     },
 
 		methods: {
-      ...mapActions(['confirmLesson', 'createSnackbar', 'addStudent']),
-      async confirm(item) {
-        try {
-          await this.confirmLesson({tutoringSessionID: item.id, bool: true})
-          await this.addStudent({id: item.availabilityID})
-
-          this.createSnackbar({message: 'lesson confirmed!', color: 'success'})
-        }catch(error) {
-          console.log(error)
-          this.createSnackbar({message: 'problem confirming lesson', color: 'error'})
-        }
-      },
-      async rejectRequest(item) {
-        try {
-          await this.confirmLesson({tutoringSessionID: item.id, bool: false})
-          this.createSnackbar({message: 'lesson confirmed!', color: 'success'})
-        }catch(error) {
-          console.log(error)
-          this.createSnackbar({message: 'problem confirming lesson', color: 'error'})
-        }
-      },
-
-
-
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
       },
@@ -182,8 +123,8 @@
       updateItemsPerPage (number) {
         this.itemsPerPage = number
       },
+		},
 
-    },
 
 	}
 </script>

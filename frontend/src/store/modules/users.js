@@ -17,6 +17,8 @@ const state = {
 }
 
 const getters = {
+  allCourses: (state) => state.subject,
+
   reviewsGetter: (state) => state.reviews,
   reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
   reviewOneTeacherOneUser: (state) => (id) => state.reviews.find(rev => rev.reviewerID === state.selfID && rev.teacherID === id),
@@ -182,6 +184,22 @@ const actions = {
     }
   },
 
+  async addStudent({commit}, {id}) {
+    try {
+      const response = await axios.get(`/api/availability/${id}/`)
+      let avail = response.data
+      let students = avail.studentsTaking
+      students = students + 1
+      let full = (students >= avail.classSize)
+      const response2 = await axios.patch(`/api/availability/${id}/`, {studentsTaking:students, isFull: full})
+      avail = response2.data
+      commit('setAvails', avail)
+    }catch(error) {
+      console.log(error)
+      throw error
+    }
+  },
+
   async confirmLesson({commit}, {tutoringSessionID, bool}) {
     try {
       if (!bool) {
@@ -198,9 +216,9 @@ const actions = {
     }
   },
 
-  async newAvail({commit}, {titleInput, inputStart, inputEnd}) {
+  async newAvail({commit}, {titleInput, inputStart, inputEnd, classSize}) {
     try {
-        const response = await axios.post('/api/availability/', {title:titleInput, start:inputStart, end:inputEnd})
+        const response = await axios.post('/api/availability/', {title:titleInput, start:inputStart, end:inputEnd, classSize})
 
         let newEvent = response.data
 
@@ -392,9 +410,9 @@ const actions = {
     }
   },
 
-	async updateProfile({commit}, {bio, country}) {
+	async updateProfile({commit}, {bio, country, rate}) {
     try {
-      const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country})
+      const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country, rate: rate})
       commit('updateUserProfile', response.data)
     } catch (error) {
       console.log(error.response.data)

@@ -34,6 +34,7 @@ class Profile(models.Model):
     birthDate = models.DateField(null=True, blank=True)
     avatar = models.FileField(upload_to=get_avatar_path, null=True, blank=True)
     isTeacher = models.BooleanField(default=False)
+    rate = models.FloatField(null=True)
 
 
 # Subjects will be a useful search category for the website
@@ -54,6 +55,9 @@ class Availability(models.Model):
     duration = models.DurationField(null=True)
     background = models.BooleanField(default=False)
     allDay = models.BooleanField(default=False)
+    classSize = models.IntegerField(null=True)
+    studentsTaking = models.IntegerField(default=0, null=True)
+    isFull = models.BooleanField(default=False)
 
 
 # many Teacher to many Subjects
