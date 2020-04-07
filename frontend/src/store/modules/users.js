@@ -19,6 +19,7 @@ const state = {
 const getters = {
   reviewsGetter: (state) => state.reviews,
   reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
+  reviewOneTeacherOneUser: (state) => (id) => state.reviews.find(rev => rev.reviewerID === state.selfID && rev.teacherID === id),
 
   noteSetsGetter: (state) => state.noteSets,
   oneNoteSet: (state) => (id) => state.noteSets.find(set => set.id === id),
@@ -56,6 +57,10 @@ const actions = {
       const response = await axios.get('/api/review/')
       let revs = response.data
 
+      for (let i = 0; i < revs.length; i++) {
+        revs[i].author = state.users.find(user => user.id === revs[i].reviewerID)
+      }
+
       commit('setReviews', revs)
     }catch(error) {
       console.log(error)
@@ -66,8 +71,9 @@ const actions = {
   async newReview({commit}, {rating, review, teacherID}) {
     try {
       const response = await axios.post('/api/review/', {rating, review, teacherID})
-      let revs = response.data
-      commit('setReviews', revs)
+      let rev = response.data
+      rev.author = state.users.find(user => user.id === rev.reviewerID)
+      commit('addReview', rev)
 
     }catch(error) {
       console.log(error)
@@ -405,7 +411,7 @@ const actions = {
 
 const mutations = {
   setReviews: (state, revs) => state.reviews = revs,
-  addReviews: (state, newRev) => state.reviews.push(newRev),
+  addReview: (state, newRev) => state.reviews.push(newRev),
 
   setAllNoteSets: (state, sets) => state.noteSets = sets,
   addNoteSet: (state, newSet) => state.noteSets.push(newSet),

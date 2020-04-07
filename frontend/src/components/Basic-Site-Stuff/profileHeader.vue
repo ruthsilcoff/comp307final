@@ -13,16 +13,16 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item link>
-            <router-link to="/">
+          <router-link to="/">
+            <v-list-item link>
               <v-icon left>mdi-home</v-icon>Homepage
-            </router-link>
-          </v-list-item>
-          <v-list-item link>
-            <router-link to="/calendar">
+            </v-list-item>
+          </router-link>
+          <router-link to="/calendar">
+            <v-list-item link>
               <v-icon left>mdi-timeline-text</v-icon>Calendar
-            </router-link>
-          </v-list-item>
+            </v-list-item>
+          </router-link>
         </v-list>
       </v-menu>
 
@@ -75,16 +75,16 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item link>
-            <router-link v-if="myUser" :to="'/profile/' + myUser.username">
+          <router-link v-if="myUser" :to="'/profile/' + myUser.username">
+            <v-list-item link>
               <v-icon left>mdi-account</v-icon>Profile
-            </router-link>
-          </v-list-item>
-          <v-list-item link v-on:click="logOutFunction()" >
-            <router-link to="/">
+            </v-list-item>
+          </router-link>
+          <router-link to="/">
+            <v-list-item v-on:click="logOutFunction()" link>
               <v-icon left>mdi-logout</v-icon>Log out
-            </router-link>
-          </v-list-item>
+            </v-list-item>
+          </router-link>
         </v-list>
       </v-menu>
 

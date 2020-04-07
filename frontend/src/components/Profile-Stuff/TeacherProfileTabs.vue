@@ -29,7 +29,7 @@
       <v-container max-width="200px">
         <router-link v-if="!isViewing" to="/addAvailability">
           <v-btn color="success" large>
-            AddAvailability
+            <v-icon left>mdi-plus</v-icon>AddAvailability
           </v-btn>
         </router-link>
         <ViewAvails :userData="userData" />
@@ -37,11 +37,10 @@
     </v-tab-item>
 
     <v-tab-item>
-      <router-link v-if="!isViewing" to="/newNoteSet">
-          <v-btn color="success" large>
-            Add Note Set
-          </v-btn>
-        </router-link>
+      <v-btn v-if="!isViewing && !addingNoteSet" v-on:click="openNewNoteSet" color="success" large>
+        <v-icon left>mdi-plus</v-icon>Add Note Set
+      </v-btn>
+      <NewNoteSet v-if="addingNoteSet" :submit="submitNoteSet" :cancel="submitNoteSet"/>
       <ViewNoteSets/>
     </v-tab-item>
 
@@ -54,11 +53,11 @@
     </v-tab-item>
 
     <v-tab-item>
-      <v-btn  v-if="isViewing && !addingReview" color="success" large v-on:click="addingReview = true">
-        Add Review
+      <v-btn v-if="isViewing && !addingReview && !alreadyReviewed" color="success" large v-on:click="openNewReview">
+        <v-icon left>mdi-plus</v-icon>Add Review
       </v-btn>
-      <NewReview v-if="addingReview" :id="userData.id"/>
-      <ViewReviews :userData="userData" :submitReview="submitReview" />
+      <NewReview :submit="submit" :cancel="submit" v-if="addingReview" :userData="userData"/>
+      <ViewReviews :userData="userData"/>
     </v-tab-item>
 
   </v-tabs-items>
@@ -73,11 +72,13 @@
   import ViewRequests from "./ViewRequests"
   import ViewBooked from "./ViewBookedTeacher"
   import ViewReviews from "./ViewReviews"
-  import NewReview from "../Data-Iterators/NewReview"
+  import NewReview from "./NewReview"
+  import NewNoteSet from "../Data-Iterators/NewNoteSet"
 
 	export default {
     data: () => ({
       addingReview: false,
+      addingNoteSet: false,
       tab: null,
 			items: [
 				'Availabilities',
@@ -93,6 +94,7 @@
 		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
     components: {
+      NewNoteSet,
       NewReview,
       ViewAvails,
       ViewNoteSets,
@@ -105,13 +107,30 @@
     },
 
     computed: {
-      ...mapGetters(['isViewing', 'availabilitiesGetter', 'tutoringSessionsGetter', 'availabilitiesOneTeacher']),
+      ...mapGetters(['reviewOneTeacherOneUser', 'isViewing', 'availabilitiesGetter', 'tutoringSessionsGetter', 'availabilitiesOneTeacher']),
+      alreadyReviewed() {
+        if (this.reviewOneTeacherOneUser(this.userData.id)) {
+          return true
+        }
+        else {
+          return false
+        }
+      },
     },
 
 		methods: {
-      submitReview() {
-        this.addingReview= false
-      }
+      openNewReview() {
+        this.addingReview = true
+      },
+      submit() {
+        this.addingReview = false
+      },
+      openNewNoteSet() {
+        this.addingNoteSet = true
+      },
+      submitNoteSet() {
+        this.addingNoteSet = false
+      },
     },
 
   }

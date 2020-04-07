@@ -1,15 +1,19 @@
 <template>
-    <v-content style="margin: 20px;">
-        <h1>Add a Note Set</h1>
-        <v-text-field label="Title" v-model="titleInput"></v-text-field>
-        <v-text-field label="Description" v-model="descriptionInput"></v-text-field>
-        <v-file-input counter multiple label="Input files" v-model="filesInput"></v-file-input>
-        <v-btn color="success" v-on:click="addNoteSets()">
-            <v-icon left>mdi-plus</v-icon> Submit
-        </v-btn>
-        <v-divider></v-divider>
-        <h1>Sets:</h1>
-        <ViewNoteSets/>
+    <v-content>
+        <v-card style="padding: 20px;">
+            <v-card-title>Add a Note Set</v-card-title>
+             <v-text-field label="Title" v-model="titleInput"></v-text-field>
+            <v-text-field label="Description" v-model="descriptionInput"></v-text-field>
+            <v-file-input counter multiple label="Input files" v-model="filesInput"></v-file-input>
+            <v-row>
+                <v-btn color="success" v-on:click="addNoteSets()">
+                    Submit
+                </v-btn>
+                <v-btn color="error" v-on:click="cancel()">
+                    Cancel
+                </v-btn>
+            </v-row>
+        </v-card>
     </v-content>
 </template>
 
@@ -22,10 +26,7 @@ export default {
   computed: {
       ...mapGetters(['noteSetsGetter'])
   },
-
-    components: {
-        ViewNoteSets,
-    },
+    props: ['cancel', 'submit'],
 
   data: () => ({
     titleInput:'',
@@ -37,11 +38,20 @@ export default {
     ...mapActions(['createSnackbar', 'newNoteSet']),
 
     addNoteSets: async function() {
-        try {
-            await this.newNoteSet({title: this.titleInput, description: this.descriptionInput, files: this.filesInput})
-            this.createSnackbar({message: 'Notes uploaded', color:'success'})
-        }catch(error){
-            this.createSnackbar({message: 'Problem uploading notes', color: 'error'})
+        if (this.titleInput === '') {
+            this.createSnackbar({message: 'Title is required', color: 'error'})
+        }
+        else if (this.descriptionInput === '') {
+            this.createSnackbar({message: 'Description is required', color: 'error'})
+        }
+        else {
+            try {
+                await this.newNoteSet({title: this.titleInput, description: this.descriptionInput, files: this.filesInput})
+                this.createSnackbar({message: 'Notes uploaded', color:'success'})
+                this.submit()
+            }catch(error){
+                this.createSnackbar({message: 'Problem uploading notes', color: 'error'})
+            }
         }
     }
   }

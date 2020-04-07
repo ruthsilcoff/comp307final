@@ -78,6 +78,16 @@ export default {
       'getSnackbarMode',
       'newMessageDialog',
     ]),
+    snackbar() {
+      return {
+        get: function() {
+          return this.getSnackbar
+        },
+        set: function() {
+          return this.removeSnackbar()
+        }
+      }
+    }
   },
   mounted() {
     this.getTheme()
