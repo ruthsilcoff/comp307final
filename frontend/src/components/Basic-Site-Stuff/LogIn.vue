@@ -9,7 +9,13 @@
 			<v-card-text>
 				<h1>Log In</h1>
 				<v-text-field label="Username" v-model="usernameInput"></v-text-field>
-				<v-text-field label="Password" v-model="passwordInput"></v-text-field>
+				<v-row>
+					<v-text-field style="width: 250px; margin-left: 20px;" :type="showPassword ? 'text' : 'password'"  label="Password" v-model="passwordInput">
+					</v-text-field>
+					<v-icon flat v-on:click="togglePasswordView" v-if="showPassword" color="primary" right>mdi-eye-off</v-icon>
+					<v-icon flat v-on:click="togglePasswordView" v-if="!showPassword" color="primary" right>mdi-eye</v-icon>
+				</v-row>
+
 				<v-btn text v-on:click="logInFunction()">Submit</v-btn>
 			</v-card-text>
 		</v-card>
@@ -27,6 +33,7 @@ export default {
 	components: {},
 
 	data: () => ({
+		showPassword: false,
 		loading: false,
 		passwordInput: '',
 		usernameInput: ''
@@ -34,6 +41,10 @@ export default {
 
 	methods: {
 		...mapActions(['login', 'setMyUser', 'createSnackbar', 'yesLoggedIn']),
+
+		togglePasswordView() {
+			this.showPassword = !this.showPassword
+		},
 
     logInFunction: async function () {
       this.loading = true

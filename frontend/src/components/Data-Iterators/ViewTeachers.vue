@@ -19,7 +19,7 @@
             md="4"
             lg="4"
           >
-            <v-card>
+            <v-card id="teacherCard">
               <v-card-title class="subheading font-weight-bold">{{ item.first_name }} {{ item.last_name }}</v-card-title>
 
               <v-divider></v-divider>
@@ -33,8 +33,8 @@
               </v-card-text>
 
               <router-link :to="'/profile/' + item.username">
-                <v-btn color="secondary" text >View Profile
-                  <v-icon color="white" small>mdi-eye</v-icon>
+                <v-btn outlined color="secondary" text >
+                  <v-icon left color="white" medium>mdi-eye</v-icon>View Profile
                 </v-btn>
               </router-link>
             </v-card>
@@ -69,8 +69,6 @@
             </v-list>
           </v-menu>
 
-          <v-spacer></v-spacer>
-
           <span
             class="mr-4
             grey--text"
@@ -80,7 +78,7 @@
           <v-btn
             fab
             dark
-            color="blue darken-3"
+            color="primary darken-3"
             class="mr-1"
             @click="formerPage"
           >
@@ -89,7 +87,7 @@
           <v-btn
             fab
             dark
-            color="blue darken-3"
+            color="primary darken-3"
             class="ml-1"
             @click="nextPage"
           >
@@ -142,3 +140,11 @@
 
 	}
 </script>
+
+<style scoped>
+
+#teacherCard {
+  background-image: linear-gradient(to bottom right, #34acff, #8cf8ff);
+}
+
+</style>

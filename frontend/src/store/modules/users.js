@@ -12,12 +12,17 @@ const state = {
   requests: [],
   subjects: [],
   teacherSubjects: [],
+  lessonSubjects: [],
+  noteSetSubjects: [],
   noteSets: [],
   reviews: [],
 }
 
 const getters = {
-  allCourses: (state) => state.subject,
+  allCourses: (state) => state.subjects,
+  teachersOneSubject: (state) => (name) => state.teacherSubjects.filter(thing => thing.subject.name === name).map(thing => thing.teacher),
+  lessonsOneSubject: (state) => (name) => state.lessonSubjects.filter(thing => thing.subject.name === name).map(thing => thing.avail),
+  noteSetsOneSubject: (state) => (name) => state.noteSetSubjects.filter(thing => thing.subject.name === name).map(thing => thing.noteSet),
 
   reviewsGetter: (state) => state.reviews,
   reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
@@ -28,7 +33,7 @@ const getters = {
   noteSetsOneTeacher: (state) => (id) => state.noteSets.filter(set => set.userID === id),
 
   subjectsGetter: (state) => state.subjects,
-  subjectsOneTeacher: (state) => (id) => state.teacherSubjects.filter(subject => subject.teacherID === id),
+  subjectsOneTeacher: (state) => (id) => state.teacherSubjects.filter(thing => thing.teacherID === id),
 
   requestsGetter: (state) => state.requests,
   confirmedRequestsGetter: (state) => state.requests.filter(req => req.isConfirmed),
@@ -91,6 +96,7 @@ const actions = {
       let noteSetContentFiles = response2.data
 
       for (let i = 0; i < noteSets.length; i++) {
+        noteSets[i].author = state.users.find(user => user.id === noteSets[i].userID)
         noteSets[i].content = noteSetContentFiles.filter(file => file.noteSetID === noteSets[i].id)
       }
       commit('setAllNoteSets', noteSets)
@@ -128,29 +134,39 @@ const actions = {
       const response = await axios.get('/api/subject/')
       commit('setAllSubjects', response.data)
     }catch(error) {
-      console.log(error.response.data)
+      console.log(error)
       throw error
     }
   },
 
   async addNewSubject({commit}, {name}) {
     try {
-      console.log("hi")
       const response = await axios.post('/api/subject/', {name})
       commit('newSubject', response.data)
     }catch(error) {
-      console.log(error.response.data)
+      console.log(error)
       throw error
     }
   },
 
   async addTeacherSubject({commit}, {name}) {
     try {
-      let subjectID = state.subjects.find(subject => subject.name === name).id
-      const response = await axios.post('/api/teachesSubjects/', {subject: subjectID})
+      const response = await axios.post('/api/teachesSubjects/', {subject: name, teacherID: state.selfID})
       let teacherSubject = response.data
-      teacherSubject.subject = state.subjects.find(subject => subject.id === teacherSubject.subject.id)
+      teacherSubject.subject = state.subjects.find(subject => subject.name === teacherSubject.subject)
+      teacherSubject.teacher = state.users.find(user => user.id === teacherSubject.teacherID)
       commit('newTeacherSubject', teacherSubject)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async removeTeacherSubject({commit}, {name}) {
+    try {
+      let id = state.teacherSubjects.find(thing => (thing.subject === name) && (thing.teacherID === state.selfID))
+      const response = await axios.delete(`/api/teachesSubjects/${id}/`)
+      commit('removeTeachesSubject', response.data)
     }catch(error) {
       console.log(error.response.data)
       throw error
@@ -160,13 +176,44 @@ const actions = {
   async getAllTeacherSubjects({commit}) {
     try {
       const response = await axios.get('/api/teachesSubjects/')
-      let subjects = response.data
-      if (subjects.length > 0) {
-        for (let i = 0; i < subjects.length; i++) {
-          subjects[i].subject = state.subjects.find(subject => subject.id === subjects[i].subject.id)
+      let things = response.data
+      if (things.length > 0) {
+        for (let i = 0; i < things.length; i++) {
+          things[i].subject = state.subjects.find(subject => subject.name === things[i].subject)
+          things[i].teacher = state.users.find(user => user.id === things[i].teacherID)
         }
       }
-      commit('setAllTeachesSubjects', subjects)
+      commit('setAllTeachesSubjects', things)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async addLessonSubject({commit}, {name, availID}) {
+    try {
+      const response = await axios.post('/api/lessonSubjects/', {subject: name, availID: availID})
+      let lessonSubject = response.data
+      lessonSubject.subject = state.subjects.find(subject => subject.name === lessonSubject.subject.name)
+      lessonSubject.lesson = state.availabilities.find(user => user.id === lessonSubject.availID)
+      commit('newLessonSubject', lessonSubject)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async getAllLessonSubjects({commit}) {
+    try {
+      const response = await axios.get('/api/lessonSubjects/')
+      let things = response.data
+      if (things.length > 0) {
+        for (let i = 0; i < things.length; i++) {
+          things[i].subject = state.subjects.find(subject => subject.name === things[i].subject)
+          things[i].lesson = state.availabilities.find(avail => avail.id === things[i].availID)
+        }
+      }
+      commit('setAllLessonSubjects', things)
     }catch(error) {
       console.log(error.response.data)
       throw error
@@ -237,6 +284,7 @@ const actions = {
       let currentUser = await state.users.find(user => user.id === state.selfID)
       if ((avails.length > 0) && (!currentUser.profile.isTeacher)) {
         for (let i= 0; i < avails.length; i++) {
+          avails[i].teacher = await state.users.find(user => user.id === avails[i].userID)
           let session = state.tutoringSessions.find(session =>
             (session.availabilityID === avails[i].id) &&
             (session.learnerID === state.selfID)
@@ -441,6 +489,11 @@ const actions = {
 }
 
 const mutations = {
+  removeTeachesSubject: (state, thing) => {
+    let index = state.teacherSubjects.indexOf(state.teacherSubjects.find(t => t.id === thing.id))
+    state.teacherSubjects.splice(index, 1)
+  },
+
   addNewAvail: (state, newEvent) => state.availabilities.unshift(newEvent),
   setReviews: (state, revs) => state.reviews = revs,
   addReview: (state, newRev) => state.reviews.push(newRev),
@@ -451,7 +504,9 @@ const mutations = {
   setAllSubjects: (state, subjects) => state.subjects = subjects,
   newSubject: (state, newSubject) => state.subjects.push(newSubject),
   setAllTeachesSubjects: (state, subjects) => state.teacherSubjects = subjects,
+  setAllLessonSubjects: (state, subjects) => state.lessonSubjects = subjects,
   newTeacherSubject: (state, newSubject) => state.teacherSubjects.push(newSubject),
+  newLessonSubject: (state, newSubject) => state.lessonSubjects.push(newSubject),
 
   setPending: (state, id) => {
     let index = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === id))
