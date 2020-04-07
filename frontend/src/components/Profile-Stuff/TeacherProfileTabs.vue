@@ -27,7 +27,7 @@
 
     <v-tab-item>
       <v-container max-width="200px">
-        <router-link v-if="!isViewing" to="/addAvailability">
+        <router-link v-if="!isViewing" to="/calendar">
           <v-btn color="success" large>
             <v-icon left>mdi-plus</v-icon>AddAvailability
           </v-btn>

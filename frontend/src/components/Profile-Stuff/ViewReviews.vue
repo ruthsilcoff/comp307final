@@ -65,11 +65,10 @@
             lg="4"
           >
             <v-card>
-              <v-chip outlined color="greyChip">
-                  <v-icon style="margin-left: 5px; margin-right: 5px; padding: 0;" v-for="num in [1,2,3,4,5]" :key="num" color="starColor">{{item.rating >= num ? 'mdi-star' : 'mdi-star-outline'}}</v-icon>
+              <v-chip :outlined="!$vuetify.theme.dark" color="greyChip">
+                  <v-icon style="margin: 0; padding: 0;" v-for="num in [1,2,3,4,5]" :key="num" color="starColor">{{item.rating >= num ? 'mdi-star' : 'mdi-star-outline'}}</v-icon>
               </v-chip>
-
-
+              <span style="margin-left: 10px; font-family: Arial; font-size: 14px;">{{item.rating}} {{item.rating > 1 ? 'stars' : 'star'}}</span>
               <v-divider></v-divider>
 
               <v-card-text>
