@@ -25,9 +25,8 @@
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Subjects:</h3>
-                <h4>(subject list)</h4>
-								<h3>Rating:</h3>
+                <h3>Subjects: </h3>
+                <h3>Rating:</h3>
                 <h4>(rating)</h4>
                 <h3 v-if="item.profile.rate">Hourly Rate: {{item.profile.rate}}</h3>
               </v-card-text>

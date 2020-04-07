@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const state = {
-	users: [],
+  users: [],
   selfID: null,
   viewingID: null,
   messageDialog: false,
@@ -44,7 +44,7 @@ const getters = {
   tutoringSessionsGetter: (state) => state.tutoringSessions,
   sessionsOneStudent: (state) => (id) => state.tutoringSessions.filter(session => session.learnerID === id && session.isConfirmed),
 
-	newMessageDialog: (state) => state.messageDialog,
+  newMessageDialog: (state) => state.messageDialog,
   myChatsGetter: (state) => state.chats,
   allMessagesGetter: (state) => state.messages,
 
@@ -326,12 +326,14 @@ const actions = {
             for (let i = 0; i < requests.length; i++) {
               requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
               requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
+
+              requests[i].tutor = state.users.find(tutor => tutor.id === requests[i].tutorID)
             }
+            commit('setRequests', requests)
           }
-          commit('setRequests', requests)
         }
+        commit('setTutoringSessions', response.data)
       }
-      commit('setTutoringSessions', response.data)
     }catch(error) {
       console.log(error)
       throw error

@@ -125,7 +125,7 @@ export default {
     subjectsTaught() {
       if (this.viewingUser) {
         if (this.viewingUser.profile.isTeacher) {
-          let things = this.subjectsOneTeacher(this.myID)
+          let things = this.subjectsOneTeacher(this.viewingID)
           if (things.length > 0) {
             return things.map(thing => thing.subject)
           }
