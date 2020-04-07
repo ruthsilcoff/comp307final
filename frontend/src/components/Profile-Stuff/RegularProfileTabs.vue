@@ -23,6 +23,9 @@
     <v-tab-item>
       <ViewTeachers :userData="userData"/>
     </v-tab-item>
+    <v-tab-item>
+      <ViewInvoices :userData="userData"/>
+    </v-tab-item>
   </v-tabs-items>
 </v-content>
 </template>
@@ -31,6 +34,7 @@
   import axios from "axios"
   import ViewUpcomingLessons from "./ViewUpcomingLessons"
   import ViewTeachers from "../Data-Iterators/ViewTeachers"
+  import ViewInvoices from "../Data-Iterators/ViewInvoices"
 
 	export default {
     data: () => ({
@@ -38,6 +42,7 @@
 			items: [
 				'Upcoming Sessions',
         'Teachers',
+                    'Invoices'
 			],
     }),
 
@@ -46,6 +51,7 @@
     components: {
 			ViewUpcomingLessons,
 			ViewTeachers,
+            ViewInvoices,
     },
 
     mounted() {
