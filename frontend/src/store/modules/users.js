@@ -216,9 +216,9 @@ const actions = {
     }
   },
 
-  async newAvail({commit}, {titleInput, inputStart, inputEnd}) {
+  async newAvail({commit}, {titleInput, inputStart, inputEnd, classSize}) {
     try {
-        const response = await axios.post('/api/availability/', {title:titleInput, start:inputStart, end:inputEnd})
+        const response = await axios.post('/api/availability/', {title:titleInput, start:inputStart, end:inputEnd, classSize})
 
         let newEvent = response.data
 
