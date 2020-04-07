@@ -22,7 +22,7 @@
               flat
               solo-inverted
               hide-details
-              :items="['rating', 'review']"
+              :items="['rating', 'review', 'dateAdded']"
               prepend-inner-icon="mdi-magnify"
               label="Sort by"
             ></v-select>
@@ -108,8 +108,6 @@
             </v-list>
           </v-menu>
 
-          <v-spacer></v-spacer>
-
           <span
             class="mr-4
             grey--text"
@@ -119,7 +117,7 @@
           <v-btn
             fab
             dark
-            color="blue darken-3"
+            color="primary darken-3"
             class="mr-1"
             @click="formerPage"
           >
@@ -128,7 +126,7 @@
           <v-btn
             fab
             dark
-            color="blue darken-3"
+            color="primary darken-3"
             class="ml-1"
             @click="nextPage"
           >
