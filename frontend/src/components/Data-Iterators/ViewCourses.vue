@@ -1,8 +1,14 @@
 <template>
   <v-container>
     <h1>View All Courses:</h1>
+
+    <v-switch
+      v-model="rainbowSwitch"
+      label="Rainbow mode"
+    ></v-switch>
+
     <v-data-iterator
-      :items="allCourses"
+      :items="courses"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -10,19 +16,38 @@
       hide-default-footer
     >
       <template v-slot:default="props">
-        <v-row>
+        <v-row
+          v-for="item in props.items"
+          :key="item.name"
+        >
           <v-col
-            v-for="item in props.items"
-            :key="item.id"
-            cols="12"
-            sm="4"
-            md="4"
-            lg="4"
-          >
-            <v-card>
-              <v-card-title> Class</v-card-title>
-            </v-card>
 
+            cols="12"
+            sm="12"
+            md="12"
+            lg="12"
+          >
+            <v-card style="position: relative !important;" :id="rainbowSwitch ? 'courseCardRainbow' : 'courseCard'">
+
+              <v-row align="center" justify="end" style="margin-right: 20px">
+
+                <v-card-title style="margin-right: 20px; position: absolute !important; left: 0; top: 0; font-size: 40px;"> {{item.name}}</v-card-title>
+                <v-card-subtitle style="margin-right: 20px; position: absolute !important; left: 0; top: 100px; font-size: 20px;">{{item.description}}</v-card-subtitle>
+
+                <v-card style="margin: 10px;">
+                  <v-card-title>Teachers:</v-card-title>
+                  <ViewTeachersOfSubject :course="item"/>
+                </v-card>
+                <v-card style="margin: 10px;">
+                  <v-card-title>Upcoming Lessons:</v-card-title>
+                  <ViewLessonsOfSubject :course="item"/>
+                </v-card>
+                <v-card style="margin: 10px;">
+                  <v-card-title>Recent Note Sets:</v-card-title>
+                  <ViewNoteSetsOfSubject :course="item"/>
+                </v-card>
+              </v-row>
+            </v-card>
           </v-col>
         </v-row>
       </template>
@@ -88,25 +113,46 @@
 
 <script>
   import axios from "axios"
+  import ViewTeachersOfSubject from "./ViewTeachersOfSubject"
+  import ViewLessonsOfSubject from "./ViewLessonsOfSubject"
+  import ViewNoteSetsOfSubject from "./ViewNoteSetsOfSubject"
   import {mapGetters, mapActions} from 'vuex'
 
 
   export default {
+    components: {
+      ViewTeachersOfSubject,
+      ViewLessonsOfSubject,
+      ViewNoteSetsOfSubject,
+    },
+
     data: () => ({
+      rainbowSwitch: false,
 			itemsPerPageArray: [4, 8, 12],
 			search: '',
 			filter: {},
 			sortDesc: false,
 			page: 1,
 			itemsPerPage: 4,
+      keys: ['name']
 		}),
 
     props: [],
 
 		computed: {
-      ...mapGetters(['allCourses']),
+      ...mapGetters(['subjectsGetter', 'teachersOneSubject']),
+      courses() {
+        let courses = this.subjectsGetter
+        let coursesWithTeachers = []
+        for (let i = 0; i < courses.length; i++) {
+          let course = courses[i]
+          course.teachers = this.teachersOneSubject(courses[i].name)
+          coursesWithTeachers.push(course)
+        }
+        return coursesWithTeachers
+      },
       numberOfPages () {
-        return Math.ceil(this.allCourses.length / this.itemsPerPage)
+        return Math.ceil(this.courses.length / this.itemsPerPage)
       },
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
@@ -128,3 +174,39 @@
 
 	}
 </script>
+
+<style scoped>
+
+#courseCard {
+  background-image: linear-gradient(to bottom right, #34acff, #8cf8ff);
+}
+
+#courseCardRainbow {
+  animation-name: messengerBackground;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes messengerBackground {
+  0% {
+    background-color: #00d3ff;
+  }
+  20% {
+    background-color: #7950ff;
+  }
+  40% {
+    background-color: #de0007;
+  }
+  60% {
+    background-color: #ffc500;
+  }
+  80% {
+    background-color: #83ff15;
+  }
+  100% {
+    background-color: #00d3ff;
+  }
+}
+
+</style>

@@ -60,6 +60,11 @@ class Availability(models.Model):
     isFull = models.BooleanField(default=False)
 
 
+class LessonSubjects(models.Model):
+    availID = models.ForeignKey(Availability, on_delete=models.CASCADE, null="true")
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null="true")
+
+
 # many Teacher to many Subjects
 class TeachesSubjects(models.Model):
     teacherID = models.ForeignKey(User, on_delete=models.CASCADE, null="true")

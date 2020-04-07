@@ -5,11 +5,13 @@ from rest_framework.decorators import action
 
 from .permissions import IsOwner
 from .models import User, Subject, Availability, TeachesSubjects, NoteSet, NoteSetSubjects, \
-    NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile, Chat, DirectMessage
+    NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile, Chat, DirectMessage, \
+    LessonSubjects
 from .serializers import UserSerializer, SubjectSerializer, AvailabilitySerializer, Reviews, \
     TeachesSubjectsSerializer, NoteSetSerializer, NoteSetSubjectsSerializer, \
     NoteSetContentSerializer, TutoringSessionSerializer, EventSerializer, \
-    UserAttendEventSerializer, ProfileSerializer, ChatSerializer, DirectMessageSerializer, ReviewsSerializer
+    UserAttendEventSerializer, ProfileSerializer, ChatSerializer, DirectMessageSerializer, ReviewsSerializer, \
+    LessonSubjectsSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -49,6 +51,11 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class TeachesSubjectsViewSet(viewsets.ModelViewSet):
     queryset = TeachesSubjects.objects.all()
     serializer_class = TeachesSubjectsSerializer
+
+
+class LessonSubjectsViewSet(viewsets.ModelViewSet):
+    queryset = LessonSubjects.objects.all()
+    serializer_class = LessonSubjectsSerializer
 
 
 class AvailabilityViewSet(viewsets.ModelViewSet):
