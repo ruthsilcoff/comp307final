@@ -7,6 +7,7 @@
             <h1>Add an availability</h1>
 
             <v-text-field label="Name" v-model="titleInput"></v-text-field>
+            <v-text-field label="Class size" v-model="sizeInput"></v-text-field>
 
             <v-menu
               ref="menu"
@@ -223,6 +224,7 @@ export default {
     startMinutes: '',
     availabilities: [],
     titleInput:'Lesson',
+    sizeInput:'1',
     startDate: null,
     endDate: null,
     startTime: null,
@@ -281,7 +283,7 @@ export default {
     addAvailability: function(startD, endD) {
       this.inputStart = startD + ' ' + this.startTime
       this.inputEnd = endD + ' ' + this.endTime
-      axios.post('/api/availability/', {title:this.titleInput, start:this.inputStart, end:this.inputEnd})
+      axios.post('/api/availability/', {title:this.titleInput, start:this.inputStart, end:this.inputEnd, classSize:this.sizeInput})
         .then((response) => {
           let newEvent = response.data
           let start = newEvent.start.split("T")

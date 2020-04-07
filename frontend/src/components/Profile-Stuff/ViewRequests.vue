@@ -149,10 +149,12 @@
     },
 
 		methods: {
-      ...mapActions(['confirmLesson', 'createSnackbar']),
+      ...mapActions(['confirmLesson', 'createSnackbar', 'addStudent']),
       async confirm(item) {
         try {
           await this.confirmLesson({tutoringSessionID: item.id, bool: true})
+          await this.addStudent({id: item.availabilityID})
+
           this.createSnackbar({message: 'lesson confirmed!', color: 'success'})
         }catch(error) {
           console.log(error)

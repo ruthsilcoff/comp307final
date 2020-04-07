@@ -55,6 +55,9 @@ class Availability(models.Model):
     duration = models.DurationField(null=True)
     background = models.BooleanField(default=False)
     allDay = models.BooleanField(default=False)
+    classSize = models.IntegerField(null=True)
+    studentsTaking = models.IntegerField(default=0, null=True)
+    isFull = models.BooleanField(default=False)
 
 
 # many Teacher to many Subjects

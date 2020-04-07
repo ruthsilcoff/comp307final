@@ -18,6 +18,7 @@ const state = {
 
 const getters = {
   allCourses: (state) => state.subject,
+
   reviewsGetter: (state) => state.reviews,
   reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
   reviewOneTeacherOneUser: (state) => (id) => state.reviews.find(rev => rev.reviewerID === state.selfID && rev.teacherID === id),
@@ -177,6 +178,25 @@ const actions = {
       const response = await axios.post('/api/tutoringSession/', {availabilityID: availabilityID, tutorID: tutorID})
       commit('addTutoringSession', response.data)
       commit('setPending', availabilityID)
+    }catch(error) {
+      console.log(error)
+      throw error
+    }
+  },
+
+  async addStudent({commit}, {id}) {
+    try {
+      const response = await axios.get(`/api/availability/${id}/`)
+      let avail = response.data
+      let students = avail.studentsTaking
+      students = students + 1
+      console.log(students)
+      console.log(avail.classSize)
+      let full = (students >= avail.classSize)
+      console.log(full)
+      const response2 = await axios.patch(`/api/availability/${id}/`, {studentsTaking:students, isFull: full})
+      avail = response2.data
+      commit('setAvails', avail)
     }catch(error) {
       console.log(error)
       throw error

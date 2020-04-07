@@ -27,6 +27,9 @@
               <v-card-text>
                 <h3>Date:</h3>
                 <h4>{{item.start}}</h4>
+                <v-divider></v-divider>
+                <h3>Class Size: {{item.classSize}}</h3>
+                <h4 v-if="item.studentsTaking">Enrollment: {{item.studentsTaking}}</h4>
               </v-card-text>
 
               <v-btn v-if="item.booked === 'none'" color="success" text v-on:click="requestLesson(item)">
