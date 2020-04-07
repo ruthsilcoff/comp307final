@@ -25,8 +25,13 @@
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>From:</h3>
-                <h4>{{item.student.username}}</h4>
+                <h3>Student: {{item.student.username}}</h3>
+                <router-link :to="'/profile/' + item.student.username">
+                <v-btn color="secondary" text style="margins:0;padding:0">View Profile
+                  <v-icon color="white" small>mdi-eye</v-icon>
+                </v-btn>
+              </router-link>
+                 <v-divider></v-divider>
                   <h3>Date:</h3>
                   <h4>{{item.avail.start}}</h4>
               </v-card-text>

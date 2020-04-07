@@ -379,9 +379,9 @@ const actions = {
     }
   },
 
-	async updateProfile({commit}, {bio, country}) {
+	async updateProfile({commit}, {bio, country, rate}) {
     try {
-      const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country})
+      const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country, rate: rate})
       commit('updateUserProfile', response.data)
     } catch (error) {
       console.log(error.response.data)

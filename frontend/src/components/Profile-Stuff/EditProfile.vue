@@ -3,6 +3,7 @@
 		<v-textarea filled label="Bio" v-model="bioInput">
 		</v-textarea>
 		<v-text-field filled label="Country" v-model="countryInput" value=profileData.country></v-text-field>
+		<v-text-field filled label="Hourly rate" v-model="rateInput"></v-text-field>
 		<v-row>
 			<v-btn color="success" v-on:click="editProfile()">Submit</v-btn>
 			<v-btn color="error" v-on:click="cancelEdit()">Cancel</v-btn>
@@ -20,6 +21,7 @@ export default {
 	data: () => ({
 		bioInput: '',
 		countryInput: '',
+		rateInput: '',
 	}),
 
 	mounted() {
@@ -30,7 +32,7 @@ export default {
 		...mapActions(['updateProfile']),
 
 		editProfile: async function () {
-      let newProfile = {bio: this.bioInput, country: this.countryInput}
+      let newProfile = {bio: this.bioInput, country: this.countryInput, rate: this.rateInput}
       try {
         await this.updateProfile(newProfile)
         this.onSuccessfulEdit(newProfile)
@@ -42,6 +44,7 @@ export default {
 		getCurrentProfile: function () {
 			this.bioInput = this.userData.profile.bio
 			this.countryInput = this.userData.profile.country
+			this.rateInput = this.userData.profile.rate
 		},
 
 	}

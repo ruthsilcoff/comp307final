@@ -12,7 +12,7 @@
         color="secondary"
       >
         <v-tab>Welcome</v-tab>
-        <v-tab>View All Users</v-tab>
+
         <v-tab>View All Teachers</v-tab>
       </v-tabs>
     </v-toolbar>
@@ -25,9 +25,7 @@
             </v-row>
           </v-content>
         </v-tab-item>
-        <v-tab-item>
-          <ViewAllUsers/>
-        </v-tab-item>
+
         <v-tab-item>
           <ViewTeachers/>
         </v-tab-item>
@@ -56,7 +54,6 @@ export default {
 	components: {
     welcomePage,
     whyItWorks,
-    ViewAllUsers,
     ViewTeachers,
   },
 

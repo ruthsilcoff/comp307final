@@ -36,6 +36,11 @@
               <v-icon small color="grey">mdi-map-marker</v-icon>
               {{ viewingUser.profile.country }}
             </h3>
+
+            <v-divider ></v-divider>
+
+            <h3 style="margin: 10px;" v-if="viewingUser.profile.rate && !editingProfile">Hourly Rate: {{ viewingUser.profile.rate}}</h3>
+
             <v-row justify="center">
               <v-btn style="margin: 0;" v-if="!isViewing && !editingProfile" color="secondary" text medium v-on:click="editProfilePage()">
                 <v-icon >mdi-pencil</v-icon>Edit

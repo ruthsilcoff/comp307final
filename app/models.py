@@ -34,6 +34,7 @@ class Profile(models.Model):
     birthDate = models.DateField(null=True, blank=True)
     avatar = models.FileField(upload_to=get_avatar_path, null=True, blank=True)
     isTeacher = models.BooleanField(default=False)
+    rate = models.FloatField(null=True)
 
 
 # Subjects will be a useful search category for the website

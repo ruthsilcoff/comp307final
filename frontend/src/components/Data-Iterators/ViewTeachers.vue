@@ -29,8 +29,7 @@
                 <h4>(subject list)</h4>
 								<h3>Rating:</h3>
                 <h4>(rating)</h4>
-								<h3>Price:</h3>
-                <h4>(price)</h4>
+                <h3 v-if="item.profile.rate">Hourly Rate: {{item.profile.rate}}</h3>
               </v-card-text>
 
               <router-link :to="'/profile/' + item.username">
