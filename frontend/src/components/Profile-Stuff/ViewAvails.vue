@@ -19,7 +19,7 @@
             md="16"
             lg="4"
           >
-            <v-card>
+            <v-card v-if="!item.isFull">
               <v-card-title class="subheading font-weight-bold">{{ item.title }}</v-card-title>
 
               <v-divider></v-divider>

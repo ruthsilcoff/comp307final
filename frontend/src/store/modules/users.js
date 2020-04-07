@@ -190,10 +190,7 @@ const actions = {
       let avail = response.data
       let students = avail.studentsTaking
       students = students + 1
-      console.log(students)
-      console.log(avail.classSize)
       let full = (students >= avail.classSize)
-      console.log(full)
       const response2 = await axios.patch(`/api/availability/${id}/`, {studentsTaking:students, isFull: full})
       avail = response2.data
       commit('setAvails', avail)
