@@ -19,18 +19,19 @@
             md="16"
             lg="4"
           >
+
             <v-card>
               <v-card-title class="subheading font-weight-bold">Session ID: {{ item.id}}</v-card-title>
 
               <v-divider></v-divider>
 
               <v-card-text>
-                <h3>Hours:</h3>
-                <h3>Cost per Hour: </h3>
+                <h3>Hours: (get duration)</h3>
+                <h3>Cost per Hour: {{item.tutor.profile.rate}}</h3>
                 <v-divider></v-divider>
                 <h3>Total: </h3>
                 <v-divider></v-divider>
-                <h3>For payment, send interact e-transer to: (teacher e-mail)</h3>
+                <h3>For payment, send interact e-transer to: {{item.tutor.email}}</h3>
               </v-card-text>
 
 
@@ -124,6 +125,7 @@
 
 		computed: {
       ...mapGetters(['sessionsOneStudent']),
+
           tutoringSessions () {
               return this.sessionsOneStudent(this.userData.id)
           },
@@ -138,6 +140,7 @@
 
 		methods: {
       ...mapActions(['createSnackbar']),
+
       nextPage () {
         if (this.page + 1 <= this.numberOfPages) this.page += 1
       },
