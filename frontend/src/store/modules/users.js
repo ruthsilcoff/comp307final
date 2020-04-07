@@ -198,6 +198,19 @@ const actions = {
     }
   },
 
+  async newAvail({commit}, {titleInput, inputStart, inputEnd}) {
+    try {
+        const response = await axios.post('/api/availability/', {title:titleInput, start:inputStart, end:inputEnd})
+
+        let newEvent = response.data
+
+        commit('addNewAvail', newEvent)
+      }catch(error) {
+        console.error(error.response.data);
+        throw error
+      }
+  },
+
   async getAllAvailabilities({commit}) {
     try {
       const response = await axios.get('/api/availability/')
@@ -410,6 +423,7 @@ const actions = {
 }
 
 const mutations = {
+  addNewAvail: (state, newEvent) => state.availabilities.unshift(newEvent),
   setReviews: (state, revs) => state.reviews = revs,
   addReview: (state, newRev) => state.reviews.push(newRev),
 

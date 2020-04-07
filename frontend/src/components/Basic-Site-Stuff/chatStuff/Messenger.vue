@@ -145,6 +145,7 @@
 
 <script>
 import {mapGetters, mapActions} from "vuex"
+import NewAvailability from "../../Data-Iterators/NewAvailability"
 
 export default {
 	data: () => ({
