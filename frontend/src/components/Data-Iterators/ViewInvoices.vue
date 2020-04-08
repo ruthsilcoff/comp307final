@@ -3,6 +3,7 @@
     <v-data-iterator
       :items="tutoringSessions"
       :items-per-page.sync="itemsPerPage"
+      :pagelength="itemsPerPage"
       :page="page"
       :search="search"
       :sort-by="sortBy.toLowerCase()"
@@ -11,32 +12,34 @@
     >
       <template v-slot:default="props">
         <v-row>
-          <v-col
-            v-for="item in props.items"
-            :key="item.id"
-            cols="12"
-            sm="6"
-            md="16"
-            lg="4"
-          >
-
-            <v-card>
-              <v-card-title class="subheading font-weight-bold">Session ID: {{ item.id}}</v-card-title>
-
-              <v-divider></v-divider>
-
-              <v-card-text>
-                <h3>Hours: (get duration)</h3>
-                <h3>Cost per Hour: {{item.tutor.profile.rate}}</h3>
-                <v-divider></v-divider>
-                <h3>Total: </h3>
-                <v-divider></v-divider>
-                <h3>For payment, send interact e-transer to: {{item.tutor.email}}</h3>
-              </v-card-text>
 
 
-            </v-card>
-          </v-col>
+            <v-simple-table>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th class="text-left">Session ID</th>
+            <th class="text-left">Class</th>
+            <th class="text-left">Date</th>
+            <th class="text-left">Hours</th>
+            <th class="text-left">Cost per hour</th>
+            <th class="text-left">Total</th>
+            <th class="text-left">Email to Pay</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in props.items" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.avail.title}}</td>
+            <td>{{ item.avail.start.toString()}}</td>
+            <td>Duration</td>
+            <td>{{ item.tutor.profile.rate}}</td>
+            <td>Total</td>
+            <td>{{item.tutor.email}}</td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
         </v-row>
       </template>
 

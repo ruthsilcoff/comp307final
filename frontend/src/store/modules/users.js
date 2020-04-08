@@ -318,21 +318,27 @@ const actions = {
       let avails = response2.data
 
       if (currentUser.profile.isTeacher) {
-
-        if (response.data.length > 0) {
           let requests = response.data.filter(session => session.tutorID === state.selfID)
-
           if (requests) {
             for (let i = 0; i < requests.length; i++) {
               requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
               requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
-
               requests[i].tutor = state.users.find(tutor => tutor.id === requests[i].tutorID)
             }
             commit('setRequests', requests)
+            commit('setTutoringSessions', requests)
           }
-        }
-        commit('setTutoringSessions', response.data)
+      }
+      else {
+          let requests = response.data.filter(session => session.learnerID === state.selfID)
+          if (requests) {
+            for (let i = 0; i < requests.length; i++) {
+              requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
+              requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
+              requests[i].tutor = state.users.find(tutor => tutor.id === requests[i].tutorID)
+            }
+            commit('setTutoringSessions', requests)
+          }
       }
     }catch(error) {
       console.log(error)
