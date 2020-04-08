@@ -15,8 +15,8 @@
             v-for="item in props.items"
             :key="item.id"
             cols="12"
-            sm="4"
-            md="4"
+            sm="12"
+            md="6"
             lg="4"
           >
             <v-card id="teacherCard">
