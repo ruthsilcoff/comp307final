@@ -10,7 +10,7 @@
 				<h1>Log In</h1>
 				<v-text-field label="Username" v-model="usernameInput"></v-text-field>
 				<v-row>
-					<v-text-field style="width: 250px; margin-left: 20px;" :type="showPassword ? 'text' : 'password'"  label="Password" v-model="passwordInput">
+					<v-text-field id="passwordField" style="width: 250px; margin-left: 20px;" :type="showPassword ? 'text' : 'password'"  label="Password" v-model="passwordInput">
 					</v-text-field>
 					<v-icon flat v-on:click="togglePasswordView" v-if="showPassword" color="primary" right>mdi-eye-off</v-icon>
 					<v-icon flat v-on:click="togglePasswordView" v-if="!showPassword" color="primary" right>mdi-eye</v-icon>
@@ -29,6 +29,7 @@
 import axios from "axios"
 import {mapGetters, mapActions} from 'vuex'
 
+
 export default {
 	components: {},
 
@@ -39,8 +40,19 @@ export default {
 		usernameInput: ''
 	}),
 
+	mounted() {
+		document.getElementById('passwordField').addEventListener('keypress', this.checkForEnterKey)
+	},
+
 	methods: {
 		...mapActions(['login', 'setMyUser', 'createSnackbar', 'yesLoggedIn']),
+
+
+		checkForEnterKey(event) {
+			if (event.keyCode === 13) {
+				this.logInFunction()
+			}
+		},
 
 		togglePasswordView() {
 			this.showPassword = !this.showPassword
