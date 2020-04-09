@@ -43,6 +43,7 @@ const getters = {
 
   tutoringSessionsGetter: (state) => state.tutoringSessions,
   sessionsOneStudent: (state) => (id) => state.tutoringSessions.filter(session => session.learnerID === id && session.isConfirmed),
+  sessionsOneStudentRequest: (state) => (id) => state.tutoringSessions.filter(session => session.learnerID === id && !session.isConfirmed),
 
   newMessageDialog: (state) => state.messageDialog,
   myChatsGetter: (state) => state.chats,

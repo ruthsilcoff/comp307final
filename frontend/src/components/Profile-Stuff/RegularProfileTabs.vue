@@ -21,6 +21,9 @@
       </v-container>
     </v-tab-item>
     <v-tab-item>
+      <ViewRequestsStudent :userData="userData"/>
+    </v-tab-item>
+    <v-tab-item>
       <ViewTeachers :userData="userData"/>
     </v-tab-item>
     <v-tab-item>
@@ -35,12 +38,14 @@
   import ViewUpcomingLessons from "./ViewUpcomingLessons"
   import ViewTeachers from "../Data-Iterators/ViewTeachers"
   import ViewInvoices from "../Data-Iterators/ViewInvoices"
+  import ViewRequestsStudent from "../Data-Iterators/ViewRequestsStudent";
 
 	export default {
     data: () => ({
       tab: 0,
 			items: [
 				'Upcoming Sessions',
+                    'Sessions Requested',
         'Teachers',
                     'Invoices'
 			],
@@ -50,6 +55,7 @@
 
     components: {
 			ViewUpcomingLessons,
+      ViewRequestsStudent,
 			ViewTeachers,
             ViewInvoices,
     },
