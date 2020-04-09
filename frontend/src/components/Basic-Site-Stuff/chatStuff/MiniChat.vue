@@ -16,43 +16,46 @@
       ></v-text-field>
     </v-row>
   </v-toolbar>
-  <div style="overflow: scroll; max-height: 500px;" >
+  <v-container style="overflow: scroll; max-height: 500px;" >
     <v-list dense style="margin-top: 65px; margin-bottom: 20px">
       <v-list-item
         three-line
         link
         v-for="(item) in myChatsGetter"
         v-bind:key="item.id"
+        v-on:click="openBottomChat(item.id)"
       >
-        <v-list-item-avatar>
-          <v-icon
-            color="green"
-            dark
-          >mdi-leaf</v-icon>
-        </v-list-item-avatar>
+        <div v-if="item.mostRecent" style="display: flex;">
+          <v-list-item-avatar>
+            <v-icon
+              color="green"
+              dark
+            >mdi-leaf</v-icon>
+          </v-list-item-avatar>
 
-        <div style="display: block;">
-          <v-list-item-title>{{item.otherUser.first_name}} {{item.otherUser.last_name}}</v-list-item-title>
-          <v-list-item-content>{{item.mostRecent.content}}</v-list-item-content>
+          <div style="display: block;">
+            <v-list-item-title v-if="item.otherUser.first_name">{{item.otherUser.first_name}} {{item.otherUser.last_name}}</v-list-item-title>
+            <v-list-item-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-list-item-title>
+            <v-list-item-content v-if="item.mostRecent">{{item.mostRecent.content}}</v-list-item-content>
+          </div>
+
+          <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === myID)">
+            <v-icon
+              v-text="item.icon"
+              color="red"
+            >mdi-circle</v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo !== myID)">
+            <v-icon
+              v-text="item.icon"
+              color="blue"
+            >mdi-circle</v-icon>
+          </v-list-item-avatar>
         </div>
-
-        <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === myID)">
-          <v-icon
-            v-text="item.icon"
-            color="red"
-          >mdi-circle</v-icon>
-        </v-list-item-avatar>
-
-        <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === item.otherUser)">
-          <v-icon
-            v-text="item.icon"
-            color="unreadColor"
-          >mdi-reply</v-icon>
-        </v-list-item-avatar>
-
       </v-list-item>
     </v-list>
-  </div>
+  </v-container>
 </v-card>
 </template>
 
@@ -70,13 +73,27 @@ export default {
   },
 
   computed: {
-		...mapGetters(['myChatsGetter', 'myID']),
+    ...mapGetters(['allMessagesGetter', 'myChatsGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter', 'openChatIDGetter']),
+    myChats() {
+      let chats = []
+      for (let x = 0; x < this.myChatsGetter.length; x++) {
+        let chat = this.myChatsGetter[x]
+        let filteredMessages = this.allMessagesGetter.filter(
+          msg => ((msg.author.id === chat.owner && msg.sentTo === chat.otherUser.id)
+            || (msg.author.id === chat.otherUser.id && msg.sentTo === chat.owner)),
+        )
+        chat.messages = filteredMessages
+        chat.mostRecent = chat.messages[(filteredMessages.length) - 1]
+        chats.push(chat)
+      }
+      return chats
+    },
     numberUnread() {
       let num = 0;
-      console.log(this.myChatsGetter)
-      for (let x= 0; x< this.myChatsGetter.length; x++) {
-        for (let i = 0; i < this.myChatsGetter[x].messages.length; i++) {
-          if (!this.myChatsGetter[x].messages[i].seen && (this.myChatsGetter[x].messages[i].sentTo === this.myID)) {
+      console.log(this.myChats)
+      for (let x = 0; x < this.myChats.length; x++) {
+        for (let i = 0; i < this.myChats[x].messages.length; i++) {
+          if (!this.myChats[x].messages[i].seen && (this.myChats[x].messages[i].sentTo === this.myID)) {
             num++
           }
         }
@@ -89,8 +106,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setMessageDialog']),
-    viewChat(item) {
+    ...mapActions(['setMessageDialog', 'setOpenChatID']),
+    openBottomChat(id) {
+      if (!this.openChatIDGetter.includes(id))
+      this.setOpenChatID({id: id, bool: true})
     },
 
   },

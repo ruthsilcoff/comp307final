@@ -40,8 +40,6 @@
         </template>
 
         <template v-slot:selection="{ item }">
-          <v-avatar v-if="item.profile.avatar" dark size="30"><v-img :src="item.profile.avatar"></v-img></v-avatar>
-          <v-avatar v-if="!item.profile.avatar" dark size="30" color="avatarColor">{{item.username[0]}}</v-avatar>
           <span v-if="item.first_name">{{item.first_name}} {{item.last_name}}</span>
           <span v-if="!item.first_name">{{item.username}}</span>
         </template>
@@ -66,12 +64,17 @@ export default {
     contentInput: '',
   }),
 
+  mounted() {
+    this.initialize()
+  },
+
   computed: {
     ...mapGetters([
       'myUser',
       'newMessageDialog',
       'loggedIn',
       'allUsers',
+      'personInputForMessageGetter',
     ]),
     myCommunications() {
       if (this.myUser.profile.isTeacher) {
@@ -85,7 +88,16 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setMessageDialog', 'sendNewMessage', 'createSnackbar', ]),
+    ...mapActions(['setMessageDialog', 'sendNewMessage', 'createSnackbar', 'setPersonToMessage',]),
+    initialize() {
+      if (this.personInputForMessageGetter !== null) {
+        this.personInput = this.personInputForMessageGetter
+      }
+      else {
+        this.personInput = null
+      }
+    },
+
     cancelSend() {
       this.setMessageDialog(false)
     },
@@ -93,8 +105,9 @@ export default {
     async sendMessage() {
       try {
         await this.sendNewMessage({to: this.personInput.id, content: this.contentInput})
-        this.createSnackbar({message: 'Message sent.', color: 'success'})
+        await this.setPersonToMessage({user: null})
         this.setMessageDialog(false)
+        this.createSnackbar({message: 'Message sent.', color: 'success'})
       } catch(error){
         console.log(error)
         this.createSnackbar({message: 'Problem sending message.', color: 'error'})
