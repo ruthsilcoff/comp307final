@@ -16,3 +16,12 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')
+
+if (module.hot) {
+  module.hot.addStatusHandler(status => {
+    if (status === 'prepare')
+      console.log('hot reloading')
+    else if (status === 'idle')
+      console.log('hot reload complete')
+  })
+}

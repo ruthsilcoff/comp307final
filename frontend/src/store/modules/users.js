@@ -16,13 +16,18 @@ const state = {
   noteSetSubjects: [],
   noteSets: [],
   reviews: [],
+  openChatIDs: [],
+  personInputForMessage: null,
 }
 
 const getters = {
+  personInputForMessageGetter: (state) => state.personInputForMessage,
   allCourses: (state) => state.subjects,
   teachersOneSubject: (state) => (name) => state.teacherSubjects.filter(thing => thing.subject.name === name).map(thing => thing.teacher),
   lessonsOneSubject: (state) => (name) => state.lessonSubjects.filter(thing => thing.subject.name === name).map(thing => thing.avail),
   noteSetsOneSubject: (state) => (name) => state.noteSetSubjects.filter(thing => thing.subject.name === name).map(thing => thing.noteSet),
+
+  openChatIDGetter: (state) => state.openChatIDs,
 
   reviewsGetter: (state) => state.reviews,
   reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
@@ -43,9 +48,10 @@ const getters = {
 
   tutoringSessionsGetter: (state) => state.tutoringSessions,
   sessionsOneStudent: (state) => (id) => state.tutoringSessions.filter(session => session.learnerID === id && session.isConfirmed),
+  sessionsOneStudentRequest: (state) => (id) => state.tutoringSessions.filter(session => session.learnerID === id && !session.isConfirmed),
 
   newMessageDialog: (state) => state.messageDialog,
-  myChatsGetter: (state) => state.chats,
+  myChatsGetter: (state) => state.chats.filter(chat => chat.owner === state.selfID),
   allMessagesGetter: (state) => state.messages,
 
   allUsers: (state) => state.users,
@@ -59,6 +65,14 @@ const getters = {
 }
 
 const actions = {
+  setPersonToMessage({commit}, {user}) {
+    this.commit('setMessagingPerson', user)
+  },
+
+  setOpenChatID({commit}, {id, bool}) {
+    this.commit('setOpenChat', {id, bool})
+  },
+
   async getAllReviews({commit}) {
     try {
       const response = await axios.get('/api/review/')
@@ -350,32 +364,25 @@ const actions = {
     try {
       const response = await axios.get('/api/dm/')
       let messages = response.data
-      commit('setMessages', response.data)
 
-      for (let m=0; m < messages.length; m++) {
-        let convertedDate = (new Date(messages[m].dateSent)).toString()
-        convertedDate = convertedDate.split(":")
-        convertedDate = convertedDate[0] + convertedDate[1]
+
+      for (let m = 0; m < messages.length; m++) {
+        let convertedDate = new Date(messages[m].dateSent)
         messages[m].dateSent = convertedDate
 
         messages[m].author = state.users.find(user => user.id === messages[m].author)
       }
 
       const response2 = await axios.get('/api/chat/')
-      let chats = response2.data.filter(chat => chat.owner === state.selfID)
+      let chats = response2.data
       for (let i = 0; i < chats.length; i++) {
-        messages = messages.filter(
-          msg => ((msg.author.id === chats[i].owner && msg.sentTo === chats[i].otherUser)
-            || (msg.author.id === chats[i].otherUser && msg.sentTo === chats[i].owner))
-        )
-        chats[i].messages = messages
-        chats[i].mostRecent = chats[i].messages[(messages.length)-1]
         chats[i].otherUser = state.users.find(user => user.id === chats[i].otherUser)
-        messages = response.data
       }
+
+      commit('setMessages', response.data)
       commit('setChats', chats)
 
-    }catch(error) {
+    } catch (error) {
       console.log(error)
     }
   },
@@ -385,35 +392,43 @@ const actions = {
       const chats = await axios.get('/api/chat/')
       const response = await axios.post('/api/dm/', {sentTo: to, content})
 
+      let message = response.data
+      message.author = state.users.find(user => user.id === message.author)
+      message.dateSent = new Date(message.dateSent)
       // check if there's a chat for it, otherwise create two of them
       if (chats.data.length > 0) {
-        let chat = chats.data.find(chat =>
-          (chat.owner === response.data.author && chat.otherUser === response.data.sentTo) ||
-          (chat.otherUser === response.data.author && chat.owner === response.data.sentTo)
-        )
-        if (!chat) {
-          const chat1 = await axios.post('/api/chat/', {owner: state.selfID, otherUser: to})
-          commit('newChat', chat1.data)
-          const chat2 = await axios.post('/api/chat/', {owner: to, otherUser: state.selfID})
-          commit('newChat', chat2.data)
-        }
-        else {
-          if (!chat.messages) {
-            chat.messages = []
-          }
-          chat.messages.push(response.data)
-          chat.mostRecent = response.data
+        let chat1 = chats.data.find(chat => chat.owner === state.selfID && chat.otherUser === to)
+        let chat2 = chats.data.find(chat => chat.otherUser === state.selfID && chat.owner === to)
+        if (!chat1) {
+          const newChat1 = await axios.post('/api/chat/', {owner: state.selfID, otherUser: to})
+          newChat1.otherUser = state.users.find(user => user.id === newChat1.otherUser)
+          commit('newChat', newChat1.data)
+          const newChat2 = await axios.post('/api/chat/', {owner: to, otherUser: state.selfID})
+          newChat2.otherUser = state.users.find(user => user.id === newChat2.otherUser)
+          commit('newChat', newChat2.data)
         }
       }
       else {
-        const chat1 = await axios.post('/api/chat/', {owner: state.selfID, otherUser: to})
-        commit('newChat', chat1.data)
-        const chat2 = await axios.post('/api/chat/', {owner: to, otherUser: state.selfID})
-        commit('newChat', chat2.data)
+        const otherNewChat1 = await axios.post('/api/chat/', {owner: state.selfID, otherUser: to})
+        otherNewChat1.otherUser = state.users.find(user => user.id === otherNewChat1.otherUser)
+        commit('newChat', otherNewChat1)
+        const otherNewChat2 = await axios.post('/api/chat/', {owner: to, otherUser: state.selfID})
+        otherNewChat2.otherUser = state.users.find(user => user.id === otherNewChat2.otherUser)
+        commit('newChat', otherNewChat2)
       }
-      commit('newMessage', response.data)
-    }catch(error) {
+      commit('newMessage', message)
+    } catch (error) {
       console.log(error)
+      throw error
+    }
+  },
+
+   async updateMessageSeen({commit}, {id}) {
+    try {
+      await axios.patch(`/api/dm/${id}/`, {seen: true})
+      this.commit('updateMessageToSeen', id)
+    }catch(error) {
+      this.console.log(error.response.data)
       throw error
     }
   },
@@ -493,10 +508,27 @@ const actions = {
   async resetValuesOnLogOut({commit}) {
     commit('setSelfUser', null)
     commit('setViewingUser', null)
+    commit('resetOpenChats')
   },
 }
 
 const mutations = {
+  resetOpenChats: (state) => state.openChatIDs = [],
+  setMessagingPerson: (state, person) => state.personInputForMessage = person,
+  updateMessageToSeen: (state, id) => {
+    let index= state.messages.indexOf(state.messages.find(msg => msg.id === id))
+    state.messages[index].seen = true
+  },
+  setOpenChat:(state, {id, bool}) => {
+    if (bool) {
+      state.openChatIDs.push(id)
+    }
+    else {
+      let index = state.openChatIDs.indexOf(state.openChatIDs.find(thing => thing === id))
+      state.openChatIDs.splice(index, 1)
+    }
+  },
+
   removeTeachesSubject: (state, thing) => {
     let index = state.teacherSubjects.indexOf(state.teacherSubjects.find(t => t.id === thing.id))
     state.teacherSubjects.splice(index, 1)
@@ -547,7 +579,7 @@ const mutations = {
     user.profile = newProfile
   },
   setChats: (state, chats) => state.chats = chats,
-  setMessages: (state, messages) => state.chats = messages,
+  setMessages: (state, messages) => state.messages = messages,
   newChat: (state, chat) => state.chats.push(chat),
   newMessage: (state, message) => state.messages.push(message),
 }
