@@ -5,10 +5,38 @@
 
     <NewMessage v-if="newMessageDialog"/>
 
+    <v-row v-if="loading" align="center" justify="center">
+      <v-progress-circular color="secondary" :size="100" :width="10" indeterminate/>
+      <v-icon x-large color="red" style="margin-top: 0; margin-left: -69px;">fa-heart</v-icon>
+    </v-row>
+
+    <v-menu
+      draggable="true"
+      :value="true"
+      v-for="(item, index) in openChats"
+      v-bind:key="item.id"
+      :position-x="220*index"
+      :position-y="410"
+      :close-on-content-click="false"
+      :close-on-click="false"
+    >
+      <v-card height="300" width="200">
+        <v-toolbar fixed dense dark color="primary">
+          <v-toolbar-title v-if="item.otherUser.first_name">{{item.otherUser.first_name + " " + item.otherUser.last_name}}</v-toolbar-title>
+          <v-toolbar-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="closeChat(item.id)">x</v-icon>
+          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="item.collapsed = !item.collapsed">^</v-icon>
+        </v-toolbar>
+        <BottomChatView :chat="item"/>
+      </v-card>
+
+    </v-menu>
+
    <router-view v-if="!loading" :key="$route.fullPath"></router-view>
 
     <v-snackbar
-      v-model="getSnackbar"
+      v-model="snackbar"
       bottom
       :color="getSnackbarColor"
       :multi-line="getSnackbarMode === 'multi-line'"
@@ -56,6 +84,7 @@ import ProfilePage from "./components/Profile-Stuff/ProfilePage"
 import NewAvailability from "./components/Data-Iterators/NewAvailability"
 import BookLesson from "./components/BookLesson"
 import NewMessage from "./components/Basic-Site-Stuff/chatStuff/NewMessage"
+import BottomChatView from "./components/Basic-Site-Stuff/chatStuff/BottomChatView"
 
 
 export default {
@@ -65,10 +94,13 @@ export default {
     LargeCalendar,
     BookLesson,
     NewMessage,
+    BottomChatView,
   },
 
   computed: {
     ...mapGetters([
+      'openChatIDGetter',
+      'myChatsGetter',
       'allUsers',
       'newMessageDialog',
       'loggedIn',
@@ -78,14 +110,31 @@ export default {
       'getSnackbarMode',
       'newMessageDialog',
     ]),
-    snackbar() {
-      return {
-        get: function() {
-          return this.getSnackbar
-        },
-        set: function() {
-          return this.removeSnackbar()
+    openChats() {
+      let openChats = []
+      if (this.openChatIDGetter) {
+        for (let i = 0; i < this.openChatIDGetter.length; i++) {
+          let chat = this.myChatsGetter.find(chat => chat.id === this.openChatIDGetter[i])
+          chat.collapsed = false
+          openChats.push(chat)
         }
+      }
+      return openChats
+    },
+    snackbar: {
+      get() {
+        return this.getSnackbar
+      },
+      set() {
+        this.removeSnackbar()
+      }
+    },
+    leftDrawerGetSet: {
+      get() {
+        return this.leftDrawerGetter
+      },
+      set(value) {
+        return this.changeLeftDrawer(value)
       }
     }
   },
@@ -109,6 +158,7 @@ export default {
   },
 
   data: () => ({
+    collapseChat: [],
     timeout: 5000,
     loading: true,
     page: 'homePage',
@@ -124,6 +174,7 @@ export default {
 
   methods: {
     ...mapActions([
+      'setOpenChatID',
       'removeSnackbar',
       'setMessageDialog',
       'login',
@@ -133,6 +184,18 @@ export default {
       'yesLoggedIn',
       'notLoggedIn',
     ]),
+
+    toggleCollapse(index) {
+      console.log(this.openChats)
+      console.log(index)
+      this.openChats[index].collapsed = true
+      console.log(this.openChats)
+      this.collapseChat[index] = true
+    },
+
+    closeChat(id) {
+      this.setOpenChatID({id: id, bool: false})
+    },
 
     getTheme: function () {
       let result = localStorage.getItem('theme')

@@ -3,7 +3,7 @@
 
 		<!-- LEFT DRAWER -->
     <v-navigation-drawer
-      v-model="leftDrawerGetter"
+      v-model="leftDrawerGetSet"
       app
       clipped
       left
@@ -63,6 +63,14 @@ export default {
 
 	computed: {
 		...mapGetters(['myUser', 'confirmedRequestsGetter', 'availabilitiesGetter', 'myID', 'availabilitiesOneTeacher', 'leftDrawerGetter']),
+		leftDrawerGetSet: {
+      get() {
+        return this.leftDrawerGetter
+      },
+      set(value) {
+        return this.changeLeftDrawer(value)
+      },
+    },
 		lessons() {
 			if (this.myUser.profile.isTeacher) {
 				let lessons = []

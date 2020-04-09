@@ -1,7 +1,7 @@
 <template>
     <v-app-bar clipped-left clipped-right app dense color="primary">
       <v-app-bar-nav-icon @click.stop="openLeft()"></v-app-bar-nav-icon>
-      <v-menu offset-y>
+      <v-menu offset-y >
         <template v-slot:activator="{ on }">
           <v-btn
             color="white"
@@ -42,6 +42,7 @@
       <v-spacer/>
 
       <v-menu
+        style="height: 500px;"
         offset-y
         :close-on-content-click="false"
         :nudge-width="300"
@@ -53,15 +54,46 @@
             v-on="on"
             style="position:relative"
           >
-            <v-icon large>mdi-chat</v-icon>
-            <div v-if="numberUnread > 0" id="iconNumberUnread">{{numberUnread}}</div>
+            <v-icon large>mdi-calendar</v-icon>
+            <div v-if="numberNotifs > 0" class="iconNumberUnread">{{numberNotifs}}</div>
           </v-btn>
 
         </template>
-        <MiniChatView/>
-        <div style="position: absolute; bottom: 0; background-color: white; width: 100%;">
-          <router-link to="/messenger" style="margin-left: 22%" color="secondary" text><v-btn text color="secondary"> View All in Messenger</v-btn></router-link>
-        </div>
+        <v-card max-height="300" style="position: relative !important">
+          <TinyCalendar/>
+          <v-bottom-navigation style="position: absolute; bottom: 0;" grow>
+            <router-link to="/calendar">
+              <v-btn text color="secondary" v-on:click="nothing">View Full Calendar</v-btn>
+            </router-link>
+          </v-bottom-navigation>
+        </v-card>
+
+      </v-menu>
+
+      <v-menu
+        v-if="myChatsGetter"
+        offset-y
+        :close-on-content-click="false"
+        :nudge-width="300"
+      >
+        <template v-slot:activator="{ on }">
+        <v-btn
+          icon
+          color="white"
+          v-on="on"
+          style="position:relative"
+        >
+          <v-icon large>mdi-chat</v-icon>
+          <div v-if="numberUnread > 0" class="iconNumberUnread">{{numberUnread}}</div>
+        </v-btn>
+
+        </template>
+        <MiniChat/>
+        <v-bottom-navigation grow>
+          <router-link to="/messenger" >
+            <v-btn text color="secondary"> View All in Messenger</v-btn>
+          </router-link>
+        </v-bottom-navigation>
       </v-menu>
 
       <v-menu offset-y>
@@ -95,27 +127,50 @@
 
 <script>
 import axios from "axios"
-import MiniChatView from "./chatStuff/MiniChat"
+import MiniChat from "./chatStuff/MiniChat"
+import TinyCalendar from "../Calendars/TinyCalendar"
 import {mapActions, mapGetters} from 'vuex'
 
 export default {
   props: ["myLessons", "onHomePage", "debateGames", "profile", "onCalendar", "community",],
 
   computed: {
-    ...mapGetters(['myUser', 'myChatsGetter', 'leftDrawerGetter', 'rightDrawerGetter', 'tempLeftGetter', 'tempRightGetter']),
+    ...mapGetters(['myID', 'allMessagesGetter', 'myUser', 'myChatsGetter', 'leftDrawerGetter', 'rightDrawerGetter', 'tempLeftGetter', 'tempRightGetter']),
+    myChats() {
+      let chats = []
+      for (let x = 0; x < this.myChatsGetter.length; x++) {
+        let chat = this.myChatsGetter[x]
+        let filteredMessages = this.allMessagesGetter.filter(
+          msg => ((msg.author.id === chat.owner && msg.sentTo === chat.otherUser.id)
+            || (msg.author.id === chat.otherUser.id && msg.sentTo === chat.owner)),
+        )
+        chat.messages = filteredMessages
+        chat.mostRecent = chat.messages[(filteredMessages.length) - 1]
+        chats.push(chat)
+      }
+      return chats
+    },
     numberUnread() {
       let num = 0;
-      for (let i = 0; i < this.myChatsGetter.length; i++) {
-        if (this.myChatsGetter[i].unread) {
-          num++
+      console.log(this.myChats)
+      for (let x= 0; x< this.myChats.length; x++) {
+        for (let i = 0; i < this.myChats[x].messages.length; i++) {
+          if (!this.myChats[x].messages[i].seen && (this.myChats[x].messages[i].sentTo === this.myID)) {
+            num++
+          }
         }
       }
       return num
     },
+    numberNotifs() {
+      //TODO: make this function
+      return 5
+    }
   },
 
   components: {
-    MiniChatView,
+    TinyCalendar,
+    MiniChat,
   },
 
   data: () => ({
@@ -136,6 +191,10 @@ export default {
     openLeft() {
       this.changeLeftDrawer(!this.leftDrawerGetter)
     },
+
+    nothing() {
+
+    },
   },
 
 
@@ -149,5 +208,24 @@ export default {
 .header-button {
     font-size: 20px !important;
     font-weight: bold !important;
+}
+
+a {
+  color: var(--v-blackToWhite-base) !important;
+  font-weight: bold;
+}
+
+.iconNumberUnread {
+  background-color: red;
+  width: 18px;
+  height: 18px;
+  border-radius: 10px;
+  position: absolute !important;
+  color: black;
+  top: -4px;
+  right: 6px;
+  font-family: Arial, sans serif;
+  font-size: 16px;
+  font-weight: bold;
 }
 </style>

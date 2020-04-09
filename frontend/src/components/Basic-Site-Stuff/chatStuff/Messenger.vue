@@ -3,7 +3,7 @@
   <v-app id="inspire">
     <!-- LEFT DRAWER -->
     <v-navigation-drawer
-      v-model="leftDrawerGetter"
+      v-model="leftDrawerGetSet"
       app
       clipped
       left
@@ -33,7 +33,7 @@
           <v-list-item
             three-line
             link
-            v-for="(item) in myChatsGetter"
+            v-for="(item) in myChats"
             v-bind:key="item.id"
             v-on:click="openChat(item)"
           >
@@ -72,50 +72,13 @@
 
 
     <!-- THE ACTUAL CONTENT OF THE PAGE-->
-    <v-content id="conversationBox" class="conversationBoxWhite" style="position: relative; margin: 20px; padding: 20px">
-      <v-content v-if="this.viewingChat" >
+    <v-content id="conversationBox" style=" position: relative !important;">
+      <v-content style="margin: 0; padding: 0; " v-if="viewingChat">
         <h1 v-if="viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.first_name}} {{this.viewingChat.otherUser.last_name}} </h1>
         <h1 v-if="!viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.username}} </h1>
-        <v-row v-for="item in viewingChat.messages" v-bind:key="item.id" :justify="(item.author.id === myID) ? 'right' : 'left'">
-          <v-col>
-            <v-chip-group >
-              <v-chip pill style="margin-left: 30%;" v-if="item.author.id === myID">
-                <v-avatar large v-if="item.author.profile.avatar" left>
-                  <v-img :src="item.author.profile.avatar"></v-img>
-                </v-avatar>
-                <v-avatar large v-if="!item.author.profile.avatar" left color="red">
-                  {{item.author.username[0]}}
-                </v-avatar>
-                {{item.content}}
-              </v-chip>
-              <v-chip pill v-if="item.author.id !== myID">
-                <v-avatar large v-if="item.author.profile.avatar" left>
-                  <v-img :src="item.author.profile.avatar"></v-img>
-                </v-avatar>
-                <v-avatar large v-if="!item.author.profile.avatar" left color="blue">
-                  {{item.author.username[0]}}
-                </v-avatar>
-                {{item.content}}
-              </v-chip>
-            </v-chip-group>
-            <span :style="(item.author.id === myID) ? 'margin-left: 30%;' : 'margin-left: 0;'"  class="subtitle-1">{{item.dateSent}}</span>
-          </v-col>
-        </v-row>
-
+        <MessengerViewChat :chat="viewingChat"/>
       </v-content>
 
-      <div style="display: flex; position: absolute; left: 20%; right: 20%; bottom: 0; width: 100%; background-color: transparent;">
-        <v-text-field placeholder="Aa" style="border: 1px solid black; max-width: 300px !important;" v-model="messageInput"></v-text-field>
-        <v-file-input
-          dense
-          style="margin: 20px; max-width: 0 !important;"
-          accept="image/png, image/jpeg, image/bmp"
-          placeholder="Add Photo"
-          prepend-icon="mdi-camera"
-          v-model="photoInput"
-        ></v-file-input>
-        <v-btn large color="success" v-on:click="sendMessage"><v-icon dark left>mdi-reply</v-icon>Send</v-btn>
-      </div>
     </v-content>
 
     <!-- RIGHT DRAWER -->
@@ -145,13 +108,11 @@
 
 <script>
 import {mapGetters, mapActions} from "vuex"
-import NewAvailability from "../../Data-Iterators/NewAvailability"
+import MessengerViewChat from '../chatStuff/MessengerViewChat'
 
 export default {
 	data: () => ({
     backgroundColor: 'white',
-    messageInput: null,
-    photoInput: '',
     viewingChat: null,
     snackbar: false,
     snackbarMessage: '',
@@ -159,23 +120,42 @@ export default {
     timeout: 5000,
     mode: '',
     searchInput: '',
-    drawer: null,
-    drawerRight: false,
-    right: false,
-    left: false,
   }),
 
   components: {
+    MessengerViewChat,
   },
 
   computed: {
-		...mapGetters(['myChatsGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter']),
+		...mapGetters(['allMessagesGetter', 'myChatsGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter']),
+    leftDrawerGetSet: {
+      get() {
+        return this.leftDrawerGetter
+      },
+      set(value) {
+        return this.changeLeftDrawer(value)
+      },
+    },
+    myChats() {
+      let chats = []
+      for (let x = 0; x < this.myChatsGetter.length; x++) {
+        let chat = this.myChatsGetter[x]
+        let filteredMessages = this.allMessagesGetter.filter(
+          msg => ((msg.author.id === chat.owner && msg.sentTo === chat.otherUser.id)
+            || (msg.author.id === chat.otherUser.id && msg.sentTo === chat.owner)),
+        )
+        chat.messages = filteredMessages
+        chat.mostRecent = chat.messages[(filteredMessages.length) - 1]
+        chats.push(chat)
+      }
+      return chats
+    },
     numberUnread() {
       let num = 0;
-      console.log(this.myChatsGetter)
-      for (let x= 0; x< this.myChatsGetter.length; x++) {
-        for (let i = 0; i < this.myChatsGetter[x].messages.length; i++) {
-          if (!this.myChatsGetter[x].messages[i].seen && (this.myChatsGetter[x].messages[i].sentTo === this.myID)) {
+      console.log(this.myChats)
+      for (let x= 0; x< this.myChats.length; x++) {
+        for (let i = 0; i < this.myChats[x].messages.length; i++) {
+          if (!this.myChats[x].messages[i].seen && (this.myChats[x].messages[i].sentTo === this.myID)) {
             num++
           }
         }
@@ -186,23 +166,19 @@ export default {
 
   mounted() {
     this.changeLeftDrawer(true)
+    this.initialize()
   },
 
   methods: {
-    ...mapActions(['setMessageDialog', 'logOut', 'sendNewMessage', 'createSnackbar', 'changeLeftDrawer']),
+    ...mapActions(['setMessageDialog', 'sendNewMessage', 'createSnackbar', 'changeLeftDrawer']),
     openChat(item) {
       this.viewingChat = item
     },
 
-    async sendMessage() {
-      try {
-        await this.sendNewMessage({to: this.viewingChat.otherUser.id, content: this.messageInput})
-        this.createSnackbar({message: 'Message sent.', color: 'success'})
-      } catch(error){
-        console.log(error.response.data)
-        this.createSnackbar({message: 'Problem sending message.', color: 'error'})
+    initialize() {
+      if (this.myChats.length > 0) {
+        this.viewingChat = this.myChats[0]
       }
-      this.setMessageDialog(false)
     },
 
     updateBackground() {

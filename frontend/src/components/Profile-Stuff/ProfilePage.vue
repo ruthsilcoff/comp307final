@@ -21,12 +21,13 @@
             ></v-file-input>
           </v-card-title>
           <h3 style="margin-left:10px;">{{ viewingUser.username }}</h3>
+          <v-btn v-if="isViewing" color="success" v-on:click="sendMessage()"><v-icon left>mdi-reply</v-icon>Send Message</v-btn>
           <v-card-text>
-            <EditProfile v-if="editingProfile === true" :userData="viewingUser"
+            <EditProfile v-if="editingProfile" :userData="viewingUser"
                          :cancelEdit="cancelEdit"
                          :onSuccessfulEdit="onSuccessfulEdit" />
 
-            <v-divider ></v-divider>
+            <v-divider v-if="editingProfile"></v-divider>
 
             <h1 style="margin: 10px;" v-if="viewingUser.profile.bio && !editingProfile">{{ viewingUser.profile.bio }} </h1>
 
@@ -144,7 +145,12 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setViewingUser','createSnackbar', 'removeTeacherSubject', 'updateAvatar', 'addNewSubject', 'addTeacherSubject', 'createSnackbar']),
+    ...mapActions(['setPersonToMessage', 'setMessageDialog', 'setViewingUser','createSnackbar', 'removeTeacherSubject', 'updateAvatar', 'addNewSubject', 'addTeacherSubject', 'createSnackbar']),
+
+    async sendMessage() {
+      await this.setPersonToMessage({user: this.viewingUser})
+      await this.setMessageDialog(true)
+    },
 
     async removeSubject(item) {
       try {
