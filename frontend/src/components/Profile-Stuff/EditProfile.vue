@@ -3,7 +3,7 @@
 		<v-textarea filled label="Bio" v-model="bioInput">
 		</v-textarea>
 		<v-text-field filled label="Country" v-model="countryInput" value=profileData.country></v-text-field>
-		<v-text-field filled label="Hourly rate" v-model="rateInput"></v-text-field>
+		<v-text-field v-if="userData.isTeacher" filled label="Hourly rate" v-model="rateInput"></v-text-field>
 		<v-row>
 			<v-btn color="success" v-on:click="editProfile()">Submit</v-btn>
 			<v-btn color="error" v-on:click="cancelEdit()">Cancel</v-btn>

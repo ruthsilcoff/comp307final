@@ -40,7 +40,7 @@
 
             <v-divider ></v-divider>
 
-            <h3 style="margin: 10px;" v-if="viewingUser.profile.rate && !editingProfile">Hourly Rate: {{ viewingUser.profile.rate}}</h3>
+            <h3 style="margin: 10px;" v-if="viewingUser.profile.isTeacher && viewingUser.profile.rate && !editingProfile">Hourly Rate: {{ viewingUser.profile.rate}}</h3>
 
             <v-row justify="center">
               <v-btn style="margin: 0;" v-if="!isViewing && !editingProfile" color="secondary" text medium v-on:click="editProfilePage()">

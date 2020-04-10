@@ -1,5 +1,20 @@
 <template>
   <v-container max-width="200px">
+    <v-navigation-drawer v-if="this.editingAvail"
+
+    v-model="tempLeftGetSet"
+      app
+      clipped
+      left
+      width="250px"
+      mobile-break-point="500px"
+      overlay-color="secondary"
+      disable-resize-watcher
+    >
+       <EditAvailability :avail="availabilities" :id="toEdit" :cancelEdit="cancelEdit"
+                         :onSuccessfulEdit="onSuccessfulEdit"/>
+  </v-navigation-drawer>
+
     <v-data-iterator
       :items="availabilities"
       :items-per-page.sync="itemsPerPage"
@@ -30,7 +45,16 @@
                 <v-divider></v-divider>
                 <h3>Class Size: {{item.classSize}}</h3>
                 <h4 v-if="item.studentsTaking">Enrollment: {{item.studentsTaking}}</h4>
+
               </v-card-text>
+
+                <v-row v-if="!isViewing">
+                  <v-btn color="secondary" style="font-size: 10px;" v-on:click="editAvail(item.id)">
+                    <v-icon>mdi-pencil</v-icon>Edit
+                  </v-btn>
+                  <v-btn color="error" style="font-size: 10px;" v-on:click="cancelAvail(item)">Close Enrollment</v-btn>
+                </v-row>
+
 
               <v-btn v-if="item.booked === 'none'" color="success" text v-on:click="requestLesson(item)">
                     Request
@@ -109,8 +133,13 @@
 <script>
   import axios from "axios"
   import {mapGetters, mapActions} from 'vuex'
+  import EditAvailability from "./EditAvailability";
 
   export default {
+
+    mounted() {
+      this.changeTempLeft(true)
+    },
 
     data: () => ({
 			itemsPerPageArray: [4, 8, 12],
@@ -126,12 +155,18 @@
 				'Time',
 				'Duration',
 			],
+            editingAvail: false,
+            toEdit: '',
 		}),
 
     props: ['userData'],
 
+    components: {
+    EditAvailability,
+   },
+
 		computed: {
-      ...mapGetters(['availabilitiesOneTeacher']),
+      ...mapGetters(['availabilitiesOneTeacher', 'isViewing']),
       availabilities() {
         return this.availabilitiesOneTeacher(this.userData.id)
       },
@@ -141,10 +176,18 @@
       filteredKeys () {
         return this.keys.filter(key => key !== `Name`)
       },
+      tempLeftGetSet: {
+        get() {
+          return this.tempLeftGetter
+        },
+        set(value) {
+          return this.changeTempLeft(value)
+        }
+      },
     },
 
 		methods: {
-      ...mapActions(['bookLesson', 'createSnackbar']),
+      ...mapActions(['bookLesson', 'createSnackbar', 'closeLesson', 'changeTempLeft']),
       async requestLesson(item) {
         try {
           await this.bookLesson({availabilityID: item.id, tutorID: this.userData.id})
@@ -164,7 +207,25 @@
       updateItemsPerPage (number) {
         this.itemsPerPage = number
       },
-
+    onSuccessfulEdit: async function () {
+      this.editingAvail = false
+    },
+    cancelEdit: function () {
+      this.editingAvail = false
+    },
+      editAvail(id) {
+        this.editingAvail = !this.editingAvail;
+        this.toEdit = id
+      },
+      async cancelAvail(item) {
+        try {
+          await this.closeLesson({id: item.id})
+          this.createSnackbar({message: 'Lesson Closed', color: 'success'})
+        }catch(error) {
+           console.log(error)
+          this.createSnackbar({message: 'problem closing lesson', color: 'error'})
+        }
+      },
     },
 
 	}
