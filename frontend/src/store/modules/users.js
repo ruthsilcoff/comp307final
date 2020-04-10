@@ -261,6 +261,22 @@ const actions = {
     }
   },
 
+  async closeLesson({commit}, {id}) {
+    try {
+      const response = await axios.get(`/api/availability/${id}/`)
+      let avail = response.data
+      let classCap = avail.classSize
+      let students = avail.studentsTaking
+      classCap = students
+      const response2 = await axios.patch(`/api/availability/${id}/`, {classSize: classCap, isFull: true})
+      avail = response2.data
+      commit('setAvails', avail)
+    }catch(error) {
+      console.log(error)
+      throw error
+    }
+  },
+
   async confirmLesson({commit}, {tutoringSessionID, bool}) {
     try {
       if (!bool) {
@@ -491,6 +507,16 @@ const actions = {
     }
   },
 
+  async updateAvail({commit}, {id, title, classSize, start, end}) {
+    try {
+      const response = await axios.patch(`/api/availability/${id}/`, {title: title, classSize: classSize, start: start, end: end})
+      commit('setAvails', response.data)
+    } catch (error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
 	async updateAvatar({commit}, {avatar}) {
     try {
       const data = new FormData()
@@ -535,6 +561,7 @@ const mutations = {
   },
 
   addNewAvail: (state, newEvent) => state.availabilities.unshift(newEvent),
+
   setReviews: (state, revs) => state.reviews = revs,
   addReview: (state, newRev) => state.reviews.push(newRev),
 

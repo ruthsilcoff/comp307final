@@ -145,7 +145,6 @@
       ...mapActions(['createSnackbar', 'confirmLesson']),
           async cancelLesson(item) {
         try {
-          console.log(item.id)
           await this.confirmLesson({tutoringSessionID: item.id, bool: false})
           this.createSnackbar({message: 'lesson cancelled!', color: 'success'})
         }catch(error) {
