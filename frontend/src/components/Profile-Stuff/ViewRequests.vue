@@ -1,7 +1,7 @@
 <template>
   <v-container max-width="200px">
     <v-data-iterator
-      :items="requestsGetter"
+      :items="requests"
       :items-per-page.sync="itemsPerPage"
       :page="page"
       :search="search"
@@ -137,6 +137,9 @@
 
 		computed: {
       ...mapGetters(['requestsGetter']),
+          requests () {
+        return this.requestsGetter.filter(req => !req.isConfirmed)
+          },
 
       numberOfPages () {
         return Math.ceil(this.requestsGetter.length / this.itemsPerPage)

@@ -168,7 +168,7 @@
 		computed: {
       ...mapGetters(['availabilitiesOneTeacher', 'isViewing']),
       availabilities() {
-        return this.availabilitiesOneTeacher(this.userData.id)
+        return this.availabilitiesOneTeacher(this.userData.id).filter(avail => !avail.isFull)
       },
       numberOfPages () {
         return Math.ceil(this.availabilities.length / this.itemsPerPage)
