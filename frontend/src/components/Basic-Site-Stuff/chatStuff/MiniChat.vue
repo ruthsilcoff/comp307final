@@ -26,11 +26,11 @@
         v-on:click="openBottomChat(item.id)"
       >
         <div v-if="item.mostRecent" style="display: flex;">
-          <v-list-item-avatar>
-            <v-icon
-              color="green"
-              dark
-            >mdi-leaf</v-icon>
+          <v-list-item-avatar color="red" v-if="!item.otherUser.profile.avatar">{{item.otherUser.username[0]}}</v-list-item-avatar>
+          <v-list-item-avatar v-if="item.otherUser.profile.avatar">
+            <v-img
+              src="item.otherUser.profile.avatar"
+            ></v-img>
           </v-list-item-avatar>
 
           <div style="display: block;">

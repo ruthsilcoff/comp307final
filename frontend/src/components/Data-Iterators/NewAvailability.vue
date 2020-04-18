@@ -1,13 +1,13 @@
 <template>
   <v-content style="margin-top: 10px;margin-left: 10px; margin-right: 10px; padding: 0;">
-    <span v-if="addingAvail">New Availability</span>
-    <v-btn v-if="!addingAvail" v-on:click="openAddAvail" color="success">Add availability</v-btn>
+    <span v-if="addingAvailGetter">New Availability</span>
+    <v-btn v-if="!addingAvailGetter" v-on:click="openAddAvail" color="success">Add availability</v-btn>
 
-            <v-text-field v-if="addingAvail" label="Class size" v-model="sizeInput"></v-text-field>
-            <v-text-field v-if="addingAvail" label="Name" v-model="titleInput"></v-text-field>
+            <v-text-field v-if="addingAvailGetter" label="Class size" v-model="sizeInput"></v-text-field>
+            <v-text-field v-if="addingAvailGetter" label="Name" v-model="titleInput"></v-text-field>
 
     <v-menu
-         v-if="addingAvail"
+         v-if="addingAvailGetter"
       ref="menu"
       v-model="menu"
       :close-on-content-click="false"
@@ -36,7 +36,7 @@
     <v-menu
         dense
         style="margin: 0; padding: 0;"
-         v-if="addingAvail"
+         v-if="addingAvailGetter"
       ref="menu1"
       v-model="menu1"
       :close-on-content-click="false"
@@ -66,7 +66,7 @@
     </v-menu>
 
     <v-menu
-      v-if="addingAvail"
+      v-if="addingAvailGetter"
       ref="menu2"
       v-model="menu2"
       :close-on-content-click="false"
@@ -92,7 +92,7 @@
     </v-menu>
 
     <v-menu
-         v-if="addingAvail"
+         v-if="addingAvailGetter"
       ref="menu3"
       v-model="menu3"
       :close-on-content-click="false"
@@ -120,7 +120,7 @@
       ></v-time-picker>
     </v-menu>
 
-    <v-content style="margin: 0; padding: 0;" v-if="repeatInput !== 'None' && addingAvail">
+    <v-content style="margin: 0; padding: 0;" v-if="repeatInput !== 'None' && addingAvailGetter">
       <v-menu
         ref="menu4"
         v-model="menu4"
@@ -147,10 +147,10 @@
     </v-content>
 
     <v-row align="center" justify="center">
-      <v-btn style="margin: 10px; padding: 0" v-if="addingAvail" color="success" v-on:click="addAll()">
+      <v-btn style="margin: 10px; padding: 0" v-if="addingAvailGetter" color="success" v-on:click="addAll()">
         Submit
       </v-btn>
-      <v-btn style="margin: 10px; padding: 0" v-if="addingAvail" color="error" v-on:click="cancel()">
+      <v-btn style="margin: 10px; padding: 0" v-if="addingAvailGetter" color="error" v-on:click="cancel()">
         Cancel
       </v-btn>
     </v-row>
@@ -190,7 +190,7 @@ import {mapActions, mapGetters} from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters(['availabilitiesOneTeacher', 'myID']),
+    ...mapGetters(['availabilitiesOneTeacher', 'myID', 'addingAvailGetter']),
     availabilities() {
       let avails = this.availabilitiesOneTeacher(this.myID)
       return avails
@@ -199,7 +199,6 @@ export default {
   },
 
   data: () => ({
-    addingAvail: false,
     startHour: '',
     startMinutes: '',
     titleInput:'Lesson',
@@ -230,14 +229,14 @@ export default {
   }),
 
   methods: {
-    ...mapActions(['newAvail']),
+    ...mapActions(['newAvail', 'changeAddingAvail']),
 
     openAddAvail() {
-      this.addingAvail = true
+      this.changeAddingAvail(true)
     },
 
     cancel() {
-      this.addingAvail = false
+      this.changeAddingAvail(false)
     },
 
     addAll: function() {

@@ -82,6 +82,9 @@ class DirectMessageSerializer(serializers.ModelSerializer):
         model = DirectMessage
         fields = '__all__'
 
+    def group_name(self):
+        return str(self.data['sentTo'])
+
 
 class NoteSetContentSerializer(serializers.ModelSerializer):
     class Meta:

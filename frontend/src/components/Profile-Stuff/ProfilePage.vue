@@ -1,5 +1,7 @@
 <template>
 <v-content v-if="viewingUser">
+
+
   <v-content id="innerPage">
     <v-row style="padding: 0; margin: 0;">
       <v-col cols="4">

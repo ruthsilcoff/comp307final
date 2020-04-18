@@ -1,4 +1,5 @@
 import axios from "axios"
+import {sendToWS} from "../../websocket";
 
 const state = {
   loggedIn: false,
@@ -11,9 +12,11 @@ const state = {
   rightDrawer: false,
   tempLeft: false,
   tempRight: false,
+  addingAvail: false,
 }
 
 const getters = {
+  addingAvailGetter: (state) => state.addingAvail,
   initialTabNumber: (state) => state.tab,
   getSnackbar: (state) => (state.snackbar),
   getSnackbarMessage: (state) => (state.snackbarMessage),
@@ -28,6 +31,10 @@ const getters = {
 }
 
 const actions = {
+  changeAddingAvail({commit}, bool) {
+    commit('setAddingAvail', bool)
+  },
+
   changeLeftDrawer({commit}, bool) {
     commit('setLeftDrawer', bool)
   },
@@ -62,16 +69,21 @@ const actions = {
     commit('setLogInSnackBar', bool)
   },
 
-  async login({commit, dispatch}, {username, password}) {
+  async login({commit, dispatch, rootGetters}, {username, password}) {
     try {
       const response = await axios.post('/api-token-auth/', {username, password})
       localStorage.setItem('token', response.data.token)
+      dispatch('subscribeToWS')
     }catch(error) {
-      this.createSnackbar({message: 'Wrong password', color: 'error'})
       console.log(error.response.data)
       throw error
     }
+  },
 
+  subscribeToWS({rootGetters}) {
+    const userID = rootGetters.myID
+    if (userID)
+      sendToWS('subscribe', {userID})
   },
 
   logOut({commit}) {
@@ -100,6 +112,7 @@ const actions = {
 }
 
 const mutations = {
+  setAddingAvail: (state, bool) => state.addingAvail = bool,
   setLeftDrawer: (state, bool) => (state.leftDrawer = bool),
   setRightDrawer: (state, bool) => (state.rightDrawer = bool),
   setTempLeft: (state, bool) => (state.tempLeft = bool),
