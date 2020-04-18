@@ -85,6 +85,7 @@ import NewAvailability from "./components/Data-Iterators/NewAvailability"
 import BookLesson from "./components/BookLesson"
 import NewMessage from "./components/Basic-Site-Stuff/chatStuff/NewMessage"
 import BottomChatView from "./components/Basic-Site-Stuff/chatStuff/BottomChatView"
+import {ws} from './websocket'
 
 
 export default {

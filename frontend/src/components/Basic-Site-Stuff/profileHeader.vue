@@ -137,6 +137,8 @@ export default {
   computed: {
     ...mapGetters(['myID', 'allMessagesGetter', 'myUser', 'myChatsGetter', 'leftDrawerGetter', 'rightDrawerGetter', 'tempLeftGetter', 'tempRightGetter']),
     myChats() {
+      console.log(this.myChatsGetter)
+      console.log(this.allMessagesGetter)
       let chats = []
       for (let x = 0; x < this.myChatsGetter.length; x++) {
         let chat = this.myChatsGetter[x]
@@ -165,6 +167,14 @@ export default {
     numberNotifs() {
       //TODO: make this function
       return 5
+    },
+    leftDrawerGetSet: {
+      get() {
+        return this.leftDrawerGetter
+      },
+      set(value) {
+        return this.changeLeftDrawer(value)
+      }
     }
   },
 

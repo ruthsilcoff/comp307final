@@ -2,6 +2,7 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 import users from './modules/users'
 import status from './modules/status'
+import chatmessages from './modules/chatmessages'
 
 // load vuex
 Vue.use(Vuex)
@@ -11,5 +12,6 @@ export default new Vuex.Store({
 	modules: {
 		users,
 		status,
+		chatmessages,
 	}
 })
