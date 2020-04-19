@@ -1,4 +1,4 @@
-<template>
++<template>
     <v-app-bar clipped-left clipped-right app dense color="primary">
       <v-app-bar-nav-icon @click.stop="openLeft()"></v-app-bar-nav-icon>
       <v-menu offset-y >
