@@ -118,7 +118,6 @@ export default {
     editingSubjects: false,
     editAvatar: false,
     avatarInput: null,
-    recompute: false,
   }),
 
   computed: {
@@ -157,7 +156,6 @@ export default {
     async removeSubject(item) {
       try {
         await this.removeTeacherSubject({name: item.name})
-        this.recompute = !this.recompute
         this.createSnackbar({message: 'subject removed', color: 'success'})
       }catch(error) {
         this.createSnackbar({message: 'problem removing the subject', color: 'error'})
@@ -179,7 +177,7 @@ export default {
     submitAvatar: async function () {
       console.log(this.avatarInput)
       try {
-				await this.updateAvatar({avatar: this.avatarInput})
+		await this.updateAvatar({avatar: this.avatarInput})
         this.avatarInput = null
 			} catch(error){
         console.log(error.response.data)

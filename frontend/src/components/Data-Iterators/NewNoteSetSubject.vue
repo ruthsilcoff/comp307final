@@ -8,7 +8,7 @@
             :search-input.sync="search"
             chips
             clearable
-            label="Subjects you teach"
+            label="Subjects related to this set"
             multiple
             solo
           >
@@ -17,7 +17,7 @@
             <div style="margin: 0; padding: 0;">This subject does not exist.</div>
             <div style="margin: 0; padding: 0;">Press <kbd v-on:click="addNewSubject({name: search})">enter</kbd> to create a new one</div>
           </div>
-          <div style="margin: 0; padding: 5px;" v-if="(search === '' || !search) && (subjectsInput.length === 0) && (subjectsNotTaught.length === 0)">
+          <div style="margin: 0; padding: 5px;" v-if="(search === '' || !search) && (subjectsInput.length === 0) && (subjectsNotIncluded.length === 0)">
             <div style="margin: 0; padding: 0;">You are already teaching all existing subjects.</div>
             <div style="margin: 0; padding: 0;">Feel free to create a new one.</div>
           </div>
@@ -44,7 +44,7 @@
           </v-combobox>
           <v-btn
               style="margin: 0;"
-              v-on:click="updateSubjectsTaught()"
+              v-on:click="updateSubjects()"
               color="success">
             <v-icon left>mdi-content-save</v-icon>Save
           </v-btn>
@@ -58,35 +58,32 @@ import Header from "../Basic-Site-Stuff/Header"
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
-  props: ['closeEditingSubjects'],
+  props: ['closeEditingSubjects', 'id'],
 
   computed: {
-    ...mapGetters(['subjectsOneTeacher', 'subjectsGetter', 'myID', 'viewingUser']),
-    subjectsTaught() {
-      if (this.viewingUser) {
-        if (this.viewingUser.profile.isTeacher) {
-          let things = this.subjectsOneTeacher(this.myID)
-          if (things.length > 0) {
-            return things.map(thing => thing.subject ? thing.subject.name : thing)
-          }
-          else {
-            return []
-          }
-        }
-        else {
-          return []
-        }
+    ...mapGetters(['subjectsOneNoteSet', 'subjectsGetter', 'myID', 'viewingUser']),
+    relatedSubjects() {
+      console.log("recomputing")
+      let things = this.subjectsOneNoteSet(parseInt(this.id))
+      if (things.length > 0) {
+        console.log(things)
+        return things.map(thing => thing.subject.name)
       }
       else {
         return []
       }
     },
-    subjectsNotTaught() {
-      return this.subjectsGetter.filter(subject => !this.subjectsTaught.includes(subject.name))
+    subjectsNotIncluded() {
+      if (this.relatedSubjects) {
+        return this.subjectsGetter.filter(subject => !this.relatedSubjects.includes(subject.name))
+      }
+      else {
+        return []
+      }
     },
     allSubjectNames() {
-      if (this.subjectsNotTaught) {
-        return this.subjectsNotTaught.map(subject => subject.name)
+      if (this.subjectsNotIncluded) {
+        return this.subjectsNotIncluded.map(subject => subject.name)
       }
       else {
         return []
@@ -100,14 +97,14 @@ export default {
   }),
 
   methods: {
-    ...mapActions(['addNewSubject', 'addTeacherSubject', 'createSnackbar']),
+    ...mapActions(['addNewSubject', 'addNoteSetSubject', 'createSnackbar']),
 
-    async updateSubjectsTaught() {
+    async updateSubjects() {
       for (let i = 0; i < this.subjectsInput.length; i++) {
-        if (!this.subjectsTaught.includes(this.subjectsInput[i])) {
+        if (!this.relatedSubjects.includes(this.subjectsInput[i])) {
           if (this.allSubjectNames.includes(this.subjectsInput[i]) ) {
             try {
-              await this.addTeacherSubject({name: this.subjectsInput[i]})
+              await this.addNoteSetSubject({name: this.subjectsInput[i], id: this.id})
               this.createSnackbar({message: "Subject added to list", color: 'success'})
             }catch(error) {
               this.createSnackbar({message: "Problem adding subject", color: 'error'})
@@ -116,7 +113,7 @@ export default {
           else {
             try {
               await this.addNewSubject({name: this.subjectsInput[i]})
-              await this.addTeacherSubject({name: this.subjectsInput[i]})
+              await this.addNoteSetSubject({name: this.subjectsInput[i], id: this.id})
               this.createSnackbar({message: "New subject created and added to list", color: 'success'})
             }catch(error) {
               this.createSnackbar({message: "Problem adding subject", color: 'error'})

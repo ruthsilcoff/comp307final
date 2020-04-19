@@ -29,16 +29,12 @@
 
     props: ['course'],
 
-		computed: {
-      ...mapGetters(['subjectsGetter', 'teachersOneSubject']),
+    computed: {
+      ...mapGetters(['teachersOneSubject']),
       teachers() {
         return this.teachersOneSubject(this.course.name)
       },
     },
-
-		methods: {
-		},
-
 
 	}
 </script>
