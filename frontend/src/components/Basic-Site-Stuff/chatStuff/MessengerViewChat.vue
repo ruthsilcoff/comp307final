@@ -84,7 +84,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['sendNewMessage', 'createSnackbar',]),
+    ...mapActions(['sendNewMessage', 'createSnackbar', 'setMessageDialog']),
     scrollToBottom() {
       let content = this.$refs.messagesContainer
       content.scrollTop = content.scrollHeight

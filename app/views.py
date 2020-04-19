@@ -2,7 +2,9 @@ from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from asgiref.sync import async_to_sync
 
+from .notifications import notify
 from .permissions import IsOwner
 from .models import User, Subject, Availability, TeachesSubjects, NoteSet, NoteSetSubjects, \
     NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile, Chat, DirectMessage, \
@@ -117,6 +119,10 @@ class DirectMessageViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
         return super().create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        async_to_sync(notify)(self.serializer_class, instance)
 
 
 class ReviewsViewSet(viewsets.ModelViewSet):

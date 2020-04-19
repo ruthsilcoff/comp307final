@@ -5,6 +5,7 @@
     background-color="transparent"
     color="primary"
     grow
+    style="overflow-x: scroll"
   >
     <v-tab >
       Availabilities
@@ -28,7 +29,7 @@
     <v-tab-item>
       <v-container max-width="200px">
         <router-link v-if="!isViewing" to="/calendar">
-          <v-btn color="success" large>
+          <v-btn color="success" large v-on:click="openAddingAvailDrawer">
             <v-icon left>mdi-plus</v-icon>AddAvailability
           </v-btn>
         </router-link>
@@ -119,6 +120,11 @@
     },
 
 		methods: {
+      ...mapActions(['changeAddingAvail']),
+      openAddingAvailDrawer(){
+        this.changeAddingAvail(true)
+      },
+
       openNewReview() {
         this.addingReview = true
       },
