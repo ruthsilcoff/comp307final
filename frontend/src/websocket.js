@@ -3,7 +3,7 @@ import store from './store/index'
 let ws
 
 export function initWebSocket() {
-  ws = new WebSocket('ws://127.0.0.1:8000')
+  ws = new WebSocket('ws://127.0.0.1:8707')
 
   ws.onopen = () => {
     console.log('WebSocket opened')

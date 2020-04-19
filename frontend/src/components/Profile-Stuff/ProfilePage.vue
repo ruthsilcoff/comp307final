@@ -122,14 +122,13 @@ export default {
 
   computed: {
     ...mapGetters(['myID', 'viewingID', 'viewingUser', 'isViewing', 'allUsers', 'subjectsGetter', 'subjectsOneTeacher']),
-    viewingUserID() {
-      return this.allUsers.find(user => user.username === this.$route.params.username).id
-    },
     subjectsTaught() {
+      console.log("recomputing")
       if (this.viewingUser) {
         if (this.viewingUser.profile.isTeacher) {
           let things = this.subjectsOneTeacher(this.viewingID)
           if (things.length > 0) {
+            console.log(things)
             return things.map(thing => thing.subject)
           }
           else {
@@ -156,10 +155,9 @@ export default {
 
     async removeSubject(item) {
       try {
-        await this.removeTeacherSubject({name: item})
+        await this.removeTeacherSubject({name: item.name})
         this.createSnackbar({message: 'subject removed', color: 'success'})
       }catch(error) {
-        console.log(error.response.data)
         this.createSnackbar({message: 'problem removing the subject', color: 'error'})
       }
     },
@@ -179,7 +177,7 @@ export default {
     submitAvatar: async function () {
       console.log(this.avatarInput)
       try {
-				await this.updateAvatar({avatar: this.avatarInput})
+		await this.updateAvatar({avatar: this.avatarInput})
         this.avatarInput = null
 			} catch(error){
         console.log(error.response.data)

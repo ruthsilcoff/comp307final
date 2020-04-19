@@ -1,4 +1,4 @@
-<template>
++<template>
     <v-app-bar clipped-left clipped-right app dense color="primary">
       <v-app-bar-nav-icon @click.stop="openLeft()"></v-app-bar-nav-icon>
       <v-menu offset-y >
@@ -71,7 +71,7 @@
       </v-menu>
 
       <v-menu
-        v-if="myChatsGetter"
+        v-if="chatGetter"
         offset-y
         :close-on-content-click="false"
         :nudge-width="300"
@@ -135,13 +135,12 @@ export default {
   props: ["myLessons", "onHomePage", "debateGames", "profile", "onCalendar", "community",],
 
   computed: {
-    ...mapGetters(['myID', 'allMessagesGetter', 'myUser', 'myChatsGetter', 'leftDrawerGetter', 'rightDrawerGetter', 'tempLeftGetter', 'tempRightGetter']),
+    ...mapGetters(['myID', 'allMessagesGetter', 'myUser', 'chatGetter', 'leftDrawerGetter', 'rightDrawerGetter', 'tempLeftGetter', 'tempRightGetter']),
     myChats() {
-      console.log(this.myChatsGetter)
-      console.log(this.allMessagesGetter)
+      let myChats = this.chatGetter.filter(chat => chat.owner === this.myID)
       let chats = []
-      for (let x = 0; x < this.myChatsGetter.length; x++) {
-        let chat = this.myChatsGetter[x]
+      for (let x = 0; x < myChats.length; x++) {
+        let chat = myChats[x]
         let filteredMessages = this.allMessagesGetter.filter(
           msg => ((msg.author.id === chat.owner && msg.sentTo === chat.otherUser.id)
             || (msg.author.id === chat.otherUser.id && msg.sentTo === chat.owner)),
@@ -154,7 +153,6 @@ export default {
     },
     numberUnread() {
       let num = 0;
-      console.log(this.myChats)
       for (let x= 0; x< this.myChats.length; x++) {
         for (let i = 0; i < this.myChats[x].messages.length; i++) {
           if (!this.myChats[x].messages[i].seen && (this.myChats[x].messages[i].sentTo === this.myID)) {

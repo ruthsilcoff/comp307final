@@ -2,6 +2,19 @@
 <v-content v-if="this.theSet" style="margin: 50px;">
   <h1>{{this.theSet.title}}</h1>
   <h2>{{this.theSet.description}}</h2>
+  <v-chip-group style="margin-left: 10px;" column v-if="(subjects.length > 0) && (subjects[0])">
+    <v-chip :close="editingSubjects" @click:close="removeSubject(item)" v-for="item in subjects" v-bind:key="item.name">
+      <strong v-if="item">{{item.name}}</strong>
+    </v-chip>
+  </v-chip-group>
+
+  <v-btn justify="center" style="margin-bottom: 40px;" text v-if="!editingSubjects" v-on:click="openEditingSubjects" color="secondary">
+    <v-icon left>mdi-pencil</v-icon>Edit
+  </v-btn>
+
+  <v-divider v-if="editingSubjects"></v-divider>
+
+  <NewNoteSetSubject :id="id" :closeEditingSubjects="closeEditingSubjects" v-if="editingSubjects"/>
 
   <v-img v-for="item in theSet.content" v-bind:key="item.id" :src="item.content" max-height="200px" max-width="200px"></v-img>
 
@@ -11,34 +24,56 @@
 <script>
 import {mapGetters, mapActions} from "vuex"
 import axios from "axios"
+import NewNoteSetSubject from "../Data-Iterators/NewNoteSetSubject"
 
 export default {
 
-	data: () => ({
-
+  data: () => ({
+    editingSubjects: false,
   }),
 
-	props: ['id'],
+  props: ['id'],
 
   components: {
+      NewNoteSetSubject,
   },
 
   computed: {
-		...mapGetters(['oneNoteSet'
-    ]),
+		...mapGetters(['oneNoteSet', 'subjectsOneNoteSet']),
 
     theSet: function () {
-			console.log(this.id)
       return this.oneNoteSet(parseInt(this.id))
+    },
+    subjects() {
+      console.log("recomputing")
+      let things = this.subjectsOneNoteSet(parseInt(this.id))
+      if (things.length > 0) {
+        console.log(things)
+        return things.map(thing => thing.subject)
+      }
+      else {
+        return []
+      }
     },
   },
 
-  mounted(){
-
-  },
-
   methods: {
-    ...mapActions([''])
+    ...mapActions(['createSnackbar', 'removeNoteSetSubject', 'addNewSubject', 'addNoteSetSubject']),
+    async removeSubject(item) {
+      try {
+        await this.removeNoteSetSubject({name: item.name, id: parseInt(this.id)})
+        this.createSnackbar({message: 'subject removed', color: 'success'})
+      }catch(error) {
+        this.createSnackbar({message: 'problem removing the subject', color: 'error'})
+      }
+    },
+
+    openEditingSubjects() {
+      this.editingSubjects = true
+    },
+    closeEditingSubjects() {
+      this.editingSubjects = false
+    },
 
   },
 

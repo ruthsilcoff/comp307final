@@ -9,8 +9,8 @@ const state = {
   requests: [],
   subjects: [],
   teacherSubjects: [],
-  lessonSubjects: [],
   noteSetSubjects: [],
+  lessonSubjects: [],
   noteSets: [],
   reviews: [],
   personInputForMessage: null,
@@ -19,8 +19,8 @@ const state = {
 const getters = {
   allCourses: (state) => state.subjects,
   teachersOneSubject: (state) => (name) => state.teacherSubjects.filter(thing => thing.subject.name === name).map(thing => thing.teacher),
-  lessonsOneSubject: (state) => (name) => state.lessonSubjects.filter(thing => thing.subject.name === name).map(thing => thing.avail),
   noteSetsOneSubject: (state) => (name) => state.noteSetSubjects.filter(thing => thing.subject.name === name).map(thing => thing.noteSet),
+  lessonsOneSubject: (state) => (name) => state.lessonSubjects.filter(thing => thing.subject.name === name).map(thing => thing.avail),
 
   reviewsGetter: (state) => state.reviews,
   reviewsOneTeacher: (state) => (id) => state.reviews.filter(review => review.teacherID === id),
@@ -32,6 +32,7 @@ const getters = {
 
   subjectsGetter: (state) => state.subjects,
   subjectsOneTeacher: (state) => (id) => state.teacherSubjects.filter(thing => thing.teacherID === id),
+  subjectsOneNoteSet: (state) => (id) => state.noteSetSubjects.filter(thing => thing.noteSetID === id),
 
   requestsGetter: (state) => state.requests,
   confirmedRequestsGetter: (state) => state.requests.filter(req => req.isConfirmed),
@@ -118,6 +119,7 @@ const actions = {
       }
       newNoteSet.content = contentFiles
       commit('addNoteSet', newNoteSet)
+      return newNoteSet.id
     }catch(error){
         console.log(error.response.data);
         throw error
@@ -159,8 +161,8 @@ const actions = {
 
   async removeTeacherSubject({commit}, {name}) {
     try {
-      let id = state.teacherSubjects.find(thing => (thing.subject === name) && (thing.teacherID === state.selfID))
-      const response = await axios.delete(`/api/teachesSubjects/${id}/`)
+      const toDelete = state.teacherSubjects.find(thing => (thing.subject.name === name) && (thing.teacherID === state.selfID))
+      const response = await axios.delete(`/api/teachesSubjects/${toDelete.id}/`)
       commit('removeTeachesSubject', response.data)
     }catch(error) {
       console.log(error.response.data)
@@ -179,6 +181,47 @@ const actions = {
         }
       }
       commit('setAllTeachesSubjects', things)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async addNoteSetSubject({commit}, {name, id}) {
+    try {
+      const response = await axios.post('/api/noteSetSubjects/', {subject: name, noteSetID: id})
+      let thing = response.data
+      thing.subject = state.subjects.find(subject => subject.name === thing.subject)
+      thing.noteSet = state.noteSets.find(set => set.id === thing.noteSetID)
+      commit('newNoteSetSubject', thing)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async removeNoteSetSubject({commit}, {name, id}) {
+    try {
+      const toDelete = state.noteSetSubjects.find(thing => (thing.subject.name === name) && (thing.noteSetID === id))
+      const response = await axios.delete(`/api/noteSetSubjects/${toDelete.id}/`)
+      commit('removeNoteSetSubject', response.data)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+
+  async getAllNoteSetSubjects({commit}) {
+    try {
+      const response = await axios.get('/api/noteSetSubjects/')
+      let things = response.data
+      if (things.length > 0) {
+        for (let i = 0; i < things.length; i++) {
+          things[i].subject = state.subjects.find(subject => subject.name === things[i].subject)
+          things[i].noteSet = state.noteSets.find(set => set.id === things[i].noteSetID)
+        }
+      }
+      commit('setAllNoteSetSubjects', things)
     }catch(error) {
       console.log(error.response.data)
       throw error
@@ -441,6 +484,10 @@ const mutations = {
     let index = state.teacherSubjects.indexOf(state.teacherSubjects.find(t => t.id === thing.id))
     state.teacherSubjects.splice(index, 1)
   },
+  removeNoteSetSubject: (state, thing) => {
+    let index = state.noteSetSubjects.indexOf(state.noteSetSubjects.find(t => t.id === thing.id))
+    state.noteSetSubjects.splice(index, 1)
+  },
 
   addNewAvail: (state, newEvent) => state.availabilities.unshift(newEvent),
 
@@ -453,8 +500,10 @@ const mutations = {
   setAllSubjects: (state, subjects) => state.subjects = subjects,
   newSubject: (state, newSubject) => state.subjects.push(newSubject),
   setAllTeachesSubjects: (state, subjects) => state.teacherSubjects = subjects,
+  setAllNoteSetSubjects: (state, subjects) => state.noteSetSubjects = subjects,
   setAllLessonSubjects: (state, subjects) => state.lessonSubjects = subjects,
   newTeacherSubject: (state, newSubject) => state.teacherSubjects.push(newSubject),
+  newNoteSetSubject: (state, newSubject) => state.noteSetSubjects.push(newSubject),
   newLessonSubject: (state, newSubject) => state.lessonSubjects.push(newSubject),
 
   setPending: (state, id) => {

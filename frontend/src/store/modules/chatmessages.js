@@ -12,7 +12,7 @@ const getters = {
   personInputForMessageGetter: (state) => state.personInputForMessage,
   openChatIDGetter: (state) => state.openChatIDs,
   newMessageDialog: (state) => state.messageDialog,
-  myChatsGetter: (state, rootState) => state.chats.filter(chat => chat.owner === rootState.selfID),
+  chatGetter: (state) => state.chats,
   allMessagesGetter: (state) => state.messages,
 }
 

@@ -21,7 +21,7 @@
       <v-list-item
         three-line
         link
-        v-for="(item) in myChatsGetter"
+        v-for="(item) in myChats"
         v-bind:key="item.id"
         v-on:click="openBottomChat(item.id)"
       >
@@ -73,11 +73,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['allMessagesGetter', 'myChatsGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter', 'openChatIDGetter']),
+    ...mapGetters(['allMessagesGetter', 'chatGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter', 'openChatIDGetter']),
     myChats() {
+      let myChats = this.chatGetter.filter(chat => chat.owner === this.myID)
       let chats = []
-      for (let x = 0; x < this.myChatsGetter.length; x++) {
-        let chat = this.myChatsGetter[x]
+      for (let x = 0; x < myChats.length; x++) {
+        let chat = myChats[x]
         let filteredMessages = this.allMessagesGetter.filter(
           msg => ((msg.author.id === chat.owner && msg.sentTo === chat.otherUser.id)
             || (msg.author.id === chat.otherUser.id && msg.sentTo === chat.owner)),
