@@ -159,8 +159,8 @@ const actions = {
 
   async removeTeacherSubject({commit}, {name}) {
     try {
-      let id = state.teacherSubjects.find(thing => (thing.subject === name) && (thing.teacherID === state.selfID))
-      const response = await axios.delete(`/api/teachesSubjects/${id}/`)
+      const toDelete = state.teacherSubjects.find(thing => (thing.subject.name === name) && (thing.teacherID === state.selfID))
+      const response = await axios.delete(`/api/teachesSubjects/${toDelete.id}/`)
       commit('removeTeachesSubject', response.data)
     }catch(error) {
       console.log(error.response.data)

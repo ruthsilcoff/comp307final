@@ -139,8 +139,8 @@ export default {
     myChats() {
       let myChats = this.chatGetter.filter(chat => chat.owner === this.myID)
       let chats = []
-      for (let x = 0; x < this.myChats.length; x++) {
-        let chat = this.myChats[x]
+      for (let x = 0; x < myChats.length; x++) {
+        let chat = myChats[x]
         let filteredMessages = this.allMessagesGetter.filter(
           msg => ((msg.author.id === chat.owner && msg.sentTo === chat.otherUser.id)
             || (msg.author.id === chat.otherUser.id && msg.sentTo === chat.owner)),
