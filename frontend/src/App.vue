@@ -101,7 +101,7 @@ export default {
   computed: {
     ...mapGetters([
       'openChatIDGetter',
-      'myChatsGetter',
+      'chatGetter',
       'allUsers',
       'newMessageDialog',
       'loggedIn',
@@ -115,7 +115,7 @@ export default {
       let openChats = []
       if (this.openChatIDGetter) {
         for (let i = 0; i < this.openChatIDGetter.length; i++) {
-          let chat = this.myChatsGetter.find(chat => chat.id === this.openChatIDGetter[i])
+          let chat = this.chatGetter.find(chat => chat.id === this.openChatIDGetter[i])
           chat.collapsed = false
           openChats.push(chat)
         }
