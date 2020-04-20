@@ -1,6 +1,5 @@
 <template>
 <v-content style="margin: 0; padding: 0">
-  <v-app id="inspire">
     <!-- LEFT DRAWER -->
     <v-navigation-drawer
       v-model="leftDrawerGetSet"
@@ -12,7 +11,7 @@
       overlay-color="secondary"
       disable-resize-watcher
     >
-      <v-toolbar fixed absolute width="100%" floating color="yellowSwitch" >
+      <v-toolbar fixed dense absolute width="100%" floating color="yellowSwitch" >
         <v-icon v-on:click="setMessageDialog(true)" dark style="position: absolute !important; right: 8px; top:15px;" large >mdi-pencil-box-outline</v-icon>
         <v-toolbar-title class="title">Chats({{this.numberUnread}})</v-toolbar-title>
         <v-row style="margin-left: 20px; margin-right: 40px" align="center" justify="center">
@@ -28,81 +27,69 @@
           ></v-text-field>
         </v-row>
       </v-toolbar>
-      <div style="overflow: scroll; " >
-        <v-list dense style="margin-top: 65px; margin-bottom: 20px">
+      <div style="overflow-y: scroll; " >
+        <v-list subheader two-line link>
+          <v-subheader>Your Chats</v-subheader>
           <v-list-item
-            three-line
-            link
             v-for="(item) in myChats"
             v-bind:key="item.id"
             v-on:click="openChat(item)"
           >
-            <v-list-item-avatar>
-              <v-icon
-                color="green"
-                dark
-              >mdi-leaf</v-icon>
+            <v-list-item-avatar color="avatarColor" x-large v-if="!item.otherUser.profile.avatar">
+              {{item.otherUser.username[0]}}
             </v-list-item-avatar>
-
-            <div style="display: block;">
+            <v-list-item-avatar x-large v-if="item.otherUser.profile.avatar">
+              <v-img :src="item.otherUser.profile.avatar"></v-img>
+            </v-list-item-avatar>
+            <v-list-item-content>
               <v-list-item-title v-if="item.otherUser.first_name">{{item.otherUser.first_name}} {{item.otherUser.last_name}}</v-list-item-title>
               <v-list-item-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-list-item-title>
-              <v-list-item-content>{{item.mostRecent.content}}</v-list-item-content>
-            </div>
-
+             {{item.mostRecent.content}}
+            </v-list-item-content>
             <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === myID)">
               <v-icon
                 v-text="item.icon"
                 color="red"
               >mdi-circle</v-icon>
             </v-list-item-avatar>
-
             <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === item.otherUser)">
               <v-icon
                 v-text="item.icon"
                 color="unreadColor"
               >mdi-circle-outline</v-icon>
             </v-list-item-avatar>
-
           </v-list-item>
-
         </v-list>
       </div>
     </v-navigation-drawer>
 
 
     <!-- THE ACTUAL CONTENT OF THE PAGE-->
-    <v-content id="conversationBox" style=" position: relative !important;">
-      <v-content style="margin: 0; padding: 0; " v-if="viewingChat">
-        <h1 v-if="viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.first_name}} {{this.viewingChat.otherUser.last_name}} </h1>
-        <h1 v-if="!viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.username}} </h1>
+    <v-content v-if="viewingChat">
+      <v-list-item>
+        <v-list-item-avatar x-large v-if="viewingChat.otherUser.profile.avatar">
+          <v-img :src="viewingChat.otherUser.profile.avatar"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-title>
+          <h1 style="padding: 50px;" v-if="viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.first_name}} {{this.viewingChat.otherUser.last_name}} </h1>
+        <h1 style="padding: 50px;" v-if="!viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.username}} </h1>
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider></v-divider>
+      <div class="chat-container-messenger" v-on:scroll="onScroll" ref="chatContainerMessenger" >
         <MessengerViewChat :chat="viewingChat"/>
+      </div>
+      <v-content style="margin: 0; padding: 0;" class="typer">
+        <input type="text" placeholder="Aa" v-on:keyup.enter="sendMessage" v-model="messageInput">
+        <v-file-input
+          dense
+          style="margin-right: 40px; max-width: 0 !important;"
+          accept="image/png, image/jpeg, image/bmp"
+          prepend-icon="mdi-camera"
+          v-model="photoInput"
+        ></v-file-input>
       </v-content>
-
     </v-content>
-
-    <!-- RIGHT DRAWER -->
-    <v-navigation-drawer
-      v-model="rightDrawerGetter"
-      app
-      clipped
-      right
-      width="220px"
-      mobile-break-point="500px"
-      overlay-color="secondary"
-      disable-resize-watcher
-    >
-      <v-combobox
-            style=" margin: 0;"
-            v-model="backgroundColor"
-            :items="['purple', 'blue', 'red', 'yellow', 'green', 'white', 'rainbow']"
-            label="Background Color"
-            required
-            v-on:change="updateBackground"
-        />
-    </v-navigation-drawer>
-
-  </v-app>
 </v-content>
 </template>
 
@@ -111,12 +98,11 @@ import {mapGetters, mapActions} from "vuex"
 import MessengerViewChat from '../chatStuff/MessengerViewChat'
 
 export default {
-	data: () => ({
+  data: () => ({
+    messageInput: null,
+    photoInput: null,
     backgroundColor: 'white',
     viewingChat: null,
-    snackbar: false,
-    snackbarMessage: '',
-    snackbarColor: '',
     timeout: 5000,
     mode: '',
     searchInput: '',
@@ -168,6 +154,7 @@ export default {
   mounted() {
     this.changeLeftDrawer(true)
     this.initialize()
+    this.scrollToBottom()
   },
 
   methods: {
@@ -176,33 +163,32 @@ export default {
       this.viewingChat = item
     },
 
+    async sendMessage() {
+      try {
+        await this.sendNewMessage({to: this.theChat.otherUser.id, content: this.messageInput})
+        this.createSnackbar({message: 'Message sent.', color: 'success'})
+        this.scrollToBottom()
+      } catch(error){
+        console.log(error.response.data)
+        this.createSnackbar({message: 'Problem sending message.', color: 'error'})
+      }
+      this.setMessageDialog(false)
+    },
+
     initialize() {
       if (this.myChats.length > 0) {
         this.viewingChat = this.myChats[0]
       }
     },
 
-    updateBackground() {
-      if (this.backgroundColor === 'blue') {
-        document.getElementById("conversationBox").className = "conversationBoxBlue"
-      }
-      else if (this.backgroundColor === 'purple') {
-        document.getElementById("conversationBox").className = "conversationBoxBlue"
-      }
-      else if (this.backgroundColor === 'red') {
-        document.getElementById("conversationBox").className = "conversationBoxRed"
-      }
-      else if (this.backgroundColor === 'yellow') {
-        document.getElementById("conversationBox").className = "conversationBoxYellow"
-      }
-      else if (this.backgroundColor === 'green') {
-        document.getElementById("conversationBox").className = "conversationBoxGreen"
-      }
-      else if (this.backgroundColor === 'rainbow') {
-        document.getElementById("conversationBox").className = "conversationBoxRainbow"
-      }
-      else {
-        document.getElementById("conversationBox").style.background = this.backgroundColor
+    onScroll() {
+
+    },
+
+    scrollToBottom() {
+      let container = this.$el.querySelector('.chat-container-messenger')
+      if (container) {
+        container.scrollTop = container.scrollHeight
       }
     },
 
@@ -220,56 +206,34 @@ export default {
   border-bottom: 1px solid black;
 }
 
-.conversationBoxWhite {
-  background-color: white;
+.scrollable {
+  overflow-y: auto;
+  height: 90vh;
 }
-
-.conversationBoxPurple {
-  background-color: #922fff;
+.typer{
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  bottom: 100px;
+  height: 4.9rem;
+  width: 100%;
+  box-shadow: 0 -5px 10px -5px rgba(0,0,0,.2);
 }
-
-.conversationBoxBlue {
-  background-color: #00d3ff;
+.typer input[type=text]{
+  position: absolute;
+  left: 2.5rem;
+  padding: 1rem;
+  width: 80%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 1.25rem;
 }
-
-.conversationBoxYellow {
-  background-color: #fff800;
-}
-
-.conversationBoxGreen {
-  background-color: #00ff0f;
-}
-
-.conversationBoxRed {
-  background-color: #de0007;
-}
-
-.conversationBoxRainbow {
-  animation-name: messengerBackground;
-  animation-duration: 5s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
-@keyframes messengerBackground {
-  0% {
-    background-color: #00d3ff;
-  }
-  20% {
-    background-color: #7950ff;
-  }
-  40% {
-    background-color: #de0007;
-  }
-  60% {
-    background-color: #fff800;
-  }
-  80% {
-    background-color: #00ff0f;
-  }
-  100% {
-    background-color: #00d3ff;
-  }
+.chat-container-messenger{
+  box-sizing: border-box;
+  height: calc(100vh - 20.5rem);
+  overflow-y: auto;
+  padding: 20px;
 }
 
 </style>

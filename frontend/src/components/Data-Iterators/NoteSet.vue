@@ -14,9 +14,13 @@
 
   <v-divider v-if="editingSubjects"></v-divider>
 
-  <NewNoteSetSubject :id="id" :closeEditingSubjects="closeEditingSubjects" v-if="editingSubjects"/>
+  <EditNoteSet :id="id" :closeEditingSubjects="closeEditingSubjects" v-if="editingSubjects"/>
 
-  <v-img v-for="item in theSet.content" v-bind:key="item.id" :src="item.content" max-height="200px" max-width="200px"></v-img>
+  <div v-for="(item, index) in theSet.content" v-bind:key="item.id">
+    <h2>File #{{index + 1}}</h2>
+    <v-img v-if="!item.content.includes('pdf')" :src="item.content" max-height="200px" max-width="200px"></v-img>
+    <embed v-if="item.content.includes('pdf') || item.content.includes('PDF')" :src="item.content" type="application/pdf" max-height="200px" max-width="200px"/>
+  </div>
 
 </v-content>
 </template>
@@ -24,7 +28,8 @@
 <script>
 import {mapGetters, mapActions} from "vuex"
 import axios from "axios"
-import NewNoteSetSubject from "../Data-Iterators/NewNoteSetSubject"
+import NewNoteSetSubject from "./EditNoteSet"
+import EditNoteSet from "./EditNoteSet";
 
 export default {
 
@@ -35,7 +40,7 @@ export default {
   props: ['id'],
 
   components: {
-      NewNoteSetSubject,
+    EditNoteSet,
   },
 
   computed: {

@@ -1,55 +1,22 @@
 <template>
-<v-content id="mySpecialBox" style=" padding: 0; height: 80vh; position: relative !important;">
-  <v-container ref="messagesContainer" style="overflow:scroll; padding-bottom: 50px; max-height: 70vh;">
-    <v-row v-for="item in theChat.messages" v-bind:key="item.id">
-      <v-col v-if="item.author.id !== myID" cols="12" align="left">
-        <v-chip >
-          <v-avatar large v-if="item.author.profile.avatar" left>
-            <v-img :src="item.author.profile.avatar"></v-img>
-          </v-avatar>
-          <v-avatar large v-if="!item.author.profile.avatar" left color="blue">
-            {{item.author.username[0]}}
-          </v-avatar>
-          {{item.content}}
-        </v-chip>
-        <span v-if="item.author.id !== myID" class="subtitle-1">{{item.dateSent.getHours() + ":" + item.dateSent.getMinutes()}}</span>
-      </v-col>
-      <v-col v-if="item.author.id === myID" cols="12" align="right">
-        <v-chip>
-          <v-avatar large v-if="item.author.profile.avatar" left>
-            <v-img :src="item.author.profile.avatar"></v-img>
-          </v-avatar>
-          <v-avatar large v-if="!item.author.profile.avatar" left color="red">
-            {{item.author.username[0]}}
-          </v-avatar>
-          {{item.content}}
-        </v-chip>
-        <span v-if="item.author.id === myID" class="subtitle-1">{{item.dateSent.getHours() + ":" + item.dateSent.getMinutes()}}</span>
-      </v-col>
-    </v-row>
-  </v-container>
-  <v-bottom-navigation absolute bottom >
-  <v-file-input
-    dense
-    style="margin-right: 40px; max-width: 0 !important;"
-    accept="image/png, image/jpeg, image/bmp"
-    prepend-icon="mdi-camera"
-    v-model="photoInput"
-  ></v-file-input>
-
-  <v-text-field placeholder="Aa" style="border: 1px solid black; max-width: 300px !important;"
-                v-model="messageInput"></v-text-field>
-
-  <v-spacer></v-spacer>
-
-  <v-btn style="margin: 0; padding: 0;" color="success" v-on:click="sendMessage">
-    <v-icon dark left>mdi-reply</v-icon>
-    Send
-  </v-btn>
-</v-bottom-navigation>
-</v-content>
+<div>
+  <div class="message" v-for="(item, index) in theChat.messages" v-bind:key="item.id" :class="item.author.id === myID ? 'own' : 'notOwn'">
+    <div class="username" v-if="index>0 && theChat.messages[index-1].author.id != item.author.id">{{item.author.username}}</div>
+    <div class="username" v-if="index == 0">{{item.author.username}}</div>
+    <div style="margin-top: 5px"></div>
+    <v-chip >
+      <v-avatar large v-if="item.author.profile.avatar" left>
+        <v-img :src="item.author.profile.avatar"></v-img>
+      </v-avatar>
+      <v-avatar large v-if="!item.author.profile.avatar" left color="blue">
+        {{item.author.username[0]}}
+      </v-avatar>
+      {{item.content}}
+    </v-chip>
+    <span class="subtitle-1">{{item.dateSent.getHours() + ":" + item.dateSent.getMinutes()}}</span>
+  </div>
+</div>
 </template>
-
 
 <script>
 
@@ -59,12 +26,10 @@ import {mapGetters, mapActions} from "vuex"
 export default {
 
   mounted() {
-    this.scrollToBottom()
   },
 
   data: () => ({
-    messageInput: null,
-    photoInput: null,
+
   }),
 
   props: ['chat'],
@@ -84,23 +49,33 @@ export default {
   },
 
   methods: {
-    ...mapActions(['sendNewMessage', 'createSnackbar', 'setMessageDialog']),
-    scrollToBottom() {
-      let content = this.$refs.messagesContainer
-      content.scrollTop = content.scrollHeight
-    },
-    async sendMessage() {
-      try {
-        await this.sendNewMessage({to: this.theChat.otherUser.id, content: this.messageInput})
-        this.createSnackbar({message: 'Message sent.', color: 'success'})
-        this.scrollToBottom()
-      } catch(error){
-        console.log(error.response.data)
-        this.createSnackbar({message: 'Problem sending message.', color: 'error'})
-      }
-      this.setMessageDialog(false)
-    },
+    ...mapActions([]),
+
   }
 }
 
 </script>
+
+<style scoped>
+
+.message{
+  margin-bottom: 3px;
+}
+.message.own{
+  text-align: right;
+}
+
+.username{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@media (max-width: 480px) {
+  .content {
+    max-width: 60%;
+  }
+}
+
+
+
+</style>

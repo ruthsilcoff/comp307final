@@ -1,42 +1,27 @@
 <template>
-<v-content style="margin: 0; padding: 0; height:250px; position: relative !important;">
-  <v-content style="margin: 0; padding: 0;">
-    <v-container ref="messagesBox" style="margin: 0; max-height: 200px; overflow: scroll">
-      <v-row v-for="item in theChat.messages" v-bind:key="item.id">
-        <v-col v-if="item.author.id !== myID" cols="12" align="left">
-          <v-chip >
-            <v-avatar large v-if="item.author.profile.avatar" left>
-              <v-img :src="item.author.profile.avatar"></v-img>
-            </v-avatar>
-            <v-avatar large v-if="!item.author.profile.avatar" left color="blue">
-              {{item.author.username[0]}}
-            </v-avatar>
-            {{item.content}}
-          </v-chip>
-          <span v-if="item.author.id !== myID" class="subtitle-1">{{item.dateSent.getHours() + ":" + item.dateSent.getMinutes()}}</span>
-        </v-col>
-        <v-col v-if="item.author.id === myID" cols="12" align="right">
-          <v-chip>
-            <v-avatar large v-if="item.author.profile.avatar" left>
-              <v-img :src="item.author.profile.avatar"></v-img>
-            </v-avatar>
-            <v-avatar large v-if="!item.author.profile.avatar" left color="red">
-              {{item.author.username[0]}}
-            </v-avatar>
-            {{item.content}}
-          </v-chip>
-          <span v-if="item.author.id === myID" class="subtitle-1">{{item.dateSent.getHours() + ":" + item.dateSent.getMinutes()}}</span>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-content>
-  <v-bottom-navigation absolute bottom style="padding: 0;">
-      <v-text-field placeholder="Aa" style="border: 1px solid black; max-width: 500px !important; margin: 0; padding: 0;"
-                    v-model="messageInput"></v-text-field>
-      <v-btn style="margin: 0; padding: 0;" color="success" icon v-on:click="sendMessage()">
-        <v-icon dark left>mdi-reply</v-icon>
-      </v-btn>
-    </v-bottom-navigation>
+<v-content style="margin: 0; padding: 0;">
+
+  <div class="chat-container" v-on:scroll="onScroll" ref="chatContainer" >
+    <div class="message" v-for="(item, index) in theChat.messages" v-bind:key="item.id" :class="item.author.id === myID ? 'own' : 'notOwn'">
+      <div class="username" v-if="index>0 && theChat.messages[index-1].author.id != item.author.id">{{item.author.username}}</div>
+      <div class="username" v-if="index == 0">{{item.author.username}}</div>
+      <div style="margin-top: 5px"></div>
+      <v-chip >
+        <v-avatar large v-if="item.author.profile.avatar" left>
+          <v-img :src="item.author.profile.avatar"></v-img>
+        </v-avatar>
+        <v-avatar large v-if="!item.author.profile.avatar" left color="blue">
+          {{item.author.username[0]}}
+        </v-avatar>
+        {{item.content}}
+      </v-chip>
+      <span class="subtitle-1">{{item.dateSent.getHours() + ":" + item.dateSent.getMinutes()}}</span>
+    </div>
+  </div>
+
+  <div style="margin: 0; padding: 0;" class="typer">
+    <input type="text" placeholder="Aa" v-on:keyup.enter="sendMessage" v-model="messageInput">
+  </div>
 </v-content>
 </template>
 
@@ -57,6 +42,7 @@ export default {
 
   data: () => ({
     messageInput: '',
+    photoInput: null,
   }),
 
   computed: {
@@ -95,9 +81,15 @@ export default {
       }
     },
 
+    onScroll() {
+
+    },
+
     scrollToBottom() {
-      let content = this.$refs.messagesBox
-      content.scrollTop = content.scrollHeight
+      let container = this.$el.querySelector('.chat-container')
+      if (container) {
+        container.scrollTop = container.scrollHeight
+      }
     },
 
     async sendMessage() {
@@ -116,3 +108,52 @@ export default {
   },
 }
 </script>
+
+
+<style scoped>
+
+.message{
+  margin-bottom: 3px;
+}
+.message.own{
+  text-align: right;
+}
+
+.username{
+  font-size: 15px;
+  font-weight: bold;
+}
+
+@media (max-width: 480px) {
+  .content {
+    max-width: 60%;
+  }
+}
+
+.typer{
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  bottom: 100px;
+  height: 2rem;
+  width: 100%;
+  box-shadow: 0 -10px 15px -5px rgba(0,0,0,.2);
+}
+.typer input[type=text]{
+  position: absolute;
+  left: 2.5rem;
+  padding: 1rem;
+  width: 80%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 1.25rem;
+}
+.chat-container{
+  box-sizing: border-box;
+  height: 205px;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+</style>
