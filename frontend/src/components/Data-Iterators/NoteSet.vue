@@ -17,10 +17,12 @@
   <EditNoteSet :id="id" :closeEditingSubjects="closeEditingSubjects" v-if="editingSubjects"/>
 
   <div v-for="(item, index) in theSet.content" v-bind:key="item.id">
-    <h2>File #{{index + 1}}</h2>
-    <v-img v-if="!item.content.includes('pdf')" :src="item.content" max-height="200px" max-width="200px"></v-img>
-    <embed v-if="item.content.includes('pdf') || item.content.includes('PDF')" :src="item.content" type="application/pdf" max-height="200px" max-width="200px"/>
+    <v-divider style="margin-top: 10px; margin-bottom: 10px;" v-if="index > 0"></v-divider>
+    <h2>File {{index + 1}}</h2>
+    <v-img :src="item.content" max-height="200px" max-width="200px"></v-img>
+    <a style="text-decoration: underline" :href="item.content">Download</a>
   </div>
+
 
 </v-content>
 </template>
