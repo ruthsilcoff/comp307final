@@ -42,6 +42,9 @@ class Subject(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
     description = models.CharField(max_length=100, null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 # many to 1
 # Availability to User

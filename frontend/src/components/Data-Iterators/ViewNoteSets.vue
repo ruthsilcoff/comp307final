@@ -9,7 +9,6 @@
           <v-list-item-title>
             {{item.title}}
           </v-list-item-title>
-
           <v-list-item-subtitle>
             {{item.description}}
           </v-list-item-subtitle>
@@ -18,6 +17,7 @@
             <v-img max-height="200px" max-width="200px" :src="item.content[0]"></v-img>
           </v-list-item-avatar>
         </router-link>
+         <v-btn color="error" style="font-size: 10px;" v-on:click="removeNote(item)">Remove</v-btn>
       </v-list-item>
     </v-list>
 
@@ -39,7 +39,18 @@ export default {
   },
 
   methods: {
+     ...mapActions(['deleteNote', 'createSnackbar']),
 
+    async removeNote(item) {
+        try {
+          console.log(item.id)
+          await this.deleteNote({id: item.id})
+          this.createSnackbar({message: 'Note Removed', color: 'success'})
+        }catch(error) {
+           console.log(error)
+          this.createSnackbar({message: 'problem removing note', color: 'error'})
+        }
+      },
 
   }
 
