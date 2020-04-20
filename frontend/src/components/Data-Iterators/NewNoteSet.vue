@@ -149,13 +149,25 @@ export default {
 <style scoped>
 
 .hoverDrop {
+  border: 2px solid black;
   box-shadow: 4px 4px 2px;
-  background-color: var(--v-secondary-base)
+  background-color: var(--v-secondary-base);
+  border-radius: 20px;
+  width: 480px;
+  font-family: sans-serif;
+  margin: 100px auto;
+  padding: 20px;
 }
 
 .noHoverDrop {
+  border: 2px dashed black;
   box-shadow: 4px 4px 2px;
-  background-color: var(--v-info-base)
+  background-color: var(--v-info-base);
+  border-radius: 20px;
+  width: 480px;
+  font-family: sans-serif;
+  margin: 100px auto;
+  padding: 20px;
 }
 
 </style>
