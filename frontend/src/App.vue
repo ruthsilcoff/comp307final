@@ -10,30 +10,32 @@
       <v-icon x-large color="red" style="margin-top: 0; margin-left: -69px;">fa-heart</v-icon>
     </v-row>
 
-    <v-menu
+   <router-view v-if="!loading" :key="$route.fullPath"></router-view>
+
+   <v-menu
       draggable="true"
       :value="true"
       v-for="(item, index) in openChats"
       v-bind:key="item.id"
+      absolute
       :position-x="220*index"
-      :position-y="410"
+      :position-y="clientHeight -350"
+      elevation="5"
       :close-on-content-click="false"
       :close-on-click="false"
     >
-      <v-card height="300" width="200">
-        <v-toolbar fixed dense dark color="primary">
+      <v-card draggable="true" height="300" width="200">
+        <v-toolbar v-on:click="toggleCollapse(index)" fixed dense dark color="primary">
           <v-toolbar-title v-if="item.otherUser.first_name">{{item.otherUser.first_name + " " + item.otherUser.last_name}}</v-toolbar-title>
           <v-toolbar-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="closeChat(item.id)">x</v-icon>
-          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="item.collapsed = !item.collapsed">^</v-icon>
+          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="closeChat(item.id, index)">x</v-icon>
+          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="toggleCollapse(index)">^</v-icon>
         </v-toolbar>
-        <BottomChatView :chat="item"/>
+        <BottomChatView v-if="!collapsedChatGetter[index]" :chat="item"/>
       </v-card>
 
     </v-menu>
-
-   <router-view v-if="!loading" :key="$route.fullPath"></router-view>
 
     <v-snackbar
       v-model="snackbar"
@@ -100,6 +102,7 @@ export default {
 
   computed: {
     ...mapGetters([
+      'collapsedChatGetter',
       'openChatIDGetter',
       'chatGetter',
       'allUsers',
@@ -116,7 +119,6 @@ export default {
       if (this.openChatIDGetter) {
         for (let i = 0; i < this.openChatIDGetter.length; i++) {
           let chat = this.chatGetter.find(chat => chat.id === this.openChatIDGetter[i])
-          chat.collapsed = false
           openChats.push(chat)
         }
       }
@@ -141,6 +143,11 @@ export default {
   },
   mounted() {
     this.getTheme()
+    this.setClientHeight()
+    document.addEventListener("resize", function(event) {
+        console.log(event)
+        this.setClientHeight()
+    })
   },
 
 
@@ -159,7 +166,7 @@ export default {
   },
 
   data: () => ({
-    collapseChat: [],
+    clientHeight: 500,
     timeout: 5000,
     loading: true,
     page: 'homePage',
@@ -175,26 +182,28 @@ export default {
 
   methods: {
     ...mapActions([
+      'setCollapsedChat',
       'setOpenChatID',
       'removeSnackbar',
       'setMessageDialog',
       'login',
       'logOut',
       'setMyUser',
-      'viewingProfile',
       'yesLoggedIn',
       'notLoggedIn',
     ]),
 
+      setClientHeight() {
+        this.clientHeight = document.body.clientHeight
+      },
+
     toggleCollapse(index) {
-      console.log(this.openChats)
-      console.log(index)
-      this.openChats[index].collapsed = true
-      console.log(this.openChats)
-      this.collapseChat[index] = true
+      let current = this.collapsedChatGetter[index]
+      console.log(current)
+      this.setCollapsedChat({index: index, bool: !current})
     },
 
-    closeChat(id) {
+    closeChat(id, index) {
       this.setOpenChatID({id: id, bool: false})
     },
 

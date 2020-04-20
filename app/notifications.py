@@ -9,7 +9,7 @@ async def notify(serializer_class, instance):
         {
             'type': 'notify',
             'content': {
-                'type': 'direct_message',
+                'type': instance.__class__.__name__,
                 'payload': serializer.data,
             }
         },
