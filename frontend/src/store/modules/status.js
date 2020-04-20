@@ -100,9 +100,10 @@ const actions = {
     await dispatch('getAllTutoringSessions') // before avails
     await dispatch('getAllAvailabilities')
     await dispatch('getAllSubjects')
-    await dispatch('getAllTeacherSubjects') // after getAllSubjects
-    await dispatch('getAllLessonSubjects') // after getAllSubjects
     await dispatch('getAllNoteSets')
+    await dispatch('getAllTeacherSubjects') // after getAllSubjects
+    await dispatch('getAllNoteSetSubjects') // after getAllSubjects
+    await dispatch('getAllLessonSubjects') // after getAllSubjects
     await dispatch('getAllReviews')
   },
 

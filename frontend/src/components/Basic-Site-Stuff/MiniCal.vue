@@ -18,7 +18,7 @@ export default {
   },
 
   computed: {
-		...mapGetters(['myChatsGetter', 'myID', 'av']),
+		...mapGetters(['myID', 'av']),
   },
 
   mounted() {

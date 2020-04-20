@@ -140,16 +140,9 @@
     props: [],
 
 		computed: {
-      ...mapGetters(['subjectsGetter', 'teachersOneSubject']),
+      ...mapGetters(['subjectsGetter']),
       courses() {
-        let courses = this.subjectsGetter
-        let coursesWithTeachers = []
-        for (let i = 0; i < courses.length; i++) {
-          let course = courses[i]
-          course.teachers = this.teachersOneSubject(courses[i].name)
-          coursesWithTeachers.push(course)
-        }
-        return coursesWithTeachers
+        return this.subjectsGetter
       },
       numberOfPages () {
         return Math.ceil(this.courses.length / this.itemsPerPage)
