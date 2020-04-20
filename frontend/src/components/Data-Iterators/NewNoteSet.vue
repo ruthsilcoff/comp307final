@@ -4,6 +4,14 @@
             <v-card-title>Add a Note Set</v-card-title>
              <v-text-field label="Title" v-model="titleInput"></v-text-field>
             <v-text-field label="Description" v-model="descriptionInput"></v-text-field>
+            <div class="noHoverDrop" style="border: 2px dashed black" id="dragDropPhotoBox" v-cloak @drop.prevent="addFile" @dragover.prevent="activateDragOver">
+              <h2>Files to Upload (Drag them over)</h2>
+              <ul>
+                <li v-for="file in files" v-bind:key="file.name">
+                  {{ file.name }} ({{ file.size | kb }} kb) <button @click="removeFile(file)" title="Remove">X</button>
+                </li>
+              </ul>
+            </div>
             <v-file-input counter multiple label="Input files" v-model="filesInput"></v-file-input>
             <v-combobox
                 v-model="subjectsInput"
@@ -73,6 +81,7 @@ export default {
     filesInput: [],
     subjectsInput: [],
     search: null,
+    files: [],
   }),
 
   methods: {
@@ -87,6 +96,9 @@ export default {
         }
         else {
             try {
+                for (let i = 0; i < this.files.length; i++) {
+                    this.filesInput.push(this.files[i])
+                }
                 const id = await this.newNoteSet({title: this.titleInput, description: this.descriptionInput, files: this.filesInput})
                 await this.updateSubjects(id)
                 this.createSnackbar({message: 'Notes uploaded', color:'success'})
@@ -95,6 +107,23 @@ export default {
                 this.createSnackbar({message: 'Problem uploading notes', color: 'error'})
             }
         }
+    },
+    activateDragOver() {
+      document.getElementById('dragDropPhotoBox').className = "hoverDrop"
+    },
+    addFile(e) {
+      let droppedFiles = e.dataTransfer.files;
+      if(!droppedFiles) return;
+      // this tip, convert FileList to array, credit: https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
+      ([...droppedFiles]).forEach(f => {
+        this.files.push(f);
+      });
+      document.getElementById('dragDropPhotoBox').className = "noHoverDrop"
+    },
+    removeFile(file){
+      this.files = this.files.filter(f => {
+        return f != file;
+      });
     },
     async updateSubjects(id) {
       for (let i = 0; i < this.subjectsInput.length; i++) {
@@ -116,3 +145,17 @@ export default {
 };
 
 </script>
+
+<style scoped>
+
+.hoverDrop {
+  box-shadow: 4px 4px 2px;
+  background-color: var(--v-secondary-base)
+}
+
+.noHoverDrop {
+  box-shadow: 4px 4px 2px;
+  background-color: var(--v-info-base)
+}
+
+</style>

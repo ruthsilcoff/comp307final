@@ -80,10 +80,12 @@ const actions = {
     }
   },
 
-  subscribeToWS({rootGetters}) {
-    const userID = rootGetters.myID
-    if (userID)
+  async subscribeToWS({rootGetters}) {
+    const currentUser = await axios.get('/api/user/current/')
+    const userID = currentUser.data.id
+    if (userID) {
       sendToWS('subscribe', {userID})
+    }
   },
 
   logOut({commit}) {

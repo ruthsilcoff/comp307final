@@ -10,6 +10,9 @@ import {initWebSocket} from './websocket'
 initWebSocket()
 
 Vue.config.productionTip = false
+Vue.filter('kb', val => {
+  return Math.floor(val/1024);
+});
 
 new Vue({
   store,
