@@ -1,64 +1,64 @@
 <template>
-    <v-content>
-        <v-card style="padding: 20px;">
-            <v-card-title>Add a Note Set</v-card-title>
-             <v-text-field label="Title" v-model="titleInput"></v-text-field>
-            <v-text-field label="Description" v-model="descriptionInput"></v-text-field>
-            <div class="noHoverDrop" style="border: 2px dashed black" id="dragDropPhotoBox" v-cloak @drop.prevent="addFile" @dragover.prevent="activateDragOver">
-              <h2>Files to Upload (Drag them over)</h2>
-              <ul>
-                <li v-for="file in files" v-bind:key="file.name">
-                  {{ file.name }} ({{ file.size | kb }} kb) <button @click="removeFile(file)" title="Remove">X</button>
-                </li>
-              </ul>
-            </div>
-            <v-file-input counter multiple label="Input files" v-model="filesInput"></v-file-input>
-            <v-combobox
-                v-model="subjectsInput"
-                :items="allSubjectNames"
-                :search-input.sync="search"
-                chips
-                clearable
-                label="Subjects"
-                multiple
-                solo
+<v-content>
+    <v-card style="padding: 20px;">
+        <v-card-title>Add a Note Set</v-card-title>
+         <v-text-field label="Title" v-model="titleInput"></v-text-field>
+        <v-text-field label="Description" v-model="descriptionInput"></v-text-field>
+        <div class="noHoverDrop" style="border: 2px dashed black" id="dragDropPhotoBox" v-cloak @drop.prevent="addFile" @dragover.prevent="activateDragOver">
+          <h2>Files to Upload (Drag them over)</h2>
+          <ul>
+            <li v-for="file in files" v-bind:key="file.name">
+              {{ file.name }} ({{ file.size | kb }} kb) <button @click="removeFile(file)" title="Remove">X</button>
+            </li>
+          </ul>
+        </div>
+        <v-file-input counter multiple label="Input files" v-model="filesInput"></v-file-input>
+        <v-combobox
+            v-model="subjectsInput"
+            :items="allSubjectNames"
+            :search-input.sync="search"
+            chips
+            clearable
+            label="Subjects"
+            multiple
+            solo
+          >
+        <template v-if="!(((search === '') || !search) && (subjectsInput.length > 0))" v-slot:no-data>
+          <div style="margin: 0; padding: 5px;" v-if="search && (search !== '') ">
+            <div style="margin: 0; padding: 0;">This subject does not exist.</div>
+            <div style="margin: 0; padding: 0;">Press <kbd v-on:click="addNewSubject({name: search})">enter</kbd> to create a new one</div>
+          </div>
+        </template>
+          <template v-slot:item="{ item }">
+            <v-chip
               >
-            <template v-if="!(((search === '') || !search) && (subjectsInput.length > 0))" v-slot:no-data>
-              <div style="margin: 0; padding: 5px;" v-if="search && (search !== '') ">
-                <div style="margin: 0; padding: 0;">This subject does not exist.</div>
-                <div style="margin: 0; padding: 0;">Press <kbd v-on:click="addNewSubject({name: search})">enter</kbd> to create a new one</div>
-              </div>
+                <strong>{{ item }}</strong>&nbsp;
+              </v-chip>
+
+          </template>
+            <template v-slot:selection="{ attrs, item, select, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                close
+                @click="select"
+                @click:close="remove(item)"
+              >
+                <strong>{{ item }}</strong>&nbsp;
+              </v-chip>
+
             </template>
-              <template v-slot:item="{ item }">
-                <v-chip
-                  >
-                    <strong>{{ item }}</strong>&nbsp;
-                  </v-chip>
-
-              </template>
-                <template v-slot:selection="{ attrs, item, select, selected }">
-                  <v-chip
-                    v-bind="attrs"
-                    :input-value="selected"
-                    close
-                    @click="select"
-                    @click:close="remove(item)"
-                  >
-                    <strong>{{ item }}</strong>&nbsp;
-                  </v-chip>
-
-                </template>
-              </v-combobox>
-            <v-row>
-                <v-btn color="success" v-on:click="createNoteSet()">
-                    Submit
-                </v-btn>
-                <v-btn color="error" v-on:click="cancel()">
-                    Cancel
-                </v-btn>
-            </v-row>
-        </v-card>
-    </v-content>
+          </v-combobox>
+        <v-row>
+            <v-btn color="success" v-on:click="createNoteSet()">
+                Submit
+            </v-btn>
+            <v-btn color="error" v-on:click="cancel()">
+                Cancel
+            </v-btn>
+        </v-row>
+    </v-card>
+</v-content>
 </template>
 
 <script>
@@ -155,7 +155,6 @@ export default {
   border-radius: 20px;
   width: 480px;
   font-family: sans-serif;
-  margin: 100px auto;
   padding: 20px;
 }
 
@@ -166,7 +165,6 @@ export default {
   border-radius: 20px;
   width: 480px;
   font-family: sans-serif;
-  margin: 100px auto;
   padding: 20px;
 }
 

@@ -89,7 +89,6 @@ import NewMessage from "./components/Basic-Site-Stuff/chatStuff/NewMessage"
 import BottomChatView from "./components/Basic-Site-Stuff/chatStuff/BottomChatView"
 import {ws} from './websocket'
 
-
 export default {
   components: {
     Header,
@@ -284,7 +283,7 @@ export default {
 <style>
 
 a {
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .Header {

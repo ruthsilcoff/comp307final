@@ -125,6 +125,28 @@ const actions = {
     }
   },
 
+  async addNoteSetContent({commit}, {id, files}){
+    try {
+      let editedNoteSet = state.noteSets.find(set => set.id === id)
+      let contentFiles = editedNoteSet.content
+      for (let i = 0; i < files.length; i++) {
+        console.log(files[i])
+        let fileData = new FormData()
+        fileData.append('content', files[i])
+        fileData.append('noteSetID', editedNoteSet.id)
+        const response2 = await axios.post('/api/noteSetContent/', fileData, {
+        headers: {'Content-Type': 'multipart/form-data'}
+        })
+        contentFiles.push(response2.data)
+      }
+      editedNoteSet.content = contentFiles
+      commit('editNoteSet', editedNoteSet)
+    }catch(error){
+      console.log(error.response.data);
+      throw error
+    }
+  },
+    
   async deleteNote({commit}, {id}) {
     try {
       const response = await axios.delete(`/api/noteSet/${id}/`)
@@ -135,7 +157,7 @@ const actions = {
       throw error
     }
   },
-
+    
   async getAllSubjects({commit}) {
     try {
       const response = await axios.get('/api/subject/')
@@ -536,6 +558,10 @@ const mutations = {
 
     let index2 = state.availabilities.indexOf(state.availabilities.find(avail => avail.id === session.availabilityID))
     state.availabilities[index2].booked = 'confirmed'
+  },
+  editNoteSet: (state, noteSet) => {
+    let index = state.noteSets.indexOf(state.noteSets.find(set => set.id === noteSet.id))
+    state.noteSets[index] = noteSet
   },
 
   addTutoringSession: (state, session) => state.tutoringSessions.push(session),

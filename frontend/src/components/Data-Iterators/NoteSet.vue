@@ -14,9 +14,15 @@
 
   <v-divider v-if="editingSubjects"></v-divider>
 
-  <NewNoteSetSubject :id="id" :closeEditingSubjects="closeEditingSubjects" v-if="editingSubjects"/>
+  <EditNoteSet :id="id" :closeEditingSubjects="closeEditingSubjects" v-if="editingSubjects"/>
 
-  <v-img v-for="item in theSet.content" v-bind:key="item.id" :src="item.content" max-height="200px" max-width="200px"></v-img>
+  <div v-for="(item, index) in theSet.content" v-bind:key="item.id">
+    <v-divider style="margin-top: 10px; margin-bottom: 10px;" v-if="index > 0"></v-divider>
+    <h2>File {{index + 1}}</h2>
+    <v-img :src="item.content" max-height="200px" max-width="200px"></v-img>
+    <a style="text-decoration: underline" :href="item.content">Download</a>
+  </div>
+
 
 </v-content>
 </template>
@@ -24,7 +30,8 @@
 <script>
 import {mapGetters, mapActions} from "vuex"
 import axios from "axios"
-import NewNoteSetSubject from "../Data-Iterators/NewNoteSetSubject"
+import NewNoteSetSubject from "./EditNoteSet"
+import EditNoteSet from "./EditNoteSet";
 
 export default {
 
@@ -35,7 +42,7 @@ export default {
   props: ['id'],
 
   components: {
-      NewNoteSetSubject,
+    EditNoteSet,
   },
 
   computed: {
