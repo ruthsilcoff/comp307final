@@ -12,4 +12,4 @@ class TestViews(TestCase):
         response = self.client.get(self.app_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemmplateUsed(response, 'app.html')
+        self.assertTemplateUsed(response, 'app.html')
