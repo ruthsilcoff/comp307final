@@ -49,7 +49,6 @@ const getters = {
   myID: (state) => state.selfID,
   viewingID: (state) => state.viewingID,
   isViewing: (state) => state.selfID !== state.viewingID,
-
   myUser: (state) => state.users.find(user => user.id === state.selfID),
   viewingUser: (state) => state.users.find(user => user.id === state.viewingID),
 }
@@ -147,7 +146,18 @@ const actions = {
       throw error
     }
   },
-
+    
+  async deleteNote({commit}, {id}) {
+    try {
+      const response = await axios.delete(`/api/noteSet/${id}/`)
+      console.log(response)
+      commit('removeNote', response.data)
+    }catch(error) {
+      console.log(error.response.data)
+      throw error
+    }
+  },
+    
   async getAllSubjects({commit}) {
     try {
       const response = await axios.get('/api/subject/')
@@ -509,6 +519,11 @@ const mutations = {
   removeNoteSetSubject: (state, thing) => {
     let index = state.noteSetSubjects.indexOf(state.noteSetSubjects.find(t => t.id === thing.id))
     state.noteSetSubjects.splice(index, 1)
+  },
+
+  removeNote: (state, note) => {
+    let index = state.noteSets.indexOf(state.noteSets.find(n => n.id === note.id))
+    state.noteSets.splice(index, 1)
   },
 
   addNewAvail: (state, newEvent) => state.availabilities.unshift(newEvent),
