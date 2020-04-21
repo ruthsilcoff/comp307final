@@ -5,6 +5,7 @@
     background-color="transparent"
     color="primary"
     grow
+    show-arrows
   >
     <v-tab >
       Availabilities
