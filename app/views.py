@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from asgiref.sync import async_to_sync
 
 from .notifications import notify
+from .notifications import update
 from .permissions import IsOwner
 from .models import User, Subject, Availability, TeachesSubjects, NoteSet, NoteSetSubjects, \
     NoteSetContent, TutoringSession, Event, UserAttendEvent, Profile, Chat, DirectMessage, \
@@ -111,6 +112,10 @@ class ChatViewSet(viewsets.ModelViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        async_to_sync(notify)(self.serializer_class, instance)
+
 
 class DirectMessageViewSet(viewsets.ModelViewSet):
     queryset = DirectMessage.objects.all()
@@ -123,6 +128,10 @@ class DirectMessageViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         instance = serializer.save()
         async_to_sync(notify)(self.serializer_class, instance)
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        async_to_sync(update)(self.serializer_class, instance)
 
 
 class ReviewsViewSet(viewsets.ModelViewSet):

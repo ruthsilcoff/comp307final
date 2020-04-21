@@ -76,6 +76,9 @@ class ChatSerializer(serializers.ModelSerializer):
         model = Chat
         fields = '__all__'
 
+    def group_name(self):
+        return str(self.data['otherUser'])
+
 
 class DirectMessageSerializer(serializers.ModelSerializer):
     class Meta:
