@@ -1,29 +1,9 @@
 <template>
   <v-dialog
     v-model="newMessageDialog"
-    max-width="290"
+    max-width="400"
   >
     <v-card style="padding: 10px;">
-      <v-card-actions>
-        <v-spacer></v-spacer>
-
-        <v-btn
-          color="error"
-          text
-          @click="cancelSend()"
-        >
-          Cancel
-        </v-btn>
-
-        <v-btn
-          color="success"
-          text
-          @click="sendMessage()"
-        >
-          Send <v-icon>mdi-send</v-icon>
-        </v-btn>
-      </v-card-actions>
-
       <v-card-title class="headline">New message</v-card-title>
 
       <v-combobox
@@ -48,6 +28,25 @@
 
       <v-textarea label="Content" v-model="contentInput"></v-textarea>
 
+      <v-card-actions>
+        <v-spacer></v-spacer>
+
+        <v-btn
+          color="error"
+          text
+          @click="cancelSend()"
+        >
+          Cancel
+        </v-btn>
+
+        <v-btn
+          color="success"
+          text
+          @click="sendMessage()"
+        >
+          Send <v-icon>mdi-send</v-icon>
+        </v-btn>
+      </v-card-actions>
 
     </v-card>
   </v-dialog>

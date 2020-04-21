@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h3>Add: </h3>
+    <h3>Add subjects: </h3>
     <v-combobox
           v-model="subjectsInput"
           :items="allSubjectNames"
@@ -41,8 +41,9 @@
 
           </template>
         </v-combobox>
-    <div class="noHoverDrop" style="border: 2px dashed black" id="dragDropPhotoBox" v-cloak @drop.prevent="addFile" @dragover.prevent="activateDragOver">
-      <h2>Files to Upload (Drag them over)</h2>
+    <div class="noHoverDrop" style="border: 2px dashed black" id="dragDropPhotoBox" v-cloak @drop.prevent="addFile" @dragover.prevent="activateDragOver" @dragleave="deactivateDragOver">
+      <h3>{{text}}</h3>
+      <v-file-input counter multiple label="Input files" v-model="filesInput" v-on:change="updateFileList"></v-file-input>
       <ul>
         <li v-for="file in files" v-bind:key="file.name">
           {{ file.name }} ({{ file.size | kb }} kb) <button @click="removeFile(file)" title="Remove">X</button>
@@ -101,6 +102,8 @@ export default {
     subjectsInput: [],
     search: null,
     files: [],
+    filesInput: [],
+    text: 'Files to Upload (Drag them over)'
   }),
 
   methods: {
@@ -131,7 +134,10 @@ export default {
         }
       }
       try {
-        await this.addNoteSetContent({id: parseInt(this.id), files: this.files})
+        for (let i = 0; i < this.files.length; i++) {
+            this.filesInput.push(this.files[i])
+        }
+        await this.addNoteSetContent({id: parseInt(this.id), files: this.filesInput})
       }catch(error) {
         this.createSnackbar({message:'Problem adding files to note set', color: 'error'})
         return
@@ -152,6 +158,11 @@ export default {
     },
     activateDragOver() {
       document.getElementById('dragDropPhotoBox').className = "hoverDrop"
+      this.text = 'Drop file'
+    },
+    deactivateDragOver() {
+      document.getElementById('dragDropPhotoBox').className = "noHoverDrop"
+      this.text = 'Files to Upload (Drag them over)'
     },
     addFile(e) {
       let droppedFiles = e.dataTransfer.files;
@@ -159,13 +170,25 @@ export default {
       // this tip, convert FileList to array, credit: https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
       ([...droppedFiles]).forEach(f => {
         this.files.push(f);
+        this.filesInput.push(f);
       });
       document.getElementById('dragDropPhotoBox').className = "noHoverDrop"
+      this.text = 'Files to Upload (Drag them over)'
     },
     removeFile(file){
       this.files = this.files.filter(f => {
         return f != file;
       });
+      this.filesInput = this.filesInput.filter(f => {
+        return f != file;
+      });
+    },
+    updateFileList() {
+      for (let i = 0; i < this.filesInput.length; i++) {
+        if (!this.files[i]) {
+          this.files.push(this.filesInput[i])
+        }
+      }
     },
   }
 
@@ -175,24 +198,6 @@ export default {
 
 <style scoped>
 
-.hoverDrop {
-  border: 2px solid black;
-  box-shadow: 4px 4px 2px;
-  background-color: var(--v-secondary-base);
-  border-radius: 20px;
-  width: 480px;
-  font-family: sans-serif;
-  padding: 20px;
-}
 
-.noHoverDrop {
-  border: 2px dashed black;
-  box-shadow: 4px 4px 2px;
-  background-color: var(--v-info-base);
-  border-radius: 20px;
-  width: 480px;
-  font-family: sans-serif;
-  padding: 20px;
-}
 
 </style>

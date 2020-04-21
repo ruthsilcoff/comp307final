@@ -5,7 +5,6 @@
     background-color="transparent"
     color="primary"
     grow
-    style="overflow-x: scroll"
   >
     <v-tab >
       Availabilities
@@ -38,11 +37,7 @@
     </v-tab-item>
 
     <v-tab-item>
-      <v-btn v-if="!isViewing && !addingNoteSet" v-on:click="openNewNoteSet" color="success" large>
-        <v-icon left>mdi-plus</v-icon>Add Note Set
-      </v-btn>
-      <NewNoteSet v-if="addingNoteSet" :submit="submitNoteSet" :cancel="submitNoteSet"/>
-      <ViewNoteSets/>
+      <ViewNoteSets :isViewing="isViewing"/>
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
@@ -79,7 +74,6 @@
 	export default {
     data: () => ({
       addingReview: false,
-      addingNoteSet: false,
       tab: null,
 			items: [
 				'Availabilities',
@@ -95,7 +89,6 @@
 		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
     components: {
-      NewNoteSet,
       NewReview,
       ViewAvails,
       ViewNoteSets,
@@ -130,12 +123,6 @@
       },
       submit() {
         this.addingReview = false
-      },
-      openNewNoteSet() {
-        this.addingNoteSet = true
-      },
-      submitNoteSet() {
-        this.addingNoteSet = false
       },
     },
 

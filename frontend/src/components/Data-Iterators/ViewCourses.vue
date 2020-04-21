@@ -31,8 +31,8 @@
 
               <v-row align="center" justify="end" style="margin-right: 20px">
 
-                <v-card-title style="margin-right: 20px; position: absolute !important; left: 0; top: 0; font-size: 40px;"> {{item.name}}</v-card-title>
-                <v-card-subtitle style="margin-right: 20px; position: absolute !important; left: 0; top: 100px; font-size: 20px;">{{item.description}}</v-card-subtitle>
+                <v-card-title style="color:black; margin-right: 20px; position: absolute !important; left: 0; top: 0; font-size: 40px;"> {{item.name}}</v-card-title>
+                <v-card-subtitle style="color:black; margin-right: 20px; position: absolute !important; left: 0; top: 100px; font-size: 20px;">{{item.description}}</v-card-subtitle>
 
                 <v-card style="margin: 10px;">
                   <v-card-title>Teachers:</v-card-title>
