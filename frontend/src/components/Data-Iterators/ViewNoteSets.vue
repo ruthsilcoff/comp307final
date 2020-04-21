@@ -2,6 +2,7 @@
   <v-content>
 
     <v-list two-line>
+
       <v-list-item v-for="item in noteSetsGetter" v-bind:key="item.id" link >
         <router-link :to="'/noteSet/' + item.id">
           {{item.id}}
@@ -13,12 +14,14 @@
             {{item.description}}
           </v-list-item-subtitle>
 
-          <v-list-item-avatar v-if="item.content.length > 0">
+          <v-list-item-avatar tile v-if="item.content.length > 0">
             <v-img max-height="200px" max-width="200px" :src="item.content[0]"></v-img>
           </v-list-item-avatar>
         </router-link>
-         <v-btn color="error" style="font-size: 10px;" v-on:click="removeNote(item)">Remove</v-btn>
+        <v-btn absolute right="0" style="margin:0; padding: 0;" v-if="!isViewing" text color="error" v-on:click="removeNote(item)">X</v-btn>
+
       </v-list-item>
+
     </v-list>
 
   </v-content>
@@ -33,6 +36,8 @@ import {mapActions, mapGetters} from 'vuex'
 export default {
   data: () => ({
   }),
+
+  props: ['isViewing'],
 
   computed: {
     ...mapGetters(['noteSetsGetter']),

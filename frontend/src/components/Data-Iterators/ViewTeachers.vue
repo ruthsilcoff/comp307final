@@ -19,7 +19,7 @@
             md="6"
             lg="4"
           >
-            <v-card id="teacherCard">
+            <v-card id="teacherCard" light>
               <v-card-title class="subheading font-weight-bold">{{ item.first_name }} {{ item.last_name }}</v-card-title>
 
               <v-divider></v-divider>

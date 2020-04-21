@@ -38,11 +38,14 @@
     </v-tab-item>
 
     <v-tab-item>
-      <v-btn v-if="!isViewing && !addingNoteSet" v-on:click="openNewNoteSet" color="success" large>
-        <v-icon left>mdi-plus</v-icon>Add Note Set
-      </v-btn>
+      <v-row>
+        <v-btn v-if="!isViewing && !addingNoteSet" v-on:click="openNewNoteSet" color="success" large>
+          <v-icon left>mdi-plus</v-icon>Add Note Set
+        </v-btn>
+      </v-row>
+
       <NewNoteSet v-if="addingNoteSet" :submit="submitNoteSet" :cancel="submitNoteSet"/>
-      <ViewNoteSets/>
+      <ViewNoteSets :isViewing="isViewing"/>
     </v-tab-item>
 
     <v-tab-item v-if="!isViewing">
