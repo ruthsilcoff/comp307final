@@ -20,10 +20,9 @@
           <tr>
             <th class="text-left">Session ID</th>
             <th class="text-left">Class</th>
-            <th class="text-left">Date</th>
-            <th class="text-left">Hours</th>
+            <th class="text-left">Start</th>
+            <th class="text-left">End</th>
             <th class="text-left">Cost per hour</th>
-            <th class="text-left">Total</th>
             <th class="text-left">Email to Pay</th>
           </tr>
         </thead>
@@ -32,9 +31,8 @@
             <td>{{ item.id }}</td>
             <td>{{ item.avail.title}}</td>
             <td>{{ item.avail.start.toString()}}</td>
-            <td>Duration</td>
+            <td>{{ item.avail.end.toString()}}</td>
             <td>{{ item.tutor.profile.rate}}</td>
-            <td>Total</td>
             <td>{{item.tutor.email}}</td>
           </tr>
         </tbody>
