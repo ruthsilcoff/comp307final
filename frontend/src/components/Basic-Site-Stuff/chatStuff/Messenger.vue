@@ -6,13 +6,13 @@
       app
       clipped
       left
-      width="250px"
+      width="300px"
       mobile-break-point="500px"
       overlay-color="secondary"
       disable-resize-watcher
     >
-      <v-toolbar fixed dense absolute width="100%" floating color="yellowSwitch" >
-        <v-icon v-on:click="setMessageDialog(true)" dark style="position: absolute !important; right: 8px; top:15px;" large >mdi-pencil-box-outline</v-icon>
+      <v-toolbar fixed absolute width="100%" floating color="primarydarken1">
+        <v-icon v-on:click="setMessageDialog(true)" style="position: absolute !important; right: 0; top:15px;" large >mdi-pencil-box-outline</v-icon>
         <v-toolbar-title class="title">Chats({{this.numberUnread}})</v-toolbar-title>
         <v-row style="margin-left: 20px; margin-right: 40px" align="center" justify="center">
           <v-text-field
@@ -23,15 +23,17 @@
               hide-details
               label="Search"
               prepend-inner-icon="mdi-magnify"
-              style="width: 80px !important"
+              style="width: 100px !important"
+              v-model="searchInput"
+              v-on:keyup="filterChats"
           ></v-text-field>
         </v-row>
       </v-toolbar>
-      <div style="overflow-y: scroll; " >
+      <div style="overflow-y: scroll; margin-top: 20px;" >
         <v-list subheader two-line link>
           <v-subheader>Your Chats</v-subheader>
           <v-list-item
-            v-for="(item) in myChats"
+            v-for="(item) in chats"
             v-bind:key="item.id"
             v-on:click="openChat(item)"
           >
@@ -106,6 +108,7 @@ export default {
     timeout: 5000,
     mode: '',
     searchInput: '',
+    chats: [],
   }),
 
   components: {
@@ -154,6 +157,10 @@ export default {
   mounted() {
     this.changeLeftDrawer(true)
     this.initialize()
+    while (!this.myChats) {
+      console.log("repeating loop")
+    }
+    this.chats = this.myChats
     this.scrollToBottom()
   },
 
@@ -161,6 +168,15 @@ export default {
     ...mapActions(['setMessageDialog', 'sendNewMessage', 'createSnackbar', 'changeLeftDrawer']),
     openChat(item) {
       this.viewingChat = item
+    },
+
+    filterChats() {
+      if (this.searchInput != ''){
+        this.chats = this.myChats.filter(chat => (chat.mostRecent.content.includes(this.searchInput) || chat.otherUser.username.includes(this.searchInput)))
+      }
+      else {
+        this.chats = this.myChats
+      }
     },
 
     async sendMessage() {
@@ -224,7 +240,7 @@ export default {
   left: 2.5rem;
   padding: 1rem;
   width: 80%;
-  background-color: transparent;
+  background-color: var(--v-primary-lighten5);
   border: none;
   outline: none;
   font-size: 1.25rem;

@@ -302,4 +302,27 @@ a {
 .headerButton {
   margin: 0;
 }
+
+.primary-darken1 {
+    background-color: var(--v-primary-darken1);
+}
+
+.hoverDrop {
+  border: 2px solid black;
+  box-shadow: 2px 2px 2px;
+  background-color: transparent;
+  border-radius: 20px;
+  width: 400px;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+.noHoverDrop {
+  background-color: var(--v-dropBox-base);
+  border: 2px dashed black;
+  border-radius: 20px;
+  width: 400px;
+  font-family: sans-serif;
+  padding: 20px;
+}
 </style>

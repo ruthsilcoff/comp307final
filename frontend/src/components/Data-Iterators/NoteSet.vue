@@ -1,29 +1,32 @@
 <template>
 <v-content v-if="this.theSet" style="margin-left: 10%;margin-right: 10%; margin-top: 30px;">
-  <v-card width="50vm">
-    <v-card-title>Note Set: <strong> {{" " + this.theSet.title}}</strong></v-card-title>
-    <v-card-subtitle>{{this.theSet.description}}</v-card-subtitle>
+  <v-card width="50vm" style="padding: 20px;">
+    <v-btn absolute right="0" top="0" text v-if="!editingSubjects" v-on:click="openEditingSubjects" color="secondary">
+      <v-icon left>mdi-pencil</v-icon>Edit
+    </v-btn>
+    <h1>Note Set: <strong> {{" " + this.theSet.title}}</strong></h1>
+    <v-divider style="margin-top: 10px; margin-bottom: 10px;"></v-divider>
+    <h2>{{this.theSet.description}}</h2>
     <v-chip-group style="margin-left: 10px;" column v-if="(subjects.length > 0) && (subjects[0])">
       <v-chip :close="editingSubjects" @click:close="removeSubject(item)" v-for="item in subjects" v-bind:key="item.name">
         <strong v-if="item">{{item.name}}</strong>
       </v-chip>
     </v-chip-group>
 
-    <v-btn justify="center" style="margin-bottom: 40px;" text v-if="!editingSubjects" v-on:click="openEditingSubjects" color="secondary">
-      <v-icon left>mdi-pencil</v-icon>Edit
-    </v-btn>
-
     <v-divider v-if="editingSubjects"></v-divider>
 
     <EditNoteSet :id="id" :closeEditingSubjects="closeEditingSubjects" v-if="editingSubjects"/>
 
-    <v-card-title v-if="theSet.content.length > 0">Files in this set: </v-card-title>
-    <v-card-title v-if="theSet.content.length == 0">No files in this set. </v-card-title>
-    <div v-for="(item, index) in theSet.content" v-bind:key="item.id">
-      <v-divider style="margin-top: 10px; margin-bottom: 10px;" v-if="index > 0"></v-divider>
-      <h2>File {{index + 1}}: {{item.content.split("/")[6]}}</h2>
-      <v-img :src="item.content"></v-img>
-      <a style="text-decoration: underline" :href="item.content">Download</a>
+    <div v-for="(file, index) in theSet.content" v-bind:key="file.id">
+        <v-divider style="margin-top: 10px; margin-bottom: 10px;"></v-divider>
+        <v-list-item-subtitle>
+            File {{index + 1}}:
+            <a style="text-decoration: underline" :href="file.content">
+                {{file.content.split("/")[6]}}
+            </a>
+        </v-list-item-subtitle>
+        <v-img max-height="200" max-width="200" :src="file.content"></v-img>
+
     </div>
   </v-card>
 
