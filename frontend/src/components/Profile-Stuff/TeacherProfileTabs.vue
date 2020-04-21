@@ -5,7 +5,6 @@
     background-color="transparent"
     color="primary"
     grow
-    style="overflow-x: scroll"
   >
     <v-tab >
       Availabilities
