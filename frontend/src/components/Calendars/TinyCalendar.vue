@@ -1,18 +1,22 @@
 <template>
-  <v-app>
+	<div style="margin: 0; padding: 0;">
+	<v-container class="smallCal">
+	<vue-cal
+		xsmall
+		default-view="day"
+		:disable-views="['years', 'year', 'month']"
+		:events="lessons"
+		:time-from="9 * 60"
+		:time-to="24 * 60"
+	/>
+	</v-container>
 
-		<v-container style="max-height: 300px; overflow: scroll">
-			<vue-cal
-          xsmall
-          default-view="day"
-          :disable-views="['years', 'year', 'month']"
-          :events="lessons"
-					:time-from="9 * 60"
-					:time-to="24 * 60"
-      />
-		</v-container>
-
-	</v-app>
+		<v-bottom-navigation grow>
+			<router-link to="/calendar">
+				<v-list-item link>View Full Calendar</v-list-item>
+			</router-link>
+		</v-bottom-navigation>
+	</div>
 </template>
 
 <script>
@@ -67,3 +71,14 @@ export default {
 }
 
 </script>
+
+
+<style>
+
+.smallCal {
+	max-height: 500px;
+	overflow-y:scroll;
+	background-color: var(--v-calendar-base)
+}
+
+</style>

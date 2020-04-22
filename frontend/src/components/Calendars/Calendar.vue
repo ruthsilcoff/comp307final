@@ -45,6 +45,7 @@ export default {
 	props: [],
 
 	mounted() {
+	this.changeShowLeftNav(true)
     this.changeLeftDrawer(true)
   },
 
@@ -58,7 +59,7 @@ export default {
 	},
 
 	methods: {
-		...mapActions(['changeLeftDrawer']),
+		...mapActions(['changeLeftDrawer', 'changeShowLeftNav']),
 	},
 
 	computed: {

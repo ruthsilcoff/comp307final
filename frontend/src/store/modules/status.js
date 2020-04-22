@@ -13,9 +13,11 @@ const state = {
   tempLeft: false,
   tempRight: false,
   addingAvail: false,
+  showLeftNav: false,
 }
 
 const getters = {
+  showLeftNavGetter: (state) => state.showLeftNav,
   addingAvailGetter: (state) => state.addingAvail,
   initialTabNumber: (state) => state.tab,
   getSnackbar: (state) => (state.snackbar),
@@ -31,6 +33,10 @@ const getters = {
 }
 
 const actions = {
+  changeShowLeftNav({commit}, bool) {
+    commit('setShowLeftNav', bool)
+  },
+
   changeAddingAvail({commit}, bool) {
     commit('setAddingAvail', bool)
   },
@@ -115,6 +121,7 @@ const actions = {
 }
 
 const mutations = {
+  setShowLeftNav: (state, bool) => state.showLeftNav = bool,
   setAddingAvail: (state, bool) => state.addingAvail = bool,
   setLeftDrawer: (state, bool) => (state.leftDrawer = bool),
   setRightDrawer: (state, bool) => (state.rightDrawer = bool),

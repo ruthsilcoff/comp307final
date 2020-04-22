@@ -7,9 +7,9 @@
   <v-content v-if="loggedIn" style="margin: 20px; height: 100%; padding: 0">
     <v-toolbar color="transparent" light flat dense>
       <v-tabs
-          grow
+        grow
         v-model="tab"
-        background-color="white"
+        background-color="transparent"
         color="secondary"
       >
         <v-tab>Welcome</v-tab>
@@ -75,11 +75,13 @@ export default {
 #innerPage {
   margin-left: 10%;
   margin-right: 10%;
+  padding: 0 !important;
 }
 
 @media only screen and (max-width: 600px) {
   #innerPage {
     margin: 10px;
+    padding: 0 !important;
   }
 }
 

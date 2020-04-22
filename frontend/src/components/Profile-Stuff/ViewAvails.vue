@@ -1,6 +1,6 @@
 <template>
   <v-container max-width="200px">
-    <v-navigation-drawer v-if="this.editingAvail"
+    <v-navigation-drawer style="margin: 0 !important;" v-if="this.editingAvail"
 
     v-model="tempLeftGetSet"
       app

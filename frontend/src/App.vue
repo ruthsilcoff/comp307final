@@ -26,11 +26,12 @@
     >
       <v-card draggable="true" height="300" width="200">
         <v-toolbar v-on:click="toggleCollapse(index)" fixed dense dark color="primary">
-          <v-toolbar-title v-if="item.otherUser.first_name">{{item.otherUser.first_name + " " + item.otherUser.last_name}}</v-toolbar-title>
-          <v-toolbar-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-toolbar-title>
-          <v-spacer></v-spacer>
+            <router-link v-if="item.otherUser" :to="'/profile/' + item.otherUser.username">
+                <v-toolbar-title v-if="item.otherUser.first_name">{{item.otherUser.first_name + " " + item.otherUser.last_name}}</v-toolbar-title>
+                <v-toolbar-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-toolbar-title>
+            </router-link>
+            <v-spacer></v-spacer>
           <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="closeChat(item.id, index)">x</v-icon>
-          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="toggleCollapse(index)">^</v-icon>
         </v-toolbar>
         <BottomChatView v-if="!collapsedChatGetter[index]" :chat="item"/>
       </v-card>
