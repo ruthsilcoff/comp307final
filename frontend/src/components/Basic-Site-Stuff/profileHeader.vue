@@ -6,19 +6,6 @@
     Debate Academy
   </router-link>
 
-  <v-row style="margin-left: 30px; " align="center" justify="center">
-    <v-text-field
-        dense
-        class="d-none d-md-flex"
-        solo-inverted
-        flat
-        hide-details
-        label="Search"
-        prepend-inner-icon="mdi-magnify"
-        style="max-width: 300px !important;"
-    ></v-text-field>
-  </v-row>
-
   <v-spacer/>
 
   <v-menu
@@ -71,32 +58,30 @@
     </v-bottom-navigation>
   </v-menu>
 
-  <v-menu offset-y>
-    <template v-slot:activator="{ on }">
-    <v-chip pill v-on="on">
-      <div v-if="myUser">
-        <v-chip-avatar tile v-if="myUser.profile.avatar" :src="myUser.profile.avatar"></v-chip-avatar>
-        <v-chip-avatar tile v-if="!myUser.profile.avatar" color="avatarColor">{{myUser.username[0]}}
-        </v-chip-avatar>
-        {{myUser.username}}
-      </div>
-    </v-chip>
-    </template>
-    <v-list>
-      <router-link v-if="myUser" :to="'/profile/' + myUser.username">
-        <v-list-item link>
-          <v-icon left large>mdi-account-circle</v-icon>
-          Profile
-        </v-list-item>
-      </router-link>
-      <router-link to="/">
-        <v-list-item v-on:click="logOutFunction()" link>
-          <v-icon left>mdi-logout</v-icon>
-          Log out
-        </v-list-item>
-      </router-link>
-    </v-list>
-  </v-menu>
+  <div v-if="myUser">
+    <v-menu offset-y>
+      <template v-slot:activator="{ on }">
+      <v-chip pill v-on="on">
+          <v-avatar left v-if="myUser.profile.avatar" ><v-img :src="myUser.profile.avatar"></v-img></v-avatar>
+          {{myUser.username}}
+      </v-chip>
+      </template>
+      <v-list>
+        <router-link v-if="myUser" :to="'/profile/' + myUser.username">
+          <v-list-item link>
+            <v-icon left large>mdi-account-circle</v-icon>
+            Profile
+          </v-list-item>
+        </router-link>
+        <router-link to="/">
+          <v-list-item v-on:click="logOutFunction()" link>
+            <v-icon left>mdi-logout</v-icon>
+            Log out
+          </v-list-item>
+        </router-link>
+      </v-list>
+    </v-menu>
+  </div>
 
 </v-app-bar>
 
