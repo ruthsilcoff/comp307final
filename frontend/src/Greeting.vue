@@ -1,16 +1,17 @@
-`<template>
+`
+<template>
 <v-content id="innerPage">
   <v-content v-if="!loggedIn">
-    <welcomePage />
-    <whyItWorks />
+    <welcomePage/>
+    <whyItWorks/>
   </v-content>
   <v-content v-if="loggedIn" style="margin: 20px; height: 100%; padding: 0">
     <v-toolbar color="transparent" light flat dense>
       <v-tabs
-        grow
-        v-model="tab"
-        background-color="transparent"
-        color="secondary"
+          grow
+          v-model="tab"
+          background-color="transparent"
+          color="secondary"
       >
         <v-tab>Welcome</v-tab>
         <v-tab>View All Teachers</v-tab>
@@ -50,23 +51,22 @@ import whyItWorks from "./components/Basic-Site-Stuff/whyItWorks"
 
 
 export default {
-	data: () => ({
+  data: () => ({
     tab: 0,
   }),
 
-	components: {
+  components: {
     welcomePage,
     whyItWorks,
     ViewTeachers,
-      ViewCourses,
+    ViewCourses,
   },
 
-	methods: {
-	},
+  methods: {},
 
   computed: {
-		...mapGetters(['loggedIn']),
-	},
+    ...mapGetters(['loggedIn']),
+  },
 }
 </script>
 

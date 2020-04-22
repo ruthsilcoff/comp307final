@@ -1,16 +1,16 @@
 <template>
 <v-container fluid>
   <v-tabs
-    v-model="tab"
-    background-color="transparent"
-    color="primary"
-    grow
-    show-arrows
+      v-model="tab"
+      background-color="transparent"
+      color="primary"
+      grow
+      show-arrows
   >
-    <v-tab >
+    <v-tab>
       Availabilities
     </v-tab>
-    <v-tab >
+    <v-tab>
       Note Sets
     </v-tab>
     <v-tab v-if="!isViewing">
@@ -30,10 +30,11 @@
       <v-container max-width="200px">
         <router-link v-if="!isViewing" to="/calendar">
           <v-btn color="success" large v-on:click="openAddingAvailDrawer">
-            <v-icon left>mdi-plus</v-icon>AddAvailability
+            <v-icon left>mdi-plus</v-icon>
+            AddAvailability
           </v-btn>
         </router-link>
-        <ViewAvails :userData="userData" />
+        <ViewAvails :userData="userData"/>
       </v-container>
     </v-tab-item>
 
@@ -50,8 +51,10 @@
     </v-tab-item>
 
     <v-tab-item>
-      <v-btn v-if="isViewing && !addingReview && !alreadyReviewed" color="success" large v-on:click="openNewReview">
-        <v-icon left>mdi-plus</v-icon>Add Review
+      <v-btn v-if="isViewing && !addingReview && !alreadyReviewed" color="success" large
+             v-on:click="openNewReview">
+        <v-icon left>mdi-plus</v-icon>
+        Add Review
       </v-btn>
       <NewReview :submit="submit" :cancel="submit" v-if="addingReview" :userData="userData"/>
       <ViewReviews :userData="userData"/>
@@ -62,70 +65,69 @@
 </template>
 
 <script>
-  import axios from "axios"
-  import {mapGetters, mapActions} from 'vuex'
-  import ViewAvails from "./ViewAvails"
-  import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
-  import ViewRequests from "./ViewRequests"
-  import ViewBooked from "./ViewBookedTeacher"
-  import ViewReviews from "./ViewReviews"
-  import NewReview from "./NewReview"
-  import NewNoteSet from "../Data-Iterators/NewNoteSet"
+import axios from "axios"
+import {mapGetters, mapActions} from 'vuex'
+import ViewAvails from "./ViewAvails"
+import ViewNoteSets from "../Data-Iterators/ViewNoteSets"
+import ViewRequests from "./ViewRequests"
+import ViewBooked from "./ViewBookedTeacher"
+import ViewReviews from "./ViewReviews"
+import NewReview from "./NewReview"
+import NewNoteSet from "../Data-Iterators/NewNoteSet"
 
-	export default {
-    data: () => ({
-      addingReview: false,
-      tab: null,
-			items: [
-				'Availabilities',
-        'Note Sets',
-        'Lessons Booked',
-                    'Lesson Requests',
-                    'Reviews',
-			],
-			availabilities: [],
-			noteSets: [],
-    }),
+export default {
+  data: () => ({
+    addingReview: false,
+    tab: null,
+    items: [
+      'Availabilities',
+      'Note Sets',
+      'Lessons Booked',
+      'Lesson Requests',
+      'Reviews',
+    ],
+    availabilities: [],
+    noteSets: [],
+  }),
 
-		props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
+  props: ['userData', 'onRequestLesson', 'AddAvailability', 'requests'],
 
-    components: {
-      NewReview,
-      ViewAvails,
-      ViewNoteSets,
-      ViewBooked,
-      ViewRequests,
-      ViewReviews,
+  components: {
+    NewReview,
+    ViewAvails,
+    ViewNoteSets,
+    ViewBooked,
+    ViewRequests,
+    ViewReviews,
+  },
+
+  mounted() {
+  },
+
+  computed: {
+    ...mapGetters(['reviewOneTeacherOneUser', 'isViewing', 'availabilitiesGetter', 'tutoringSessionsGetter', 'availabilitiesOneTeacher']),
+    alreadyReviewed() {
+      if (this.reviewOneTeacherOneUser(this.userData.id)) {
+        return true
+      } else {
+        return false
+      }
+    },
+  },
+
+  methods: {
+    ...mapActions(['changeAddingAvail']),
+    openAddingAvailDrawer() {
+      this.changeAddingAvail(true)
     },
 
-    mounted() {
+    openNewReview() {
+      this.addingReview = true
     },
-
-    computed: {
-      ...mapGetters(['reviewOneTeacherOneUser', 'isViewing', 'availabilitiesGetter', 'tutoringSessionsGetter', 'availabilitiesOneTeacher']),
-      alreadyReviewed() {
-        if (this.reviewOneTeacherOneUser(this.userData.id)) {
-          return true
-        }
-        else {
-          return false
-        }
-      },
+    submit() {
+      this.addingReview = false
     },
+  },
 
-		methods: {
-      ...mapActions(['changeAddingAvail']),
-      openAddingAvailDrawer(){
-        this.changeAddingAvail(true)
-      },
-
-      openNewReview() {
-        this.addingReview = true
-      },
-      submit() {
-        this.addingReview = false
-      },
-    },
-
-  }
+}
 </script>

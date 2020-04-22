@@ -1,10 +1,13 @@
 <template>
 <div>
-  <div class="message" v-for="(item, index) in theChat.messages" v-bind:key="item.id" :class="item.author.id === myID ? 'own' : 'notOwn'">
-    <div class="username" v-if="index>0 && theChat.messages[index-1].author.id != item.author.id">{{item.author.username}}</div>
+  <div class="message" v-for="(item, index) in theChat.messages" v-bind:key="item.id"
+       :class="item.author.id === myID ? 'own' : 'notOwn'">
+    <div class="username" v-if="index>0 && theChat.messages[index-1].author.id != item.author.id">
+      {{item.author.username}}
+    </div>
     <div class="username" v-if="index == 0">{{item.author.username}}</div>
     <div style="margin-top: 5px"></div>
-    <v-chip >
+    <v-chip>
       <v-avatar large v-if="item.author.profile.avatar" left>
         <v-img :src="item.author.profile.avatar"></v-img>
       </v-avatar>
@@ -28,9 +31,7 @@ export default {
   mounted() {
   },
 
-  data: () => ({
-
-  }),
+  data: () => ({}),
 
   props: ['chat'],
 
@@ -58,14 +59,15 @@ export default {
 
 <style scoped>
 
-.message{
+.message {
   margin-bottom: 3px;
 }
-.message.own{
+
+.message.own {
   text-align: right;
 }
 
-.username{
+.username {
   font-size: 18px;
   font-weight: bold;
 }
@@ -75,7 +77,6 @@ export default {
     max-width: 60%;
   }
 }
-
 
 
 </style>

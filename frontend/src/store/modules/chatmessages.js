@@ -31,7 +31,7 @@ const actions = {
     this.commit('setCollapseChat', {index, bool})
   },
 
-   async getMyChatsAndAllMessages({commit, rootState}) {
+  async getMyChatsAndAllMessages({commit, rootState}) {
     try {
       const response = await axios.get('/api/dm/')
       let messages = response.data
@@ -86,7 +86,7 @@ const actions = {
     }
   },
 
-   async pushNewMessage({commit, rootState}, message) {
+  async pushNewMessage({commit, rootState}, message) {
     message.author = rootState.users.users.find(user => user.id === message.author)
     message.dateSent = new Date(message.dateSent)
     commit('newMessage', message)
@@ -100,8 +100,8 @@ const actions = {
 
   async pushNewChat({commit, dispatch}, chat) {
     try {
-      await dispatch ('getMyChatsAndAllMessages')
-    }catch(error) {
+      await dispatch('getMyChatsAndAllMessages')
+    } catch (error) {
       console.log(error)
     }
   },
@@ -110,7 +110,7 @@ const actions = {
     try {
       await axios.patch(`/api/dm/${id}/`, {seen: true})
       this.commit('updateMessageToSeen', id)
-    }catch(error) {
+    } catch (error) {
       this.console.log(error.response.data)
       throw error
     }
@@ -120,7 +120,7 @@ const actions = {
   setMessageDialog({commit}, bool) {
     try {
       commit('changeMessageDialog', bool)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
     }
   },
@@ -133,19 +133,18 @@ const mutations = {
   },
   setMessagingPerson: (state, person) => state.personInputForMessage = person,
   updateMessageToSeen: (state, id) => {
-    let index= state.messages.indexOf(state.messages.find(msg => msg.id === id))
+    let index = state.messages.indexOf(state.messages.find(msg => msg.id === id))
     state.messages[index].seen = true
   },
   updateMessage: (state, upd) => {
-    let index= state.messages.indexOf(state.messages.find(msg => msg.id === upd.id))
+    let index = state.messages.indexOf(state.messages.find(msg => msg.id === upd.id))
     state.messages[index] = upd
   },
-  setOpenChat:(state, {id, bool}) => {
+  setOpenChat: (state, {id, bool}) => {
     if (bool) {
       state.openChatIDs.push(id)
       state.collapsedChat.push(false)
-    }
-    else {
+    } else {
       let index = state.openChatIDs.indexOf(state.openChatIDs.find(thing => thing === id))
       state.openChatIDs.splice(index, 1)
       state.collapsedChat.splice(index, 1)
@@ -160,12 +159,10 @@ const mutations = {
 }
 
 export default {
-	state,
-	getters,
-	actions,
-	mutations,
+  state,
+  getters,
+  actions,
+  mutations,
 
-	methods: {
-
-	},
+  methods: {},
 }

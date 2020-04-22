@@ -1,7 +1,7 @@
 <template>
 <v-content style="margin: 0; padding: 0">
-    <!-- LEFT DRAWER -->
-    <v-navigation-drawer
+  <!-- LEFT DRAWER -->
+  <v-navigation-drawer
       v-model="leftDrawerGetSet"
       app
       clipped
@@ -10,88 +10,98 @@
       mobile-break-point="500px"
       overlay-color="secondary"
       disable-resize-watcher
-    >
-      <v-toolbar fixed absolute width="100%" floating color="primarydarken1">
-        <v-icon v-on:click="setMessageDialog(true)" style="position: absolute !important; right: 0; top:15px;" large >mdi-pencil-box-outline</v-icon>
-        <v-toolbar-title class="title">Chats({{this.numberUnread}})</v-toolbar-title>
-        <v-row style="margin-left: 20px; margin-right: 40px" align="center" justify="center">
-          <v-text-field
-              dense
-              class="d-none d-md-flex"
-              solo-inverted
-              flat
-              hide-details
-              label="Search"
-              prepend-inner-icon="mdi-magnify"
-              style="width: 100px !important"
-              v-model="searchInput"
-              v-on:keyup="filterChats"
-          ></v-text-field>
-        </v-row>
-      </v-toolbar>
-      <div style="overflow-y: scroll; margin-top: 20px;" >
-        <v-list subheader two-line link>
-          <v-subheader>Your Chats</v-subheader>
-          <v-list-item
+  >
+    <v-toolbar fixed absolute width="100%" floating color="primarydarken1">
+      <v-icon v-on:click="setMessageDialog(true)" style="position: absolute !important; right: 0; top:15px;"
+              large>mdi-pencil-box-outline
+      </v-icon>
+      <v-toolbar-title class="title">Chats({{this.numberUnread}})</v-toolbar-title>
+      <v-row style="margin-left: 20px; margin-right: 40px" align="center" justify="center">
+        <v-text-field
+            dense
+            class="d-none d-md-flex"
+            solo-inverted
+            flat
+            hide-details
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            style="width: 100px !important"
+            v-model="searchInput"
+            v-on:keyup="filterChats"
+        ></v-text-field>
+      </v-row>
+    </v-toolbar>
+    <div style="overflow-y: scroll; margin-top: 20px;">
+      <v-list subheader two-line link>
+        <v-subheader>Your Chats</v-subheader>
+        <v-list-item
             v-for="(item) in chats"
             v-bind:key="item.id"
             v-on:click="openChat(item)"
-          >
-            <v-list-item-avatar color="avatarColor" x-large v-if="!item.otherUser.profile.avatar">
-              {{item.otherUser.username[0]}}
-            </v-list-item-avatar>
-            <v-list-item-avatar x-large v-if="item.otherUser.profile.avatar">
-              <v-img :src="item.otherUser.profile.avatar"></v-img>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title v-if="item.otherUser.first_name">{{item.otherUser.first_name}} {{item.otherUser.last_name}}</v-list-item-title>
-              <v-list-item-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-list-item-title>
-             {{item.mostRecent.content}}
-            </v-list-item-content>
-            <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === myID)">
-              <v-icon
+        >
+          <v-list-item-avatar color="avatarColor" x-large v-if="!item.otherUser.profile.avatar">
+            {{item.otherUser.username[0]}}
+          </v-list-item-avatar>
+          <v-list-item-avatar x-large v-if="item.otherUser.profile.avatar">
+            <v-img :src="item.otherUser.profile.avatar"></v-img>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title v-if="item.otherUser.first_name">{{item.otherUser.first_name}}
+              {{item.otherUser.last_name}}
+            </v-list-item-title>
+            <v-list-item-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}
+            </v-list-item-title>
+            {{item.mostRecent.content}}
+          </v-list-item-content>
+          <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === myID)">
+            <v-icon
                 v-text="item.icon"
                 color="red"
-              >mdi-circle</v-icon>
-            </v-list-item-avatar>
-            <v-list-item-avatar v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === item.otherUser)">
-              <v-icon
+            >mdi-circle
+            </v-icon>
+          </v-list-item-avatar>
+          <v-list-item-avatar
+              v-if="(!item.mostRecent.seen) && (item.mostRecent.sentTo === item.otherUser)">
+            <v-icon
                 v-text="item.icon"
                 color="unreadColor"
-              >mdi-circle-outline</v-icon>
-            </v-list-item-avatar>
-          </v-list-item>
-        </v-list>
-      </div>
-    </v-navigation-drawer>
+            >mdi-circle-outline
+            </v-icon>
+          </v-list-item-avatar>
+        </v-list-item>
+      </v-list>
+    </div>
+  </v-navigation-drawer>
 
 
-    <!-- THE ACTUAL CONTENT OF THE PAGE-->
-    <v-content v-if="viewingChat">
-      <v-list-item>
-        <v-list-item-avatar x-large v-if="viewingChat.otherUser.profile.avatar">
-          <v-img :src="viewingChat.otherUser.profile.avatar"></v-img>
-        </v-list-item-avatar>
-        <v-list-item-title>
-          <h1 style="padding: 50px;" v-if="viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.first_name}} {{this.viewingChat.otherUser.last_name}} </h1>
-        <h1 style="padding: 50px;" v-if="!viewingChat.otherUser.first_name">{{this.viewingChat.otherUser.username}} </h1>
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider></v-divider>
-      <div class="chat-container-messenger" v-on:scroll="onScroll" ref="chatContainerMessenger" >
-        <MessengerViewChat :chat="viewingChat"/>
-      </div>
-      <v-content style="margin: 0; padding: 0;" class="typer">
-        <input type="text" placeholder="Aa" v-on:keyup.enter="sendMessage" v-model="messageInput">
-        <v-file-input
+  <!-- THE ACTUAL CONTENT OF THE PAGE-->
+  <v-content v-if="viewingChat">
+    <v-list-item>
+      <v-list-item-avatar x-large v-if="viewingChat.otherUser.profile.avatar">
+        <v-img :src="viewingChat.otherUser.profile.avatar"></v-img>
+      </v-list-item-avatar>
+      <v-list-item-title>
+        <h1 style="padding: 50px;" v-if="viewingChat.otherUser.first_name">
+          {{this.viewingChat.otherUser.first_name}} {{this.viewingChat.otherUser.last_name}} </h1>
+        <h1 style="padding: 50px;" v-if="!viewingChat.otherUser.first_name">
+          {{this.viewingChat.otherUser.username}} </h1>
+      </v-list-item-title>
+    </v-list-item>
+    <v-divider></v-divider>
+    <div class="chat-container-messenger" v-on:scroll="onScroll" ref="chatContainerMessenger">
+      <MessengerViewChat :chat="viewingChat"/>
+    </div>
+    <v-content style="margin: 0; padding: 0;" class="typer">
+      <input type="text" placeholder="Aa" v-on:keyup.enter="sendMessage" v-model="messageInput">
+      <v-file-input
           dense
           style="margin-right: 40px; max-width: 0 !important;"
           accept="image/png, image/jpeg, image/bmp"
           prepend-icon="mdi-camera"
           v-model="photoInput"
-        ></v-file-input>
-      </v-content>
+      ></v-file-input>
     </v-content>
+  </v-content>
 </v-content>
 </template>
 
@@ -116,7 +126,7 @@ export default {
   },
 
   computed: {
-		...mapGetters(['allMessagesGetter', 'chatGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter']),
+    ...mapGetters(['allMessagesGetter', 'chatGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter']),
     leftDrawerGetSet: {
       get() {
         return this.leftDrawerGetter
@@ -141,9 +151,9 @@ export default {
       return chats
     },
     numberUnread() {
-      let num = 0;
+      let num = 0
       console.log(this.myChats)
-      for (let x= 0; x< this.myChats.length; x++) {
+      for (let x = 0; x < this.myChats.length; x++) {
         for (let i = 0; i < this.myChats[x].messages.length; i++) {
           if (!this.myChats[x].messages[i].seen && (this.myChats[x].messages[i].sentTo === this.myID)) {
             num++
@@ -172,10 +182,9 @@ export default {
     },
 
     filterChats() {
-      if (this.searchInput != ''){
+      if (this.searchInput != '') {
         this.chats = this.myChats.filter(chat => (chat.mostRecent.content.includes(this.searchInput) || chat.otherUser.username.includes(this.searchInput)))
-      }
-      else {
+      } else {
         this.chats = this.myChats
       }
     },
@@ -185,7 +194,7 @@ export default {
         await this.sendNewMessage({to: this.theChat.otherUser.id, content: this.messageInput})
         this.createSnackbar({message: 'Message sent.', color: 'success'})
         this.scrollToBottom()
-      } catch(error){
+      } catch (error) {
         console.log(error.response.data)
         this.createSnackbar({message: 'Problem sending message.', color: 'error'})
       }
@@ -227,16 +236,18 @@ export default {
   overflow-y: auto;
   height: 90vh;
 }
-.typer{
+
+.typer {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   bottom: 100px;
   height: 4.9rem;
   width: 100%;
-  box-shadow: 0 -5px 10px -5px rgba(0,0,0,.2);
+  box-shadow: 0 -5px 10px -5px rgba(0, 0, 0, .2);
 }
-.typer input[type=text]{
+
+.typer input[type=text] {
   position: absolute;
   left: 2.5rem;
   padding: 1rem;
@@ -246,7 +257,8 @@ export default {
   outline: none;
   font-size: 1.25rem;
 }
-.chat-container-messenger{
+
+.chat-container-messenger {
   box-sizing: border-box;
   height: calc(100vh - 20.5rem);
   overflow-y: auto;

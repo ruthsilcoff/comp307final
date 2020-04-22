@@ -7,10 +7,14 @@
       <v-col cols="4">
         <v-card style="width: 300px; position: relative !important;">
           <v-card-title>
-            <v-avatar v-on:mouseenter="showAvatarInput = true" style="position:relative !important" v-if="viewingUser.profile.avatar !== null" size="200px">
+            <v-avatar v-on:mouseenter="showAvatarInput = true" style="position:relative !important"
+                      v-if="viewingUser.profile.avatar !== null" size="200px">
               <v-img :src="viewingUser.profile.avatar"></v-img>
             </v-avatar>
-            <v-avatar v-on:mouseenter="showAvatarInput = true" style="position:relative !important" v-if="viewingUser.profile.avatar == null" size="200px" color="cyan">{{viewingUser.first_name[0]}}</v-avatar>
+            <v-avatar v-on:mouseenter="showAvatarInput = true" style="position:relative !important"
+                      v-if="viewingUser.profile.avatar == null" size="200px" color="cyan">
+              {{viewingUser.first_name[0]}}
+            </v-avatar>
             <v-file-input
                 v-if="showAvatarInput"
                 position="absolute"
@@ -23,30 +27,39 @@
             ></v-file-input>
           </v-card-title>
           <h3 style="margin-left:10px;">{{ viewingUser.username }}</h3>
-          <v-btn v-if="isViewing" color="success" v-on:click="sendMessage()"><v-icon left>mdi-reply</v-icon>Send Message</v-btn>
+          <v-btn v-if="isViewing" color="success" v-on:click="sendMessage()">
+            <v-icon left>mdi-reply</v-icon>
+            Send Message
+          </v-btn>
           <v-card-text>
             <EditProfile v-if="editingProfile" :userData="viewingUser"
                          :cancelEdit="cancelEdit"
-                         :onSuccessfulEdit="onSuccessfulEdit" />
+                         :onSuccessfulEdit="onSuccessfulEdit"/>
 
             <v-divider v-if="editingProfile"></v-divider>
 
-            <h1 style="margin: 10px;" v-if="viewingUser.profile.bio && !editingProfile">{{ viewingUser.profile.bio }} </h1>
+            <h1 style="margin: 10px;" v-if="viewingUser.profile.bio && !editingProfile">{{
+              viewingUser.profile.bio }} </h1>
 
-            <v-divider ></v-divider>
+            <v-divider></v-divider>
 
-            <h3 style="margin: 10px;" class="grey--text" v-if="viewingUser.profile.country && !editingProfile">
+            <h3 style="margin: 10px;" class="grey--text"
+                v-if="viewingUser.profile.country && !editingProfile">
               <v-icon small color="grey">mdi-map-marker</v-icon>
               {{ viewingUser.profile.country }}
             </h3>
 
-            <v-divider ></v-divider>
+            <v-divider></v-divider>
 
-            <h3 style="margin: 10px;" v-if="viewingUser.profile.isTeacher && viewingUser.profile.rate && !editingProfile">Hourly Rate: {{ viewingUser.profile.rate}}</h3>
+            <h3 style="margin: 10px;"
+                v-if="viewingUser.profile.isTeacher && viewingUser.profile.rate && !editingProfile">
+              Hourly Rate: {{ viewingUser.profile.rate}}</h3>
 
             <v-row justify="center">
-              <v-btn style="margin: 0;" v-if="!isViewing && !editingProfile" color="secondary" text medium v-on:click="editProfilePage()">
-                <v-icon >mdi-pencil</v-icon>Edit
+              <v-btn style="margin: 0;" v-if="!isViewing && !editingProfile" color="secondary" text
+                     medium v-on:click="editProfilePage()">
+                <v-icon>mdi-pencil</v-icon>
+                Edit
               </v-btn>
             </v-row>
           </v-card-text>
@@ -54,14 +67,18 @@
 
         <v-card style="width: 300px; margin-top: 20px;">
           <v-card-title>Subjects</v-card-title>
-          <v-chip-group style="margin-left: 10px;" column v-if="(subjectsTaught.length > 0) && (subjectsTaught[0])">
-            <v-chip :close="editingSubjects" @click:close="removeSubject(item)" v-for="item in subjectsTaught" v-bind:key="item.name">
+          <v-chip-group style="margin-left: 10px;" column
+                        v-if="(subjectsTaught.length > 0) && (subjectsTaught[0])">
+            <v-chip :close="editingSubjects" @click:close="removeSubject(item)"
+                    v-for="item in subjectsTaught" v-bind:key="item.name">
               <strong v-if="item">{{item.name}}</strong>
             </v-chip>
           </v-chip-group>
 
-          <v-btn justify="center" style="margin-bottom: 40px;" text v-if="!isViewing && !editingSubjects" v-on:click="openEditingSubjects" color="secondary">
-            <v-icon left>mdi-pencil</v-icon>Edit
+          <v-btn justify="center" style="margin-bottom: 40px;" text v-if="!isViewing && !editingSubjects"
+                 v-on:click="openEditingSubjects" color="secondary">
+            <v-icon left>mdi-pencil</v-icon>
+            Edit
           </v-btn>
 
           <v-divider v-if="editingSubjects"></v-divider>
@@ -73,7 +90,8 @@
       <v-col cols="8">
         <h1 v-if="viewingUser.profile.isTeacher">Teacher</h1>
         <h1 v-if="!viewingUser.profile.isTeacher">Student</h1>
-        <h2 style="font-size: 50px; margin: 10px;" v-if="viewingUser.first_name">{{ viewingUser.first_name }} {{ viewingUser.last_name }}</h2>
+        <h2 style="font-size: 50px; margin: 10px;" v-if="viewingUser.first_name">{{ viewingUser.first_name
+          }} {{ viewingUser.last_name }}</h2>
         <v-content style="margin: 0; padding: 0" v-if="!viewingUser.profile.isTeacher">
           <RegularProfileTabs :userData="viewingUser"/>
         </v-content>
@@ -98,7 +116,7 @@ import axios from "axios"
 export default {
   props: ['username'],
 
-  mounted: function() {
+  mounted: function () {
     this.initialize()
 
   },
@@ -112,7 +130,7 @@ export default {
 
   data: () => ({
     loading: true,
-    showAvatarInput:false,
+    showAvatarInput: false,
     events: [],
     editingProfile: false,
     editingSubjects: false,
@@ -130,23 +148,20 @@ export default {
           if (things.length > 0) {
             console.log(things)
             return things.map(thing => thing.subject)
-          }
-          else {
+          } else {
             return []
           }
-        }
-        else {
+        } else {
           return []
         }
-      }
-      else {
+      } else {
         return []
       }
     },
   },
 
   methods: {
-    ...mapActions(['setPersonToMessage', 'setMessageDialog', 'setViewingUser','createSnackbar', 'removeTeacherSubject', 'updateAvatar', 'addNewSubject', 'addTeacherSubject', 'createSnackbar']),
+    ...mapActions(['setPersonToMessage', 'setMessageDialog', 'setViewingUser', 'createSnackbar', 'removeTeacherSubject', 'updateAvatar', 'addNewSubject', 'addTeacherSubject', 'createSnackbar']),
 
     async sendMessage() {
       await this.setPersonToMessage({user: this.viewingUser})
@@ -157,7 +172,7 @@ export default {
       try {
         await this.removeTeacherSubject({name: item.name})
         this.createSnackbar({message: 'subject removed', color: 'success'})
-      }catch(error) {
+      } catch (error) {
         this.createSnackbar({message: 'problem removing the subject', color: 'error'})
       }
     },
@@ -177,9 +192,9 @@ export default {
     submitAvatar: async function () {
       console.log(this.avatarInput)
       try {
-		await this.updateAvatar({avatar: this.avatarInput})
+        await this.updateAvatar({avatar: this.avatarInput})
         this.avatarInput = null
-			} catch(error){
+      } catch (error) {
         console.log(error.response.data)
       }
     },
@@ -190,7 +205,7 @@ export default {
       this.editAvatar = false
     },
     editProfilePage() {
-      this.editingProfile = !this.editingProfile;
+      this.editingProfile = !this.editingProfile
     },
     onSuccessfulEdit: async function () {
       this.editingProfile = false
@@ -200,7 +215,7 @@ export default {
     },
 
   },
-};
+}
 </script>
 
 <style scoped>

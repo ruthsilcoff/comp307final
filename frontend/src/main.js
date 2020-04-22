@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import store from './store'
-import router from "./routes";
+import router from "./routes"
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 import {initWebSocket} from './websocket'
@@ -11,8 +11,8 @@ initWebSocket()
 
 Vue.config.productionTip = false
 Vue.filter('kb', val => {
-  return Math.floor(val/1024);
-});
+  return Math.floor(val / 1024)
+})
 
 new Vue({
   store,

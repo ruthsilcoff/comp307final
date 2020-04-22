@@ -9,9 +9,9 @@ Vue.use(Vuex)
 
 // create store
 export default new Vuex.Store({
-	modules: {
-		users,
-		status,
-		chatmessages,
-	}
+  modules: {
+    users,
+    status,
+    chatmessages,
+  }
 })

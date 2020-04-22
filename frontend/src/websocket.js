@@ -16,9 +16,9 @@ export function initWebSocket() {
 
     const {type, name, payload} = data
 
-    switch(type) {
+    switch (type) {
       case 'notify':
-        switch(name) {
+        switch (name) {
           case 'DirectMessage':
             store.dispatch('pushNewMessage', payload)
             break

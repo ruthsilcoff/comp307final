@@ -1,5 +1,5 @@
 <template>
-<v-content style="margin-right: 50px" >
+<v-content style="margin-right: 50px">
   <h1>View All Users:</h1>
   <v-data-iterator
       :items="allUsers"
@@ -20,8 +20,12 @@
           lg="2"
       >
         <v-card>
-          <v-card-title v-if="item.profile.isTeacher" class="subheading font-weight-bold">{{ item.first_name }} {{ item.last_name }}</v-card-title>
-          <v-card-title v-if="!item.profile.isTeacher" class="subheading font-weight-bold">{{item.username}}</v-card-title>
+          <v-card-title v-if="item.profile.isTeacher" class="subheading font-weight-bold">{{
+            item.first_name }} {{ item.last_name }}
+          </v-card-title>
+          <v-card-title v-if="!item.profile.isTeacher" class="subheading font-weight-bold">
+            {{item.username}}
+          </v-card-title>
           <v-card-subtitle v-if="item.profile.isTeacher">Teacher</v-card-subtitle>
           <v-card-subtitle v-if="!item.profile.isTeacher">Student</v-card-subtitle>
           <v-divider></v-divider>
@@ -37,7 +41,7 @@
             <h4 v-if="item.profile.isTeacher">(price)</h4>
           </v-card-text>
           <router-link :to="'/profile/' + item.username">
-            <v-btn color="secondary" text >View Profile
+            <v-btn color="secondary" text>View Profile
               <v-icon color="white" small>mdi-eye</v-icon>
             </v-btn>
           </router-link>
@@ -45,9 +49,9 @@
         </v-card>
       </v-col>
     </v-row>
-  </template>
+    </template>
 
-      <template v-slot:footer>
+    <template v-slot:footer>
     <v-row class="mt-2" align="center" justify="center">
       <span class="grey--text">Items per page</span>
       <v-menu offset-y>
@@ -90,53 +94,53 @@
 </template>
 
 <script>
-  import axios from "axios"
-  import { mapGetters, mapActions } from 'vuex'
+import axios from "axios"
+import {mapGetters, mapActions} from 'vuex'
 
-  export default {
-    data: () => ({
-			itemsPerPageArray: [4, 8, 12],
-			search: '',
-			filter: {},
-			sortDesc: false,
-			page: 1,
-			itemsPerPage: 4,
-		}),
+export default {
+  data: () => ({
+    itemsPerPageArray: [4, 8, 12],
+    search: '',
+    filter: {},
+    sortDesc: false,
+    page: 1,
+    itemsPerPage: 4,
+  }),
 
-    props: [],
+  props: [],
 
-		computed: {
-      ...mapGetters(['allUsers']),
-      numberOfPages () {
-        return Math.ceil(this.allUsers.length / this.itemsPerPage)
-      },
-      filteredKeys () {
-        return this.keys.filter(key => key !== `Name`)
-      },
+  computed: {
+    ...mapGetters(['allUsers']),
+    numberOfPages() {
+      return Math.ceil(this.allUsers.length / this.itemsPerPage)
+    },
+    filteredKeys() {
+      return this.keys.filter(key => key !== `Name`)
+    },
+  },
+
+  methods: {
+    ...mapActions(['getAllUsers']),
+    nextPage() {
+      if (this.page + 1 <= this.numberOfPages) this.page += 1
+    },
+    formerPage() {
+      if (this.page - 1 >= 1) this.page -= 1
+    },
+    updateItemsPerPage(number) {
+      this.itemsPerPage = number
+    },
+    routeToProfile: function (username) {
+      let path = '/profile/' + username
+      this.$router.push(path)
     },
 
-		methods: {
-      ...mapActions(['getAllUsers']),
-      nextPage () {
-        if (this.page + 1 <= this.numberOfPages) this.page += 1
-      },
-      formerPage () {
-        if (this.page - 1 >= 1) this.page -= 1
-      },
-      updateItemsPerPage (number) {
-        this.itemsPerPage = number
-      },
-      routeToProfile: function (username) {
-        let path = '/profile/' + username
-        this.$router.push(path)
-      },
 
+  },
 
-    },
+  created() {
+    this.getAllUsers()
+  },
 
-    created() {
-      this.getAllUsers()
-    },
-
-	}
+}
 </script>
