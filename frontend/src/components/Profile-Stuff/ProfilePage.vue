@@ -1,5 +1,5 @@
 <template>
-<v-content v-if="viewingUser">
+<v-content style="margin:0; padding: 0;" v-if="viewingUser">
 
 
   <v-content id="innerPage">

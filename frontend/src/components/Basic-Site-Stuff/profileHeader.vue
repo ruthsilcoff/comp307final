@@ -1,30 +1,9 @@
 +<template>
     <v-app-bar clipped-left clipped-right app dense color="primary">
-      <v-app-bar-nav-icon @click.stop="openLeft()"></v-app-bar-nav-icon>
-      <v-menu offset-y >
-        <template v-slot:activator="{ on }">
-          <v-btn
-            color="white"
-            v-on="on"
-            large
-            text
-          >
-            Debate Academy
-          </v-btn>
-        </template>
-        <v-list>
-          <router-link to="/">
-            <v-list-item link>
-              <v-icon left>mdi-home</v-icon>Homepage
-            </v-list-item>
-          </router-link>
-          <router-link to="/calendar">
-            <v-list-item link>
-              <v-icon left>mdi-timeline-text</v-icon>Calendar
-            </v-list-item>
-          </router-link>
-        </v-list>
-      </v-menu>
+      <v-app-bar-nav-icon v-if="showLeftNavGetter" @click.stop="openLeft()"></v-app-bar-nav-icon>
+      <router-link to="/" style="text-shadow: black;">
+        Debate Academy
+      </router-link>
 
       <v-row style="margin-left: 30px; " align="center" justify="center">
         <v-text-field
@@ -42,7 +21,7 @@
       <v-spacer/>
 
       <v-menu
-        style="height: 500px;"
+        elevation="5"
         offset-y
         :close-on-content-click="false"
         :nudge-width="300"
@@ -59,14 +38,9 @@
           </v-btn>
 
         </template>
-        <v-card max-height="300" style="position: relative !important">
+        <div style="max-height: 600px;">
           <TinyCalendar/>
-          <v-bottom-navigation style="position: absolute; bottom: 0;" grow>
-            <router-link to="/calendar">
-              <v-btn text color="secondary" v-on:click="nothing">View Full Calendar</v-btn>
-            </router-link>
-          </v-bottom-navigation>
-        </v-card>
+        </div>
 
       </v-menu>
 
@@ -91,25 +65,25 @@
         <MiniChat/>
         <v-bottom-navigation grow>
           <router-link to="/messenger" >
-            <v-btn text color="secondary"> View All in Messenger</v-btn>
+            <v-list-item link> View All in Messenger</v-list-item>
           </router-link>
         </v-bottom-navigation>
       </v-menu>
 
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn
-            icon
-            color="white"
-            v-on="on"
-          >
-            <v-icon large>mdi-account-circle</v-icon>
-          </v-btn>
+          <v-chip pill v-on="on">
+            <div v-if="myUser">
+              <v-chip-avatar tile v-if="myUser.profile.avatar" :src="myUser.profile.avatar"></v-chip-avatar>
+              <v-chip-avatar tile v-if="!myUser.profile.avatar" color="avatarColor">{{myUser.username[0]}}</v-chip-avatar>
+              {{myUser.username}}
+            </div>
+          </v-chip>
         </template>
         <v-list>
           <router-link v-if="myUser" :to="'/profile/' + myUser.username">
             <v-list-item link>
-              <v-icon left>mdi-account</v-icon>Profile
+              <v-icon left large>mdi-account-circle</v-icon>Profile
             </v-list-item>
           </router-link>
           <router-link to="/">
@@ -120,7 +94,6 @@
         </v-list>
       </v-menu>
 
-      <v-app-bar-nav-icon @click.stop="openRight()"></v-app-bar-nav-icon>
     </v-app-bar>
 
 </template>
@@ -135,7 +108,7 @@ export default {
   props: ["myLessons", "onHomePage", "debateGames", "profile", "onCalendar", "community",],
 
   computed: {
-    ...mapGetters(['myID', 'allMessagesGetter', 'myUser', 'chatGetter', 'leftDrawerGetter', 'rightDrawerGetter', 'tempLeftGetter', 'tempRightGetter']),
+    ...mapGetters(['showLeftNavGetter', 'myID', 'allMessagesGetter', 'myUser', 'chatGetter', 'leftDrawerGetter', 'rightDrawerGetter', 'tempLeftGetter', 'tempRightGetter']),
     myChats() {
       let myChats = this.chatGetter.filter(chat => chat.owner === this.myID)
       let chats = []

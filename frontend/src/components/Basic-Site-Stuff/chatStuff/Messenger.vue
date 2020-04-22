@@ -155,6 +155,7 @@ export default {
   },
 
   mounted() {
+    this.changeShowLeftNav(true)
     this.changeLeftDrawer(true)
     this.initialize()
     while (!this.myChats) {
@@ -165,7 +166,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setMessageDialog', 'sendNewMessage', 'createSnackbar', 'changeLeftDrawer']),
+    ...mapActions(['changeShowLeftNav', 'setMessageDialog', 'sendNewMessage', 'createSnackbar', 'changeLeftDrawer']),
     openChat(item) {
       this.viewingChat = item
     },
