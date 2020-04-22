@@ -8,9 +8,10 @@
   <v-content v-if="loggedIn" style="margin: 20px; height: 100%; padding: 0">
     <v-toolbar color="transparent" light flat dense>
       <v-tabs
+          light
           grow
           v-model="tab"
-          background-color="transparent"
+          background-color="tabColor"
           color="secondary"
       >
         <v-tab>Welcome</v-tab>
