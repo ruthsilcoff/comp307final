@@ -3,6 +3,8 @@ from django.urls import reverse, resolve
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 
+# check that views are available at the correct URL
+# do so by reversing the url and checking that it resolves
 
 class TestUrls(SimpleTestCase):
 
