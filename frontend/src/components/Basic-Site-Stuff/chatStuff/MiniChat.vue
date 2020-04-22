@@ -85,6 +85,7 @@ export default {
   computed: {
     ...mapGetters(['allMessagesGetter', 'chatGetter', 'myID', 'leftDrawerGetter', 'rightDrawerGetter', 'openChatIDGetter']),
     myChats() {
+      console.log(this.chatGetter)
       let myChats = this.chatGetter.filter(chat => chat.owner === this.myID)
       let chats = []
       for (let x = 0; x < myChats.length; x++) {
@@ -93,8 +94,11 @@ export default {
           msg => ((msg.author.id === chat.owner && msg.sentTo === chat.otherUser.id)
             || (msg.author.id === chat.otherUser.id && msg.sentTo === chat.owner)),
         )
-        chat.messages = filteredMessages
-        chat.mostRecent = chat.messages[(filteredMessages.length) - 1]
+        if (filteredMessages.length > 0) {
+          chat.messages = filteredMessages
+          chat.mostRecent = chat.messages[(filteredMessages.length) - 1]
+        }
+
         chats.push(chat)
       }
       return chats
@@ -118,6 +122,12 @@ export default {
       console.log("repeating loop")
     }
     this.chats = this.myChats
+  },
+
+  watch: {
+    myChats() {
+      this.chats = this.myChats
+    }
   },
 
   methods: {

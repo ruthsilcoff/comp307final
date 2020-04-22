@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="newMessageDialog"
+    v-model="messageDialog"
     max-width="400"
   >
     <v-card style="padding: 10px;">
@@ -82,12 +82,20 @@ export default {
       else {
         return this.allUsers.filter(user => user.profile.isTeacher)
       }
-    }
+    },
+    messageDialog: {
+      get() {
+        return this.newMessageDialog
+      },
+      set(value) {
+        this.setMessageDialog(value)
+      }
+    },
 
   },
 
   methods: {
-    ...mapActions(['setMessageDialog', 'sendNewMessage', 'createSnackbar', 'setPersonToMessage',]),
+    ...mapActions(['getMyChatsAndAllMessages', 'setMessageDialog', 'sendNewMessage', 'createSnackbar', 'setPersonToMessage',]),
     initialize() {
       if (this.personInputForMessageGetter !== null) {
         this.personInput = this.personInputForMessageGetter
@@ -106,6 +114,7 @@ export default {
         await this.sendNewMessage({to: this.personInput.id, content: this.contentInput})
         await this.setPersonToMessage({user: null})
         this.setMessageDialog(false)
+        this.getMyChatsAndAllMessages()
         this.createSnackbar({message: 'Message sent.', color: 'success'})
       } catch(error){
         console.log(error)

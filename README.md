@@ -40,6 +40,12 @@ npm install
 npm run serve
 ```
 
+## Create django database
+```
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+
 ## Run django server
 ```
 python3 manage.py runserver 8707

@@ -14,15 +14,27 @@ export function initWebSocket() {
     const data = JSON.parse(message.data)
     console.log('WebSocket message received: ', data)
 
-    const {type, payload} = data
+    const {type, name, payload} = data
 
     switch(type) {
-      case 'DirectMessage':
-        store.dispatch('pushNewMessage', payload)
+      case 'notify':
+        switch(name) {
+          case 'DirectMessage':
+            store.dispatch('pushNewMessage', payload)
+            break
+          case 'Chat':
+            store.dispatch('pushNewChat', payload)
+            break
+          default:
+            console.error('WS message not handled')
+        }
         break
-      default:
-        console.error('WS message not handled')
+      case 'update':
+        store.dispatch('pushUpdateMessage', payload)
+        break
     }
+
+
   }
 
   ws.onclose = () => {

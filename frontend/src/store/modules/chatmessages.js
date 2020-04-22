@@ -67,28 +67,19 @@ const actions = {
       let message = response.data
       message.author = rootState.users.users.find(user => user.id === message.author)
       message.dateSent = new Date(message.dateSent)
+      await commit('newMessage', message)
       // check if there's a chat for it, otherwise create two of them
-      if (chats.data.length > 0) {
-        let chat1 = chats.data.find(chat => chat.owner === rootState.users.selfID && chat.otherUser === to)
-        let chat2 = chats.data.find(chat => chat.otherUser === rootState.users.selfID && chat.owner === to)
-        if (!chat1) {
-          const newChat1 = await axios.post('/api/chat/', {owner: rootState.users.selfID, otherUser: to})
-          newChat1.otherUser = rootState.users.users.find(user => user.id === newChat1.otherUser)
-          commit('newChat', newChat1.data)
-          const newChat2 = await axios.post('/api/chat/', {owner: to, otherUser: rootState.users.selfID})
-          newChat2.otherUser = rootState.users.users.find(user => user.id === newChat2.otherUser)
-          commit('newChat', newChat2.data)
-        }
+      let chat1 = chats.data.find(chat => chat.owner === rootState.users.selfID && chat.otherUser === to)
+      let chat2 = chats.data.find(chat => chat.otherUser === rootState.users.selfID && chat.owner === to)
+      if (!chat1) {
+        const newChat2 = await axios.post('/api/chat/', {owner: to, otherUser: rootState.users.selfID})
+        newChat2.otherUser = rootState.users.users.find(user => user.id === newChat2.otherUser)
+        commit('newChat', newChat2.data)
+
+        const newChat1 = await axios.post('/api/chat/', {owner: rootState.users.selfID, otherUser: to})
+        newChat1.otherUser = rootState.users.users.find(user => user.id === newChat1.otherUser)
+        commit('newChat', newChat1.data)
       }
-      else {
-        const otherNewChat1 = await axios.post('/api/chat/', {owner: rootState.users.selfID, otherUser: to})
-        otherNewChat1.otherUser = rootState.users.users.find(user => user.id === otherNewChat1.otherUser)
-        commit('newChat', otherNewChat1)
-        const otherNewChat2 = await axios.post('/api/chat/', {owner: to, otherUser: rootState.users.selfID})
-        otherNewChat2.otherUser = rootState.users.users.find(user => user.id === otherNewChat2.otherUser)
-        commit('newChat', otherNewChat2)
-      }
-      commit('newMessage', message)
     } catch (error) {
       console.log(error)
       throw error
@@ -99,6 +90,20 @@ const actions = {
     message.author = rootState.users.users.find(user => user.id === message.author)
     message.dateSent = new Date(message.dateSent)
     commit('newMessage', message)
+  },
+
+  async pushUpdateMessage({commit, rootState}, message) {
+    message.author = rootState.users.users.find(user => user.id === message.author)
+    message.dateSent = new Date(message.dateSent)
+    commit('updateMessage', message)
+  },
+
+  async pushNewChat({commit, dispatch}, chat) {
+    try {
+      await dispatch ('getMyChatsAndAllMessages')
+    }catch(error) {
+      console.log(error)
+    }
   },
 
   async updateMessageSeen({commit}, {id}) {
@@ -130,6 +135,10 @@ const mutations = {
   updateMessageToSeen: (state, id) => {
     let index= state.messages.indexOf(state.messages.find(msg => msg.id === id))
     state.messages[index].seen = true
+  },
+  updateMessage: (state, upd) => {
+    let index= state.messages.indexOf(state.messages.find(msg => msg.id === upd.id))
+    state.messages[index] = upd
   },
   setOpenChat:(state, {id, bool}) => {
     if (bool) {

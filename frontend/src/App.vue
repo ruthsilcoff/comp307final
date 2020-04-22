@@ -3,7 +3,7 @@
     <Header v-if="loggedIn === false"/>
     <profileHeader v-if="loggedIn === true"/>
 
-    <NewMessage v-if="newMessageDialog"/>
+    <NewMessage v-if="messageDialog"/>
 
     <v-row v-if="loading" align="center" justify="center">
       <v-progress-circular color="secondary" :size="100" :width="10" indeterminate/>
@@ -111,7 +111,6 @@ export default {
       'getSnackbarColor',
       'getSnackbarMessage',
       'getSnackbarMode',
-      'newMessageDialog',
     ]),
     openChats() {
       let openChats = []
@@ -129,6 +128,14 @@ export default {
       },
       set() {
         this.removeSnackbar()
+      }
+    },
+    messageDialog: {
+      get() {
+        return this.newMessageDialog
+      },
+      set(value) {
+        this.setMessageDialog(value)
       }
     },
     leftDrawerGetSet: {

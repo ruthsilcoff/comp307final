@@ -6,7 +6,7 @@
     <v-text-field style="width: 100%;" label="Description" v-model="descriptionInput"></v-text-field>
     <div class="noHoverDrop" style="width: 100%; border: 2px dashed black; margin-bottom: 20px;" id="dragDropPhotoBox" v-cloak @drop.prevent="addFile" @dragover.prevent="activateDragOver" @dragleave="deactivateDragOver">
       <h3>{{text}}</h3>
-      <v-file-input counter multiple label="Input files" v-model="filesInput" v-on:change="updateFileList"></v-file-input>
+      <v-file-input counter multiple label="Input files" v-model="files"></v-file-input>
       <ul>
         <li v-for="file in files" v-bind:key="file.name">
           {{ file.name }} ({{ file.size | kb }} kb) <button @click="removeFile(file)" title="Remove">X</button>
@@ -78,7 +78,6 @@ export default {
   data: () => ({
     titleInput:'',
     descriptionInput: '',
-    filesInput: [],
     subjectsInput: [],
     search: null,
     files: [],
@@ -97,13 +96,10 @@ export default {
         }
         else {
             try {
-                for (let i = 0; i < this.files.length; i++) {
-                    this.filesInput.push(this.files[i])
-                }
-                const id = await this.newNoteSet({title: this.titleInput, description: this.descriptionInput, files: this.filesInput})
-                await this.updateSubjects(id)
+                const s = await this.newNoteSet({title: this.titleInput, description: this.descriptionInput, files: this.files})
+                await this.updateSubjects(s.id)
                 this.createSnackbar({message: 'Notes uploaded', color:'success'})
-                this.submit()
+                this.submit(s)
             }catch(error){
                 this.createSnackbar({message: 'Problem uploading notes', color: 'error'})
             }
@@ -146,13 +142,6 @@ export default {
     remove (item) {
       this.subjectsInput.splice(this.subjectsInput.indexOf(item), 1)
       this.subjectsInput = [...this.subjectsInput]
-    },
-    updateFileList() {
-      for (let i = 0; i < this.filesInput.length; i++) {
-        if (!this.files[i]) {
-          this.files.push(this.filesInput[i])
-        }
-      }
     },
   }
 

@@ -118,7 +118,7 @@ const actions = {
       }
       newNoteSet.content = contentFiles
       commit('addNoteSet', newNoteSet)
-      return newNoteSet.id
+      return newNoteSet
     }catch(error){
         console.log(error.response.data);
         throw error
