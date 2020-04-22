@@ -75,13 +75,11 @@ export default {
 #innerPage {
   margin-left: 10%;
   margin-right: 10%;
-  padding: 0 !important;
 }
 
 @media only screen and (max-width: 600px) {
   #innerPage {
     margin: 10px;
-    padding: 0 !important;
   }
 }
 
