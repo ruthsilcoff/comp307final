@@ -34,7 +34,7 @@
     <v-content style="margin-top: 70px; padding: 0;">
 
       <NewNoteSet v-if="addingNoteSet" :submit="submitNoteSet" :cancel="submitNoteSet"/>
-        <div style=" overflow-y: scroll">
+        <div>
             <v-list three-line>
                 <div v-for="(item, idx) in filteredNoteSets" v-bind:key="item.id" >
                     <v-divider  v-if="idx > 0"></v-divider>
@@ -155,7 +155,8 @@ export default {
       openNewNoteSet() {
         this.addingNoteSet = true
       },
-      submitNoteSet() {
+      submitNoteSet(noteSet) {
+         this.filteredNoteSets.unshift(noteSet)
         this.addingNoteSet = false
       },
 
@@ -163,6 +164,8 @@ export default {
         try {
           console.log(item.id)
           await this.deleteNote({id: item.id})
+          let index = this.filteredNoteSets.indexOf(this.filteredNoteSets.find(s => s.id === item.id))
+          this.filteredNoteSets.splice(index, 1)
           this.createSnackbar({message: 'Note Removed', color: 'success'})
         }catch(error) {
            console.log(error)
