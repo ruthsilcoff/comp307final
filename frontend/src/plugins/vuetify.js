@@ -37,6 +37,7 @@ export default new Vuetify({
         starColor: '#ffe100',
         greyChip: '#9d9d9f',
         dropBox: '#dad6d6',
+        tabColor: '#dad6d6',
         calendar: '#fafafa',
         blackToWhite: '#000000',
       },
@@ -57,6 +58,7 @@ export default new Vuetify({
         starColor: '#FFC107',
         greyChip: '#545456',
         dropBox: '#242222',
+        tabColor: '#545456',
         calendar: '#242222',
         blackToWhite: '#faf4ff',
       }
