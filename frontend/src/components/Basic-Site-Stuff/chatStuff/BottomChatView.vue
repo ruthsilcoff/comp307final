@@ -1,12 +1,15 @@
 <template>
 <v-content style="margin: 0; padding: 0;">
 
-  <div class="chat-container" v-on:scroll="onScroll" ref="chatContainer" >
-    <div class="message" v-for="(item, index) in theChat.messages" v-bind:key="item.id" :class="item.author.id === myID ? 'own' : 'notOwn'">
-      <div class="username" v-if="index>0 && theChat.messages[index-1].author.id != item.author.id">{{item.author.username}}</div>
+  <div class="chat-container" v-on:scroll="onScroll" ref="chatContainer">
+    <div class="message" v-for="(item, index) in theChat.messages" v-bind:key="item.id"
+         :class="item.author.id === myID ? 'own' : 'notOwn'">
+      <div class="username" v-if="index>0 && theChat.messages[index-1].author.id != item.author.id">
+        {{item.author.username}}
+      </div>
       <div class="username" v-if="index == 0">{{item.author.username}}</div>
       <div style="margin-top: 5px"></div>
-      <v-chip >
+      <v-chip>
         <v-avatar large v-if="item.author.profile.avatar" left>
           <v-img :src="item.author.profile.avatar"></v-img>
         </v-avatar>
@@ -30,10 +33,9 @@ import axios from 'axios'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
-  components: {
-  },
+  components: {},
 
-  mounted: async function() {
+  mounted: async function () {
     await this.updateMessages()
     this.scrollToBottom()
   },
@@ -75,7 +77,7 @@ export default {
       for (let i = 0; i < filteredMessages.length; i++) {
         try {
           await this.updateMessageSeen({id: filteredMessages[i].id})
-        }catch(error) {
+        } catch (error) {
           this.createSnackbar({message: 'Problem viewing messages.', color: 'error'})
         }
       }
@@ -112,14 +114,15 @@ export default {
 
 <style scoped>
 
-.message{
+.message {
   margin-bottom: 3px;
 }
-.message.own{
+
+.message.own {
   text-align: right;
 }
 
-.username{
+.username {
   font-size: 15px;
   font-weight: bold;
 }
@@ -130,16 +133,17 @@ export default {
   }
 }
 
-.typer{
+.typer {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   bottom: 100px;
   height: 2rem;
   width: 100%;
-  box-shadow: 0 -10px 15px -5px rgba(0,0,0,.2);
+  box-shadow: 0 -10px 15px -5px rgba(0, 0, 0, .2);
 }
-.typer input[type=text]{
+
+.typer input[type=text] {
   position: absolute;
   left: 2.5rem;
   padding: 1rem;
@@ -149,7 +153,8 @@ export default {
   outline: none;
   font-size: 1.25rem;
 }
-.chat-container{
+
+.chat-container {
   box-sizing: border-box;
   height: 205px;
   overflow-y: auto;

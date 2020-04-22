@@ -1,55 +1,59 @@
 <template>
-  <v-dialog
+<v-dialog
     v-model="messageDialog"
     max-width="400"
-  >
-    <v-card style="padding: 10px;">
-      <v-card-title class="headline">New message</v-card-title>
+>
+  <v-card style="padding: 10px;">
+    <v-card-title class="headline">New message</v-card-title>
 
-      <v-combobox
+    <v-combobox
         v-model="personInput"
         :items="myCommunications"
         required
         label="To:"
-      >
-        <template v-slot:item="{ item }">
-          <v-avatar v-if="item.profile.avatar" dark size="30"><v-img :src="item.profile.avatar"></v-img></v-avatar>
-          <v-avatar v-if="!item.profile.avatar" dark size="30" color="avatarColor">{{item.username[0]}}</v-avatar>
-          <span v-if="item.first_name">{{item.first_name}} {{item.last_name}}</span>
-          <span v-if="!item.first_name">{{item.username}}</span>
-        </template>
+    >
+      <template v-slot:item="{ item }">
+      <v-avatar v-if="item.profile.avatar" dark size="30">
+        <v-img :src="item.profile.avatar"></v-img>
+      </v-avatar>
+      <v-avatar v-if="!item.profile.avatar" dark size="30" color="avatarColor">{{item.username[0]}}
+      </v-avatar>
+      <span v-if="item.first_name">{{item.first_name}} {{item.last_name}}</span>
+      <span v-if="!item.first_name">{{item.username}}</span>
+      </template>
 
-        <template v-slot:selection="{ item }">
-          <span v-if="item.first_name">{{item.first_name}} {{item.last_name}}</span>
-          <span v-if="!item.first_name">{{item.username}}</span>
-        </template>
+      <template v-slot:selection="{ item }">
+      <span v-if="item.first_name">{{item.first_name}} {{item.last_name}}</span>
+      <span v-if="!item.first_name">{{item.username}}</span>
+      </template>
 
-      </v-combobox>
+    </v-combobox>
 
-      <v-textarea label="Content" v-model="contentInput"></v-textarea>
+    <v-textarea label="Content" v-model="contentInput"></v-textarea>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
+    <v-card-actions>
+      <v-spacer></v-spacer>
 
-        <v-btn
+      <v-btn
           color="error"
           text
           @click="cancelSend()"
-        >
-          Cancel
-        </v-btn>
+      >
+        Cancel
+      </v-btn>
 
-        <v-btn
+      <v-btn
           color="success"
           text
           @click="sendMessage()"
-        >
-          Send <v-icon>mdi-send</v-icon>
-        </v-btn>
-      </v-card-actions>
+      >
+        Send
+        <v-icon>mdi-send</v-icon>
+      </v-btn>
+    </v-card-actions>
 
-    </v-card>
-  </v-dialog>
+  </v-card>
+</v-dialog>
 </template>
 
 <script>
@@ -78,8 +82,7 @@ export default {
     myCommunications() {
       if (this.myUser.profile.isTeacher) {
         return this.allUsers.filter(user => !user.profile.isTeacher)
-      }
-      else {
+      } else {
         return this.allUsers.filter(user => user.profile.isTeacher)
       }
     },
@@ -99,8 +102,7 @@ export default {
     initialize() {
       if (this.personInputForMessageGetter !== null) {
         this.personInput = this.personInputForMessageGetter
-      }
-      else {
+      } else {
         this.personInput = null
       }
     },
@@ -116,7 +118,7 @@ export default {
         this.setMessageDialog(false)
         this.getMyChatsAndAllMessages()
         this.createSnackbar({message: 'Message sent.', color: 'success'})
-      } catch(error){
+      } catch (error) {
         console.log(error)
         this.createSnackbar({message: 'Problem sending message.', color: 'error'})
       }

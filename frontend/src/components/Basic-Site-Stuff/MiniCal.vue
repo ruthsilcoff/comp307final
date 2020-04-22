@@ -9,7 +9,7 @@ import {mapGetters, mapActions} from "vuex"
 import TinyCalendar from '../Calendars/TinyCalendar'
 
 export default {
-	data: () => ({
+  data: () => ({
     searchInput: '',
   }),
 
@@ -18,7 +18,7 @@ export default {
   },
 
   computed: {
-		...mapGetters(['myID', 'av']),
+    ...mapGetters(['myID', 'av']),
   },
 
   mounted() {

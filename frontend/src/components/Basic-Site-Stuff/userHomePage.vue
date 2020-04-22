@@ -1,19 +1,19 @@
 <template>
-  <v-app>
-		<v-container>
-			<file/>
-		</v-container>
-		<v-container>
-			<SearchBySubject/>
-		</v-container>
-		<v-container align="center">
-			<v-card >
-				<v-card-text>
-					<NewNoteSet/>
-				</v-card-text>
-			</v-card>
-		</v-container>
-	</v-app>
+<v-app>
+  <v-container>
+    <file/>
+  </v-container>
+  <v-container>
+    <SearchBySubject/>
+  </v-container>
+  <v-container align="center">
+    <v-card>
+      <v-card-text>
+        <NewNoteSet/>
+      </v-card-text>
+    </v-card>
+  </v-container>
+</v-app>
 </template>
 
 <script>
@@ -26,18 +26,15 @@ export default {
   name: 'App',
 
   components: {
-		NewNoteSet,
-		SearchBySubject,
-		file,
+    NewNoteSet,
+    SearchBySubject,
+    file,
   },
 
-  data: () => ({
-  }),
+  data: () => ({}),
 
-  methods: {
+  methods: {}
 
-  }
-
-};
+}
 
 </script>

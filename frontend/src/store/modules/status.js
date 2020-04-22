@@ -1,5 +1,5 @@
 import axios from "axios"
-import {sendToWS} from "../../websocket";
+import {sendToWS} from "../../websocket"
 
 const state = {
   loggedIn: false,
@@ -80,7 +80,7 @@ const actions = {
       const response = await axios.post('/api-token-auth/', {username, password})
       localStorage.setItem('token', response.data.token)
       dispatch('subscribeToWS')
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -128,7 +128,9 @@ const mutations = {
   setTempLeft: (state, bool) => (state.tempLeft = bool),
   setTempRight: (state, bool) => (state.tempRight = bool),
   setTab: (state, tab) => state.tab = tab,
-  setLoggedIn: (state, loggedIn) => { state.loggedIn = loggedIn },
+  setLoggedIn: (state, loggedIn) => {
+    state.loggedIn = loggedIn
+  },
   setLogInSnackBar: (state, bool) => (state.loggedInSnackBar = bool),
   setSnackBar: (state, bool) => state.snackbar = bool,
   setSnackBarMessage: (state, message) => state.snackbarMessage = message,

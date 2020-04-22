@@ -1,14 +1,14 @@
 <template>
 <v-content>
   <v-tabs
-    v-model="tab"
-    background-color="transparent"
-    color="primary"
-    grow
+      v-model="tab"
+      background-color="transparent"
+      color="primary"
+      grow
   >
     <v-tab
-      v-for="item in items"
-      :key="item"
+        v-for="item in items"
+        :key="item"
     >
       {{ item }}
     </v-tab>
@@ -34,37 +34,35 @@
 </template>
 
 <script>
-  import axios from "axios"
-  import ViewUpcomingLessons from "./ViewUpcomingLessons"
-  import ViewTeachers from "../Data-Iterators/ViewTeachers"
-  import ViewInvoices from "../Data-Iterators/ViewInvoices"
-  import ViewRequestsStudent from "../Data-Iterators/ViewRequestsStudent";
+import axios from "axios"
+import ViewUpcomingLessons from "./ViewUpcomingLessons"
+import ViewTeachers from "../Data-Iterators/ViewTeachers"
+import ViewInvoices from "../Data-Iterators/ViewInvoices"
+import ViewRequestsStudent from "../Data-Iterators/ViewRequestsStudent"
 
-	export default {
-    data: () => ({
-      tab: 0,
-			items: [
-				'Upcoming Sessions',
-                    'Sessions Requested',
-        'Teachers',
-                    'Invoices'
-			],
-    }),
+export default {
+  data: () => ({
+    tab: 0,
+    items: [
+      'Upcoming Sessions',
+      'Sessions Requested',
+      'Teachers',
+      'Invoices'
+    ],
+  }),
 
-		props: ['userData'],
+  props: ['userData'],
 
-    components: {
-			ViewUpcomingLessons,
-      ViewRequestsStudent,
-			ViewTeachers,
-            ViewInvoices,
-    },
+  components: {
+    ViewUpcomingLessons,
+    ViewRequestsStudent,
+    ViewTeachers,
+    ViewInvoices,
+  },
 
-    mounted() {
-    },
+  mounted() {
+  },
 
-		methods: {
-
-		},
-  }
+  methods: {},
+}
 </script>

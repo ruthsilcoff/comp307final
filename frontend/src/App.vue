@@ -1,18 +1,18 @@
 <template>
-  <v-app>
-    <Header v-if="loggedIn === false"/>
-    <profileHeader v-if="loggedIn === true"/>
+<v-app>
+  <Header v-if="loggedIn === false"/>
+  <profileHeader v-if="loggedIn === true"/>
 
-    <NewMessage v-if="messageDialog"/>
+  <NewMessage v-if="messageDialog"/>
 
-    <v-row v-if="loading" align="center" justify="center">
-      <v-progress-circular color="secondary" :size="100" :width="10" indeterminate/>
-      <v-icon x-large color="red" style="margin-top: 0; margin-left: -69px;">fa-heart</v-icon>
-    </v-row>
+  <v-row v-if="loading" align="center" justify="center">
+    <v-progress-circular color="secondary" :size="100" :width="10" indeterminate/>
+    <v-icon x-large color="red" style="margin-top: 0; margin-left: -69px;">fa-heart</v-icon>
+  </v-row>
 
-   <router-view v-if="!loading" :key="$route.fullPath"></router-view>
+  <router-view v-if="!loading" :key="$route.fullPath"></router-view>
 
-   <v-menu
+  <v-menu
       draggable="true"
       :value="true"
       v-for="(item, index) in openChats"
@@ -23,58 +23,62 @@
       elevation="5"
       :close-on-content-click="false"
       :close-on-click="false"
-    >
-      <v-card draggable="true" height="300" width="200">
-        <v-toolbar v-on:click="toggleCollapse(index)" fixed dense dark color="primary">
-            <router-link v-if="item.otherUser" :to="'/profile/' + item.otherUser.username">
-                <v-toolbar-title v-if="item.otherUser.first_name">{{item.otherUser.first_name + " " + item.otherUser.last_name}}</v-toolbar-title>
-                <v-toolbar-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-toolbar-title>
-            </router-link>
-            <v-spacer></v-spacer>
-          <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="closeChat(item.id, index)">x</v-icon>
-        </v-toolbar>
-        <BottomChatView v-if="!collapsedChatGetter[index]" :chat="item"/>
-      </v-card>
+  >
+    <v-card draggable="true" height="300" width="200">
+      <v-toolbar v-on:click="toggleCollapse(index)" fixed dense dark color="primary">
+        <router-link v-if="item.otherUser" :to="'/profile/' + item.otherUser.username">
+          <v-toolbar-title v-if="item.otherUser.first_name">{{item.otherUser.first_name + " " +
+            item.otherUser.last_name}}
+          </v-toolbar-title>
+          <v-toolbar-title v-if="!item.otherUser.first_name">{{item.otherUser.username}}</v-toolbar-title>
+        </router-link>
+        <v-spacer></v-spacer>
+        <v-icon color="white" style="padding: 0; margin: 0;" v-on:click="closeChat(item.id, index)">x
+        </v-icon>
+      </v-toolbar>
+      <BottomChatView v-if="!collapsedChatGetter[index]" :chat="item"/>
+    </v-card>
 
-    </v-menu>
+  </v-menu>
 
-    <v-snackbar
+  <v-snackbar
       v-model="snackbar"
       bottom
       :color="getSnackbarColor"
       :multi-line="getSnackbarMode === 'multi-line'"
       :timeout="timeout"
       :vertical="getSnackbarMode === 'vertical'"
-    >
-      {{getSnackbarMessage}}
-      <v-btn
+  >
+    {{getSnackbarMessage}}
+    <v-btn
         dark
         text
         @click="removeSnackbar()"
-      >
-        Close
-      </v-btn>
-    </v-snackbar>
+    >
+      Close
+    </v-btn>
+  </v-snackbar>
 
-    <!-- Book a lesson with a teacher -->
-    <v-content v-if="page === 'RequestLesson'">
-      <BookLesson :lessonIDinput="requestLessonID"/>
-    </v-content>
+  <!-- Book a lesson with a teacher -->
+  <v-content v-if="page === 'RequestLesson'">
+    <BookLesson :lessonIDinput="requestLessonID"/>
+  </v-content>
 
-    <v-content v-if="page === 'CalendarPage'" justify="center">
-      <LargeCalendar/>
-    </v-content>
+  <v-content v-if="page === 'CalendarPage'" justify="center">
+    <LargeCalendar/>
+  </v-content>
 
-    <v-footer app dense style="margin:0; padding:0">
-      <v-bottom-navigation color="secondary">
-        <v-card-text>
-          <v-icon >mdi-account-cowboy-hat</v-icon>
-        </v-card-text>
-        <v-spacer></v-spacer>
-        <v-switch style="margin: 0" v-model="$vuetify.theme.dark" v-on:change="changeTheme()" color="secondary" inset label="Dark theme"/>
-      </v-bottom-navigation>
-    </v-footer>
-  </v-app>
+  <v-footer app dense style="margin:0; padding:0">
+    <v-bottom-navigation color="secondary">
+      <v-card-text>
+        <v-icon>mdi-account-cowboy-hat</v-icon>
+      </v-card-text>
+      <v-spacer></v-spacer>
+      <v-switch style="margin: 0" v-model="$vuetify.theme.dark" v-on:change="changeTheme()" color="secondary"
+                inset label="Dark theme"/>
+    </v-bottom-navigation>
+  </v-footer>
+</v-app>
 </template>
 
 <script>
@@ -151,9 +155,9 @@ export default {
   mounted() {
     this.getTheme()
     this.setClientHeight()
-    document.addEventListener("resize", function(event) {
-        console.log(event)
-        this.setClientHeight()
+    document.addEventListener("resize", function (event) {
+      console.log(event)
+      this.setClientHeight()
     })
   },
 
@@ -200,9 +204,9 @@ export default {
       'notLoggedIn',
     ]),
 
-      setClientHeight() {
-        this.clientHeight = document.body.clientHeight
-      },
+    setClientHeight() {
+      this.clientHeight = document.body.clientHeight
+    },
 
     toggleCollapse(index) {
       let current = this.collapsedChatGetter[index]
@@ -218,20 +222,17 @@ export default {
       let result = localStorage.getItem('theme')
       if (result === "true") {
         this.$vuetify.theme.dark = true
-      }
-      else if (result === "false") {
+      } else if (result === "false") {
         this.$vuetify.theme.dark = false
-      }
-      else {
+      } else {
         this.$vuetify.theme.dark = false
       }
     },
 
-    changeTheme: function() {
+    changeTheme: function () {
       if (this.$vuetify.theme.dark) {
         localStorage.setItem('theme', "true")
-      }
-      else if (!this.$vuetify.theme.dark) {
+      } else if (!this.$vuetify.theme.dark) {
         localStorage.setItem('theme', "false")
       }
     },
@@ -266,7 +267,7 @@ export default {
       this.page = 'CalendarPage'
     },
 
-    onRequestLesson: function(item) {
+    onRequestLesson: function (item) {
       this.requestLessonID = item.id
       this.page = 'RequestLesson'
     },
@@ -303,7 +304,7 @@ a {
 }
 
 .v-btn {
-  text-transform:none !important;
+  text-transform: none !important;
   margin: 20px;
 }
 
@@ -312,7 +313,7 @@ a {
 }
 
 .primary-darken1 {
-    background-color: var(--v-primary-darken1);
+  background-color: var(--v-primary-darken1);
 }
 
 .hoverDrop {

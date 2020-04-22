@@ -64,7 +64,7 @@ const actions = {
       }
 
       commit('setReviews', revs)
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -77,7 +77,7 @@ const actions = {
       rev.author = state.users.find(user => user.id === rev.reviewerID)
       commit('addReview', rev)
 
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -95,7 +95,7 @@ const actions = {
         noteSets[i].content = noteSetContentFiles.filter(file => file.noteSetID === noteSets[i].id)
       }
       commit('setAllNoteSets', noteSets)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -112,20 +112,20 @@ const actions = {
         fileData.append('content', files[i])
         fileData.append('noteSetID', newNoteSet.id)
         const response2 = await axios.post('/api/noteSetContent/', fileData, {
-        headers: {'Content-Type': 'multipart/form-data'}
+          headers: {'Content-Type': 'multipart/form-data'}
         })
         contentFiles.push(response2.data)
       }
       newNoteSet.content = contentFiles
       commit('addNoteSet', newNoteSet)
       return newNoteSet
-    }catch(error){
-        console.log(error.response.data);
-        throw error
+    } catch (error) {
+      console.log(error.response.data)
+      throw error
     }
   },
 
-  async addNoteSetContent({commit}, {id, files}){
+  async addNoteSetContent({commit}, {id, files}) {
     try {
       let editedNoteSet = state.noteSets.find(set => set.id === id)
       let contentFiles = editedNoteSet.content
@@ -135,34 +135,34 @@ const actions = {
         fileData.append('content', files[i])
         fileData.append('noteSetID', editedNoteSet.id)
         const response2 = await axios.post('/api/noteSetContent/', fileData, {
-        headers: {'Content-Type': 'multipart/form-data'}
+          headers: {'Content-Type': 'multipart/form-data'}
         })
         contentFiles.push(response2.data)
       }
       editedNoteSet.content = contentFiles
       commit('editNoteSet', editedNoteSet)
-    }catch(error){
-      console.log(error.response.data);
+    } catch (error) {
+      console.log(error.response.data)
       throw error
     }
   },
-    
+
   async deleteNote({commit}, {id}) {
     try {
       const response = await axios.delete(`/api/noteSet/${id}/`)
       console.log(response)
       commit('removeNote', response.data)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
   },
-    
+
   async getAllSubjects({commit}) {
     try {
       const response = await axios.get('/api/subject/')
       commit('setAllSubjects', response.data)
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -172,7 +172,7 @@ const actions = {
     try {
       const response = await axios.post('/api/subject/', {name})
       commit('newSubject', response.data)
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -185,7 +185,7 @@ const actions = {
       teacherSubject.subject = state.subjects.find(subject => subject.name === teacherSubject.subject)
       teacherSubject.teacher = state.users.find(user => user.id === teacherSubject.teacherID)
       commit('newTeacherSubject', teacherSubject)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -196,7 +196,7 @@ const actions = {
       const toDelete = state.teacherSubjects.find(thing => (thing.subject.name === name) && (thing.teacherID === state.selfID))
       const response = await axios.delete(`/api/teachesSubjects/${toDelete.id}/`)
       commit('removeTeachesSubject', response.data)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -213,7 +213,7 @@ const actions = {
         }
       }
       commit('setAllTeachesSubjects', things)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -226,7 +226,7 @@ const actions = {
       thing.subject = state.subjects.find(subject => subject.name === thing.subject)
       thing.noteSet = state.noteSets.find(set => set.id === thing.noteSetID)
       commit('newNoteSetSubject', thing)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -237,7 +237,7 @@ const actions = {
       const toDelete = state.noteSetSubjects.find(thing => (thing.subject.name === name) && (thing.noteSetID === id))
       const response = await axios.delete(`/api/noteSetSubjects/${toDelete.id}/`)
       commit('removeNoteSetSubject', response.data)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -254,7 +254,7 @@ const actions = {
         }
       }
       commit('setAllNoteSetSubjects', things)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -267,7 +267,7 @@ const actions = {
       lessonSubject.subject = state.subjects.find(subject => subject.name === lessonSubject.subject.name)
       lessonSubject.lesson = state.availabilities.find(user => user.id === lessonSubject.availID)
       commit('newLessonSubject', lessonSubject)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -284,7 +284,7 @@ const actions = {
         }
       }
       commit('setAllLessonSubjects', things)
-    }catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
@@ -292,10 +292,13 @@ const actions = {
 
   async bookLesson({commit}, {availabilityID, tutorID}) {
     try {
-      const response = await axios.post('/api/tutoringSession/', {availabilityID: availabilityID, tutorID: tutorID})
+      const response = await axios.post('/api/tutoringSession/', {
+        availabilityID: availabilityID,
+        tutorID: tutorID
+      })
       commit('addTutoringSession', response.data)
       commit('setPending', availabilityID)
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -308,10 +311,10 @@ const actions = {
       let students = avail.studentsTaking
       students = students + 1
       let full = (students >= avail.classSize)
-      const response2 = await axios.patch(`/api/availability/${id}/`, {studentsTaking:students, isFull: full})
+      const response2 = await axios.patch(`/api/availability/${id}/`, {studentsTaking: students, isFull: full})
       avail = response2.data
       commit('setAvails', avail)
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -327,7 +330,7 @@ const actions = {
       const response2 = await axios.patch(`/api/availability/${id}/`, {classSize: classCap, isFull: true})
       avail = response2.data
       commit('setAvails', avail)
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -343,7 +346,7 @@ const actions = {
         const response = await axios.patch(`/api/tutoringSession/${tutoringSessionID}/`, {isConfirmed: true})
         commit('confirmLessonTrue', response.data)
       }
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -351,15 +354,20 @@ const actions = {
 
   async newAvail({commit}, {titleInput, inputStart, inputEnd, classSize}) {
     try {
-        const response = await axios.post('/api/availability/', {title:titleInput, start:inputStart, end:inputEnd, classSize})
+      const response = await axios.post('/api/availability/', {
+        title: titleInput,
+        start: inputStart,
+        end: inputEnd,
+        classSize
+      })
 
-        let newEvent = response.data
+      let newEvent = response.data
 
-        commit('addNewAvail', newEvent)
-      }catch(error) {
-        console.error(error.response.data);
-        throw error
-      }
+      commit('addNewAvail', newEvent)
+    } catch (error) {
+      console.error(error.response.data)
+      throw error
+    }
   },
 
   async getAllAvailabilities({commit}) {
@@ -369,7 +377,7 @@ const actions = {
 
       let currentUser = await state.users.find(user => user.id === state.selfID)
       if ((avails.length > 0) && (!currentUser.profile.isTeacher)) {
-        for (let i= 0; i < avails.length; i++) {
+        for (let i = 0; i < avails.length; i++) {
           avails[i].teacher = await state.users.find(user => user.id === avails[i].userID)
           let session = state.tutoringSessions.find(session =>
             (session.availabilityID === avails[i].id) &&
@@ -378,18 +386,16 @@ const actions = {
           if (session) {
             if (!session.isConfirmed) {
               avails[i].booked = 'pending'
-            }
-            else {
+            } else {
               avails[i].booked = 'confirmed'
             }
-          }
-          else {
-          avails[i].booked = 'none'
+          } else {
+            avails[i].booked = 'none'
           }
         }
       }
       commit('setAvails', avails)
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
@@ -404,35 +410,34 @@ const actions = {
       let avails = response2.data
 
       if (currentUser.profile.isTeacher) {
-          let requests = response.data.filter(session => session.tutorID === state.selfID)
-          if (requests) {
-            for (let i = 0; i < requests.length; i++) {
-              requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
-              requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
-              requests[i].tutor = state.users.find(tutor => tutor.id === requests[i].tutorID)
-            }
-            commit('setRequests', requests)
-            commit('setTutoringSessions', requests)
+        let requests = response.data.filter(session => session.tutorID === state.selfID)
+        if (requests) {
+          for (let i = 0; i < requests.length; i++) {
+            requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
+            requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
+            requests[i].tutor = state.users.find(tutor => tutor.id === requests[i].tutorID)
           }
-      }
-      else {
-          let requests = response.data.filter(session => session.learnerID === state.selfID)
-          if (requests) {
-            for (let i = 0; i < requests.length; i++) {
-              requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
-              requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
-              requests[i].tutor = state.users.find(tutor => tutor.id === requests[i].tutorID)
-            }
-            commit('setTutoringSessions', requests)
+          commit('setRequests', requests)
+          commit('setTutoringSessions', requests)
+        }
+      } else {
+        let requests = response.data.filter(session => session.learnerID === state.selfID)
+        if (requests) {
+          for (let i = 0; i < requests.length; i++) {
+            requests[i].student = state.users.find(student => student.id === requests[i].learnerID)
+            requests[i].avail = avails.find(avail => avail.id === requests[i].availabilityID)
+            requests[i].tutor = state.users.find(tutor => tutor.id === requests[i].tutorID)
           }
+          commit('setTutoringSessions', requests)
+        }
       }
-    }catch(error) {
+    } catch (error) {
       console.log(error)
       throw error
     }
   },
 
-	async getAllUsers({commit}) {
+  async getAllUsers({commit}) {
     const userResponse = await axios.get('/api/user/')
     let users = userResponse.data
     const profileResponse = await axios.get('/api/profile/')
@@ -455,7 +460,7 @@ const actions = {
     commit('setSelfUser', id)
   },
 
-	async addUser({commit, dispatch}, {first_name, last_name, username, password, email, isTeacher}) {
+  async addUser({commit, dispatch}, {first_name, last_name, username, password, email, isTeacher}) {
     try {
       const response = await axios.post('/api/user/', {first_name, last_name, username, password, email})
       console.log('created account!')
@@ -464,15 +469,19 @@ const actions = {
       await axios.post('/api/profile/', {user: response.data.id, isTeacher: isTeacher})
       console.log("created profile!")
       //await dispatch('login({username: this.usernameInput, password: this.passwordInput})')
-    } catch(error) {
+    } catch (error) {
       console.log(error.response.data)
       throw error
     }
   },
 
-	async updateProfile({commit}, {bio, country, rate}) {
+  async updateProfile({commit}, {bio, country, rate}) {
     try {
-      const response = await axios.patch('/api/profile/' + state.selfID + "/", {bio: bio, country: country, rate: rate})
+      const response = await axios.patch('/api/profile/' + state.selfID + "/", {
+        bio: bio,
+        country: country,
+        rate: rate
+      })
       commit('updateUserProfile', response.data)
     } catch (error) {
       console.log(error.response.data)
@@ -482,7 +491,12 @@ const actions = {
 
   async updateAvail({commit}, {id, title, classSize, start, end}) {
     try {
-      const response = await axios.patch(`/api/availability/${id}/`, {title: title, classSize: classSize, start: start, end: end})
+      const response = await axios.patch(`/api/availability/${id}/`, {
+        title: title,
+        classSize: classSize,
+        start: start,
+        end: end
+      })
       commit('setAvails', response.data)
     } catch (error) {
       console.log(error.response.data)
@@ -490,7 +504,7 @@ const actions = {
     }
   },
 
-	async updateAvatar({commit}, {avatar}) {
+  async updateAvatar({commit}, {avatar}) {
     try {
       const data = new FormData()
       data.append('avatar', avatar)
@@ -569,22 +583,26 @@ const mutations = {
   setAvails: (state, avails) => state.availabilities = avails,
   setRequests: (state, requests) => state.requests = requests,
 
-  setUsers: (state, users) => { state.users = users },
-  setViewingUser: (state, userID) => { state.viewingID = userID },
-	setSelfUser: (state, userID) => { state.selfID = userID },
-	updateUserProfile: (state, newProfile) => {
+  setUsers: (state, users) => {
+    state.users = users
+  },
+  setViewingUser: (state, userID) => {
+    state.viewingID = userID
+  },
+  setSelfUser: (state, userID) => {
+    state.selfID = userID
+  },
+  updateUserProfile: (state, newProfile) => {
     let user = state.users.find(user => user.id === newProfile.user)
     user.profile = newProfile
   },
 }
 
 export default {
-	state,
-	getters,
-	actions,
-	mutations,
+  state,
+  getters,
+  actions,
+  mutations,
 
-	methods: {
-
-	},
+  methods: {},
 }
