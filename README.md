@@ -9,15 +9,17 @@ Debate Academy is a website where individual users can sign up as a student or a
 
 # Build Setup
 
-## Get Requirements
+## Get the Backend Requirements
 * First make sure you have python 3.7, django, and redis
 * Create a venv
+* Set the venv as the project interpreter
+### Install the requirements in the venv:
 ```
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Get node modules
+## Get Node Modules
 ```
 cd frontend
 npm install
@@ -25,18 +27,21 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
+# In the frontend folder
 npm run serve
-```
-
-## Create django database
-```
-python3 manage.py makemigrations
-python3 manage.py migrate
 ```
 
 ## Run django server
 ```
+# In the root folder
 python3 manage.py runserver 8707
+```
+
+## Optional: Reset the django database
+* Delete the db.sqlite3 file from the root folder
+* Create a new one:
+```
+python3 manage.py migrate
 ```
 
 ## Minimum Project Requirements:
@@ -50,8 +55,9 @@ Use WebSocket to allow buyers to chat with sellers in real time. It’s up to yo
 
 ## Self Study
 * Vue: This gave us a reactive framework. We were able to instantly update data on a page and within the database at once. 
-* Vuex: This was helped in having data and various attributes accessible on various pages throughout the site.
-* Vuetify: This was the main CSS framework on our site. We used a color scheme throughout which includes a rainbow mode users can use, and a dark theme for all features. We also used vuetify icons throughout the site for calendar, messenger, etc.
+* Vuex: This was helped in having data and various attributes accessible on various pages throughout the site, as well as re-usable functions, used by websocket functions as well to update and store information
+* Vuetify: This was the main CSS framework on our site. We used a color scheme throughout which can be easily adjusted, and a dark theme available on all pages that is remembered in local storage. We also used vuetify icons throughout the site for calendar, messenger, etc.
+* Vue Router: Allows us to remember history of pages despite the website being a one-page application, we can also pass props to the path, so that users can easily share their profile with others since the username is in the url
 
 ## Features
 * Teachers
@@ -66,7 +72,9 @@ Use WebSocket to allow buyers to chat with sellers in real time. It’s up to yo
         * Works with jpg files
         * Can be edited after to add subjects (courses)
 * Students
-    * Sign up for courses
+    * Sign up for classes
+    * Receive invoice
+    * Review teachers
 * Subjects
     * Displays teachers, notesets, and upcoming lessons for each subject
 * Instant chat
