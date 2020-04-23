@@ -1,10 +1,10 @@
-#Comp 307 Final Project: Marketplace Project
+# Comp 307 Final Project: Marketplace Project
 
 Marie Cornellier, 260805212\
 Ruth Silcoff, 260773460
 
 
-##About our marketplace:
+## About our marketplace:
 Debate Academy is a website where individual users can sign up as a student or as a teacher. Teachers are able to register for various subjects that they have experience in, add availabilities for classes, set their class sizes, and upload note sets to sell. Students are able to create a profile, purchase classes and note sets, and rate their teachers.There is also a built in messenger for teachers and students to interact.
 
 # Build Setup
