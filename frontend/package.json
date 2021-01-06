@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "app-manager": "^0.27.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "material-design-icons-iconfont": "^5.0.1",
     "peer": "^0.2.10",
